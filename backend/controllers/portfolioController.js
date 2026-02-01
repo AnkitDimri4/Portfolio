@@ -1,24 +1,8 @@
 require("dotenv").config();
-const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 const pool = require("../config/db");
 
-// Gmail transporter
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
-
-// Optional: verify SMTP connection
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("SMTP Error:", error);
-  } else {
-    console.log("Gmail SMTP ready");
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmailController = async (req, res) => {
   try {
@@ -38,11 +22,11 @@ const sendEmailController = async (req, res) => {
       [name, email, msg]
     );
 
-    // Send styled email
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
-      replyTo: email,
+    // Send email using SendGrid
+    const message = {
+      to: process.env.SENDGRID_SENDER_EMAIL, // your receiving email
+      from: process.env.SENDGRID_SENDER_EMAIL, // verified sender email
+      replyTo: email, // allow reply to the contact's email
       subject: "📩 New Portfolio Contact",
       html: `
         <div style="font-family: Arial, Helvetica, sans-serif; background-color: #f4f6f8; padding: 20px;">
@@ -55,9 +39,7 @@ const sendEmailController = async (req, res) => {
 
             <!-- Body -->
             <div style="padding: 20px; color: #333333;">
-              <p style="margin: 0 0 12px;">
-                You have received a new message from your portfolio contact form.
-              </p>
+              <p>You have received a new message from your portfolio contact form.</p>
 
               <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
                 <tr>
@@ -88,15 +70,15 @@ const sendEmailController = async (req, res) => {
 
             <!-- Footer -->
             <div style="background: #f1f3f5; padding: 12px 20px; text-align: center; font-size: 12px; color: #666;">
-              <p style="margin: 0;">
-                Sent from your Portfolio Website
-              </p>
+              Sent from your Portfolio Website
             </div>
 
           </div>
         </div>
       `,
-    });
+    };
+
+    await sgMail.send(message);
 
     return res.status(200).json({
       success: true,
@@ -104,7 +86,7 @@ const sendEmailController = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("SendEmail Error:", error);
+    console.error("SendGrid Error:", error);
     return res.status(500).json({
       success: false,
       message: "Something went wrong while sending email",
