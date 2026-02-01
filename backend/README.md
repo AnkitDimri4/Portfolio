@@ -5,6 +5,12 @@
 
 > #### This is the backend service for the **Portfolio** application.  It is built with **Node.js**, **Express**, and **PostgreSQL (Neon)**, and handles contact form submissions with **email notifications via Gmail SMTP**.
 
+<img width="500" height="900" alt="image" src="https://github.com/user-attachments/assets/a807796c-2723-4985-a8d0-58d068f031a2" />
+<img width="500" height="900" alt="image" src="https://github.com/user-attachments/assets/9537a041-b637-4208-8d6a-bf1ffb02e76c" />
+<div align="center">
+<img width="650" height="400" alt="image" src="https://github.com/user-attachments/assets/1775b272-20bc-4169-91ee-a3eec7b40e4c" />
+</div>
+
 ---
 
 ## Tech Stack
