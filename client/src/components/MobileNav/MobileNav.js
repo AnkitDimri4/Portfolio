@@ -3,22 +3,21 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import "./MobileNav.css";
 import { FaGraduationCap } from "react-icons/fa";
-import {
-  FcHome,
-  FcAbout,
-  FcBriefcase,
-  FcGenealogy,
-  FcReadingEbook,
-  FcEngineering,
-  FcContacts,
-} from "react-icons/fc";
+import { useTheme } from "../../context/ThemeContext";
+import { BsFillMoonStarsFill, BsFillSunFill } from "react-icons/bs";
+import { FcHome, FcAbout, FcBriefcase, FcGenealogy, FcReadingEbook, FcEngineering, FcContacts,} from "react-icons/fc";
 import { Link } from "react-scroll";
 
 const MobileNav = () => {
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useTheme();
 
   const handleOpen = () => setOpen(!open);
   const handleMenuClick = () => setOpen(false);
+
+  const handleTheme = () => {
+    setTheme(prev => prev === "light" ? "dark" : "light");
+  };
 
   return (
     <div className="mobile-nav">
@@ -36,6 +35,10 @@ const MobileNav = () => {
             onClick={handleOpen}
           />
         )}
+        {/* Theme button */}
+        <div className="mobile-theme-btn" onClick={handleTheme}>
+          {theme === "light" ? <BsFillMoonStarsFill size={20} /> : <BsFillSunFill size={20} />}
+        </div>
       </div>
 
       {open && (
