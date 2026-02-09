@@ -1,0 +1,130 @@
+.education {
+  padding: 30px 20px;
+  margin-top: 100px;
+  background: linear-gradient(
+    135deg,
+    rgba(142, 114, 10, 0.201),
+    rgb(230, 230, 230),
+    rgb(178, 158, 158),
+    rgb(240, 240, 240)
+  );
+  background-size: 200% 200%;
+  animation: gradientAnimation 15s ease infinite;
+  border-radius: 15px;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.education hr {
+  color: #138781;
+  width: 800px;
+  margin: 10px auto;
+}
+
+.education h2 {
+  color: #34918c;
+  font-weight: bold;
+}
+
+.education .vertical-timeline-element-title1 {
+  color: #845816;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.education .vertical-timeline-element-title {
+  color: #845816;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.education .vertical-timeline-element-subtitle {
+  color: #2e2107dd;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+#dark h6 {
+  color: rgb(51, 60, 70);
+}
+
+/* ========Responsive====== */
+@media (max-width: 600px) {
+  .education {
+    margin: 0;
+    padding: 0;
+    margin-top: 50px;
+    width: 100%;
+  }
+  .education hr {
+    margin-bottom: 10%;
+    width: 280px;
+  }
+}
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .education {
+    padding: 50px 50px 50px 60px;
+    margin-left: 100px;
+    width: 89%;
+  }
+  .education hr {
+    padding-bottom: 5%;
+    width: 100%;
+  }
+  .education h2 {
+    width: 58vw;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .education {
+    padding: 50px 50px 50px 40px;
+    margin-left: 120px;
+    width: 85%;
+  }
+  .education hr {
+    padding-bottom: 5%;
+    width: 30vw;
+  }
+  .education h2 {
+    width: 58vw;
+  }
+}
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .education {
+    padding: 50px 50px 50px 40px;
+    margin-left: 120px;
+    width: 90%;
+  }
+  .education hr {
+    padding-bottom: 5%;
+    width: 50%;
+  }
+  .education h2 {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1617px) {
+  .education {
+    padding: 50px 50px 50px 60px;
+    margin-left: 100px;
+    width: 90%;
+  }
+  .education hr {
+    padding-right: 10%;
+    padding-bottom: 5%;
+    width: 35vw;
+  }
+  .education h2 {
+    padding-left: 10%;
+    width: 58vw;
+  }
+}
