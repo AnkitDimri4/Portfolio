@@ -1,0 +1,49 @@
+.sidebar-section {
+  display: flex;
+}
+.sidebar {
+  height: 120vh;
+  background-color: #212138;
+  box-shadow: rgba(0, 0, 0, 0.2) 7.95px 3.95px 10.6px;
+  background: linear-gradient(
+    135deg,
+    rgb(0, 0, 0),
+    rgb(47, 46, 54),
+    rgb(116, 105, 105),
+    rgb(123, 129, 131)
+  );
+  animation: gradientAnimation 15s ease infinite;
+  width: 120px;
+  position: fixed;
+}
+.sidebar-toggle {
+  width: 200px;
+}
+.sidebar-toggle-icons {
+  display: flex;
+  align-items: right;
+  justify-content: right;
+  cursor: pointer;
+}
+.sidebar-toggle-icons p svg {
+  /* background-color: #212138; */
+  box-shadow: rgba(0, 0, 0, 0.2) 7.95px 3.95px 10.6px;
+  background: linear-gradient(
+    135deg,
+    rgba(211, 193, 193, 0.813),
+    rgb(214, 199, 199),
+    rgb(224, 227, 222),
+    rgb(186, 217, 232)
+  );
+  animation: gradientAnimation 5s ease infinite;
+  border-radius: 20px;
+  color: rgba(39, 2, 2, 0.76);
+  margin-top: 20px;
+}
+
+/* ====Mobile View ====== */
+@media (max-width: 600px) {
+  .sidebar {
+    display: none;
+  }
+}
