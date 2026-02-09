@@ -1,6 +1,6 @@
 import { BsFiletypeHtml, BsFiletypeCss, BsBootstrap } from "react-icons/bs";
 import { FaNodeJs } from "react-icons/fa";
-import { TbBrandNextjs } from "react-icons/tb";
+import { TbBrandNextjs, TbBrandVscode } from "react-icons/tb";
 import { MdInsertChart, MdAddchart } from "react-icons/md";
 
 import {
@@ -23,7 +23,6 @@ import {
   SiC,
   SiJquery,
   SiTensorflow,
-  SiVisualstudiocode,
   SiScikitlearn,
   SiNumpy,
   SiPandas,
@@ -98,7 +97,7 @@ export const TechstackList = [
 
   // Tools / IDEs
   { _id: 35, name: "Git / GitHub", icon: SiGithub, category: "Tools" },
-  { _id: 36, name: "VS Code", icon: SiVisualstudiocode, category: "Tools / IDEs",},
+  { _id: 36, name: "VS Code", icon: TbBrandVscode, category: "Tools / IDEs",},
   { _id: 37, name: "Pycharm", icon: SiPycharm, category: "Tools / IDEs",},
   { _id: 38, name: "Jupyter Notebook", icon: SiJupyter, category: "Tools / IDEs",},
 
