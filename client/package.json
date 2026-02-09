@@ -3,16 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "homepage": "https://AnkitDimri4.github.io/Portfolio/client",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AnkitDimri4/Portfolio.git"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "build": "react-scripts build"
   },
   "dependencies": {
     "@react-spring/three": "^9.7.3",
@@ -37,9 +34,5 @@
     "three": "^0.163.0",
     "typewriter-effect": "^2.21.0",
     "web-vitals": "^2.1.4"
-  },
-  "devDependencies": {
-    "gh-pages": "^5.0.1",
-    "caniuse-lite": "^1.0.30001716"
   }
 }
