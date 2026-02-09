@@ -1,0 +1,83 @@
+/* CSS reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= DARK MODE ================= */
+
+#dark {
+  background: linear-gradient(
+    135deg,
+    #1c1d24 0%,
+    #23242d 100%
+  );
+  color: #e6e6e6;
+}
+
+/* Paragraphs */
+#dark p {
+  line-height: 1.7;
+  color: #4561a5;
+  font-size: 0.95rem;
+}
+
+/* Headings */
+#dark h1,
+#dark h2{
+  color: #264675;
+}
+#dark h4 {
+  color: #a8b6c8;
+}
+#dark h6 {
+  color: #d7d9dd;
+}
+#dark h3 {
+  color: #abb1be;
+}
+/* Sub headings & spans */
+#dark h5 {
+  color: #203960;
+}
+#dark span {
+  color: #284d87;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Divider */
+#dark hr {
+  border-color: #175166;
+  opacity: 0.6;
+}
+
+/* Links */
+#dark a {
+  color: #020e1b;
+}
+
+/* Cards */
+#dark .card {
+  background-color: #2a2b36;
+  color: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 21px rgba(117, 211, 224, 0.35);
+}
+#dark .card:hovor {
+  background-color: #8a8b92;
+  color: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(117, 211, 224, 0.35);
+}   
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  #dark .footer {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+}

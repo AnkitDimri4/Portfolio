@@ -1,0 +1,51 @@
+.App {
+  text-align: center;
+  margin: 0;
+}
+.LoaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+}
+.container{
+  margin-top: 44%;
+}
+
+@media (max-width:600px) {
+  .container{
+    margin-top: 70vh;
+  }
+}
+
+@media screen and (min-width:601px) and (max-width: 767px) {
+  .container{
+    margin-top: 75vh;
+  }
+
+}
+
+@media screen and (min-width:768px) and (max-width: 991px) {
+  .container{
+    margin-top: 75vh;
+  }
+
+}
+@media screen and (min-width:992px) and (max-width: 1199px) {
+  .container{
+    margin-top: 75vh;
+  }
+
+}
+@media screen and (min-width:1200px) and (max-width: 1617px) {
+  .container{
+    margin-top: 75vh;
+  }
+} 
+
+
+
+.scroll{
+  background-color: rgba(150, 69, 26, 0.929);
+  border-radius: 50px;
+}
