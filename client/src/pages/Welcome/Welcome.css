@@ -38,7 +38,7 @@
 @media (max-width: 600px) {
   .parallax {
     min-height: 80vh;
-    filter: brightness(35%);
+    filter: brightness(18%);
   }
   .parallax__cover {
     height: 300px;
@@ -48,7 +48,7 @@
 @media (min-width: 601px) and (max-width: 767px) {
   .parallax {
     min-height: 90vh;
-    filter: brightness(28%);
+    filter: brightness(15%);
   }
   .parallax__cover {
     height: 350px;
@@ -57,7 +57,7 @@
 
 @media (min-width: 768px) and (max-width: 991px) {
   .parallax {
-    filter: brightness(24%);
+    filter: brightness(12%);
   }
   .parallax__cover {
     height: 400px;
@@ -66,7 +66,7 @@
 
 @media (min-width: 992px) and (max-width: 1199px) {
   .parallax {
-    filter: brightness(20%);
+    filter: brightness(8%);
   }
   .parallax__cover {
     height: 400px;
@@ -81,3 +81,4 @@
     height: 470px;
   }
 }
+
