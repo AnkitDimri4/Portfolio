@@ -1,0 +1,267 @@
+.project {
+  margin: 60px 0px;
+  border-radius: 20px;
+}
+
+.project hr {
+  color: #138781;
+  width: 70%;
+  margin: 10px auto;
+}
+
+.project h2 {
+  color: #138781;
+  font-weight: bold;
+}
+
+#ads {
+  margin: 30px 0px 30px 0px;
+}
+
+.card {
+  border-radius: 18px !important;
+}
+
+#ads #card-notify-badge {
+  position: absolute;
+  left: -10px;
+  top: -20px;
+  background: #d89660;
+  text-align: center;
+  border-radius: 30px 30px 30px 30px;
+  color: black;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.project .card img {
+  height: 200px;
+  width: 100%;
+}
+
+.card-detail-badge {
+  margin-top: 10px;
+  background-color: #db920a;
+  text-align: center;
+  border-radius: 30px 30px 30px 30px;
+  color: black;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.card-image-overly {
+  font-size: 20px;
+}
+
+.card-image-overly span {
+  display: inline-block;
+  margin-left: 5px;
+  color: white;
+}
+
+.project .card:hover {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  transition: 1s;
+}
+
+.ad-btn {
+  text-transform: uppercase;
+  width: 130px;
+  height: 42px;
+  display: block;
+  text-align: center;
+  background-color: rgb(218, 169, 140);
+  color: white;
+  border-radius: 30px;
+  font-size: 16px;
+  line-height: 35px;
+  text-decoration: none;
+  margin: 20px auto 20px auto;
+  position: relative;
+}
+
+.ad-btn:hover {
+  background-color: rgb(177, 120, 36);
+  color: whitesmoke;
+  box-shadow:
+    rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset,
+    rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px,
+    rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px,
+    rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  transition: 1s;
+}
+
+/* ========Responsive====== */
+@media only screen and (max-width: 600px) {
+  .project {
+    margin: 0;
+    padding: 0;
+    margin-top: 70px;
+    /* width: 100%; */
+  }
+
+  .project hr {
+    margin-bottom: 10%;
+    width: 280px;
+  }
+
+  .project .card {
+    margin-top: 50px;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .project {
+    padding: 10px 5px 10px 30px;
+    margin-left: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 65vw;
+    align-items: flex-start;
+  }
+
+  .project hr {
+    margin-bottom: 10%;
+    width: 280px;
+  }
+
+  .project .card {
+    margin-top: 50px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .project {
+    padding: 30px 5px 10px 60px;
+    margin-left: 110px;
+    width: 70vw;
+  }
+
+  .project hr {
+    margin-bottom: 5%;
+    width: 70%;
+  }
+
+  .project .card {
+    display: block;
+    width: 270%;
+    margin: 0px 40px;
+  }
+
+  .project .row {
+    display: grid;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  h2.text-uppercase {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  p.pb-3 {
+    font-size: 1rem;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .project {
+    padding: 30px 30px 10px 20px;
+    width: 95vw;
+  }
+
+  .project hr {
+    margin-bottom: 5%;
+    margin-left: 22%;
+    width: 77%;
+  }
+
+  /* Card container */
+  .project .row,
+  h2 {
+    margin: 0px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 110%;
+  }
+
+  /* Individual cards */
+  .project .card {
+    width: 110%;
+    flex: 0 0 45%; /* 45% width for 2 cards per row */
+    /* optional: prevents overly large cards */
+    display: block;
+    gap: 10px;
+    padding: 0px 1px 5px 0px;
+    margin: 0px 40px;
+  }
+
+  /* Headings */
+  h2.text-uppercase {
+    font-size: 2.1rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  p.pb-3 {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1617px) {
+  .project {
+    padding: 30px 30px 10px 0px;
+    width: 100vw;
+  }
+
+  .project hr {
+    margin-bottom: 5%;
+    margin-left: 22%;
+    width: 77%;
+  }
+
+  /* Card container */
+  .project .row {
+    margin: 0px 60px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    width: 110%;
+  }
+
+  /* Individual cards */
+  .project .card {
+    width: 110%;
+    flex: 0 0 45%; /* 45% width for 2 cards per row */
+    max-width: max-content; 
+    display: block;
+    gap: 10px;
+    margin: 0px 40px;
+  }
+
+  /* Headings */
+  h2.text-uppercase {
+    font-size: 2.1rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  p.pb-3 {
+    font-size: 1rem;
+  }
+}
