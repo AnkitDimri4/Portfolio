@@ -7,7 +7,7 @@ import Fade from "react-reveal/Fade";
 export const Home = () => {
   return (
     <>
-      <div className="container-fulid home-container" id="home">
+      <div className="container-fluid home-container" id="home">
         <div className="container home-content">
           <Fade right>
             <h2>Hi 👋 I'm </h2>
@@ -50,3 +50,4 @@ export const Home = () => {
     </>
   );
 };
+
