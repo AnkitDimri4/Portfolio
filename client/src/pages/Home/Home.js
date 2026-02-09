@@ -1,6 +1,6 @@
 import React from "react";
 import Typewriter from "typewriter-effect";
-import "./home.css";
+import "./Home.css";
 import Resume from "../../assets/docs/resume.txt";
 import Fade from "react-reveal/Fade";
 // import { Link } from "react-scroll";
@@ -50,4 +50,5 @@ export const Home = () => {
     </>
   );
 };
+
 
