@@ -1,0 +1,126 @@
+.work {
+  padding: 10px 20px;
+  margin-top: 60px;
+  box-shadow: rgba(0, 0, 0, 0.2) 7.95px 3.95px 10.6px;
+  background: linear-gradient(
+    135deg,
+    rgba(201, 196, 196, 0.201),
+    rgb(230, 236, 241),
+    rgb(217, 217, 217),
+    rgb(176, 171, 165)
+  );
+  animation: gradientAnimation 10s ease infinite;
+  border-radius: 20px;
+}
+.work hr {
+  color: #138781;
+  width: 400px;
+  margin: 10px auto;
+}
+
+.work-exp h2 {
+  color: #34918c;
+  font-weight: bold;
+  font-size: 2.3rem;
+}
+
+.work-exp .vertical-timeline-element-title {
+  color: #a8701b;
+}
+
+.work-exp .vertical-timeline-element-subtitle {
+  color: #875e13;
+  padding-top: 20px;
+  font-size: 1.2rem;
+}
+
+/* ========Responsive====== */
+@media (max-width: 600px) {
+  .work {
+    margin: 0;
+    padding: 0;
+    margin-top: 50px;
+    /* width: 100%; */
+  }
+  .work hr {
+    margin-bottom: 10%;
+    width: 280px;
+  }
+}
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .work {
+    padding: 10px 5px 10px 160px;
+    width: 80vw;
+  }
+  .work hr {
+    padding-bottom: 10%;
+    width: 28vw;
+  }
+  .work-exp {
+    width: 40vw;
+  }
+  .work h2 {
+    font-size: 1.8rem;
+  }
+  .work h3 {
+    font-size: 1.2rem;
+  }
+  .work h4 {
+    font-size: 1.2rem;
+  }
+  .vertical-timeline-element--work {
+    width: 130%;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .work {
+    padding: 10px 5px 10px 160px;
+    width: 80vw;
+  }
+  .work hr {
+    padding-bottom: 10%;
+    width: 35vw;
+  }
+  .work-exp {
+    width: 40vw;
+  }
+  .work h2 {
+    font-size: 2.1rem;
+  }
+  .work h3 {
+    font-size: 1.6rem;
+  }
+  .work h4 {
+    font-size: 1.2rem;
+  }
+  .vertical-timeline-element--work {
+    width: 50vw;
+  }
+}
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .work {
+    padding: 30px 5px 30px 180px;
+    width: 85vw;
+  }
+  .work h2 {
+    font-size: 2.6rem;
+  }
+  .work h3 {
+    font-size: 1.9rem;
+  }
+  .work h4 {
+    font-size: 1.5rem;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1698px) {
+  .work {
+    padding: 30px 5px 30px 80px;
+    margin-left: 110px;
+    width: 73vw;
+  }
+  .work hr {
+    margin-bottom: 10%;
+    width: 280px;
+  }
+  
+}

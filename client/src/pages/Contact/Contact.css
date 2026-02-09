@@ -1,0 +1,239 @@
+.contact {
+  /* margin-left: 130px; */
+  margin-bottom: 60px;
+  padding-top: 50px;
+}
+
+.card0 {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 60px 40px -10px;
+  transition: 1s;
+  border-radius: 30px;
+}
+.card2 {
+  margin: 0px 40px;
+}
+
+.card1 .image {
+  padding: 30px;
+  margin-top: 30px;
+  height: 100%;
+  width: 100%;
+}
+
+.border-line {
+  border-right: 1px solid #e0e0e0;
+}
+span {
+  font-size: large;
+}
+.contact-icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconD {
+  font-size: 24px;
+  cursor: pointer;
+}
+.line {
+  height: 2px;
+  width: 127px;
+  background-color: #e0e0e0;
+  /* margin-top: 10px; */
+}
+.or {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+::placeholder {
+  color: #bdbdbd;
+  opacity: 1;
+  font-weight: 300;
+}
+
+input,
+textarea {
+  padding: 10px 12px;
+  border: 1px solid lightgray;
+  border-radius: 2px;
+  margin-top: 5px;
+  margin-top: 2px;
+  width: 100%;
+  color: #138781;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+input:focus,
+textarea:focus {
+  box-shadow: none !important;
+  outline: 1px solid #138781 !important;
+  outline-width: 0px;
+}
+
+button:focus {
+  box-shadow: none;
+  outline-width: 0px;
+}
+
+.button {
+  background-color: #1e1e2c;
+  color: white;
+  border-radius: 2px;
+  margin-top: 15px;
+  padding: 10px;
+}
+
+.button:hover {
+  background-color: #000;
+  color: white;
+  transition: 1s;
+}
+
+/* ======================== */
+@media (max-width: 600px) {
+  .contact {
+    margin: 0;
+    padding: 0;
+    margin-top: 50px;
+    margin-bottom: 25px;
+  }
+  .contact .card2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .contact {
+    padding: 10px 5px 10px 150px;
+    width: 81vw;
+  }
+  .card1 .image {
+    padding: 30px;
+    margin-top: 30px;
+    height: 100%;
+    width: 100%;
+  }
+  .line {
+    max-width: 65vw;
+  }
+  .contact-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .card2 {
+    margin: 0px 0px;
+  }
+  .iconD {
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .contact {
+    padding: 20px 20px 20px 50px;
+    margin-left: 120px;
+    width: 70vw;
+  }
+  .card1 .image {
+    padding: 30px;
+    margin-top: 30px;
+    height: 100%;
+    width: 100%;
+  }
+
+  .contact-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card2 {
+    margin: 0px 0px;
+  }
+
+  .iconD {
+    font-size: 24px !important;
+    cursor: pointer;
+  }
+  .line {
+    max-width: 60px;
+  }
+}
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .contact {
+    padding: 50px 50px 50px 60px;
+    margin-left: 120px;
+    width: 85%;
+  }
+  .card1 .image {
+    padding: 30px;
+    margin-top: 30px;
+    height: 100%;
+    width: 100%;
+  }
+
+  .contact-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card2 {
+    margin: 0px 0px;
+  }
+
+  .iconD {
+    font-size: 24px !important;
+    cursor: pointer;
+  }
+  .line {
+    max-width: 60px;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1617px) {
+  .contact {
+    padding: 50px 50px 50px 60px;
+    margin-left: 100px;
+    width: 90%;
+  }
+
+  .line {
+    max-width: 110px;
+  }
+  .card2 {
+    margin: 0px 0px;
+  }
+
+  .contact-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .iconD {
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 330px) {
+  .line {
+    max-width: 70px;
+  }
+
+  .contact-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .iconD {
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
