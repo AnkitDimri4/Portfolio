@@ -1,0 +1,312 @@
+.about {
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.2) 7.95px 3.95px 10.6px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 244, 244, 0.201),
+    rgb(247, 241, 241),
+    rgb(240, 240, 240),
+    rgb(191, 205, 212)
+  );
+  animation: gradientAnimation 15s ease infinite;
+  border-radius: 20px;
+  margin-bottom: 150px;
+}
+.about-avatar {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #183e77;
+  margin-bottom: 20px;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.about-avatar:hover {
+  transform: scale(1.12);
+  box-shadow: 0 12px 30px rgba(13, 110, 253, 0.35);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 14px 10px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.stat-card h4 {
+  min-height: 32px;
+}
+
+.about-content h1,
+.about-content p {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.about-content h1:hover,
+.about-content p:hover {
+  transform: translateY(-10px);
+}
+
+.stat-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.about-content h1 {
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+.about-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 30px;
+}
+
+.about-content h1 {
+  margin-bottom: 20px;
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: rgb(96, 84, 84);
+  border-bottom: 2px solid grey;
+  display: inline-block;
+}
+
+.about-content p {
+  line-height: 1.8;
+  font-size: 1.05rem;
+  text-align: justify;
+  max-width: 720px;
+}
+
+/* =======Social icon card ========== */
+
+/* Social icon card */
+.social-card {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 14px 10px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  /* flex-direction: column; */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Icons */
+.social-card a {
+  color: #183561;
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+
+.social-card a:hover {
+  transform: translateY(-6px) scale(1.12);
+  color: #5c82c0;
+}
+
+/* =======Dark Mode ========== */
+#dark .about {
+  box-shadow: none;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+#dark .about-content h1 {
+  color: #e9e4e4;
+  border-bottom: 2px solid #e9e4e4;
+}
+
+/* ===============Responsive============ */
+@media (max-width: 600px) {
+  .about {
+    padding: 100px 20px 40px 20px;
+    margin: -650px 0px 0px 0px;
+    width: 100%;
+  }
+  .stat-card {
+    width: 30%;
+    margin: 5px auto;
+    background: #f8f9fa;
+    border-radius: 14px;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  /* ===== About Avatar (Profile Image) ===== */
+  .about-avatar {
+    width: 120px; /* smaller on small screens */
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #183e77;
+    margin-bottom: 15px;
+    transition:
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .about h1 {
+    font-size: 1rem;
+  }
+
+  /* ===== Social Card (Icons) ===== */
+  .social-card {
+    padding: 10px 8px; /* smaller padding */
+    gap: 12px; /* less gap for smaller screens */
+    flex-wrap: wrap; /* wrap icons if needed */
+    justify-content: center; /* center align on small screens */
+  }
+
+  .social-card a {
+    font-size: 1.5rem; /* scale icon size */
+    transition:
+      transform 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .social-card a:hover {
+    transform: translateY(-5px) scale(1.1);
+  }
+  .stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .stat-card p {
+    font-size: 0.7rem;
+  }
+  .stat-card h4 {
+    font-size: 1.1rem;
+  }
+  .about-content h1 {
+    margin-top: 10px;
+    font-size: 2.1rem;
+    font-weight: bolder;
+  }
+  .about-content p {
+    font-size: 1.1rem;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .about {
+    padding: 120px 20px 40px 80px;
+    margin: -600px 0px 0px 80px;
+    width: 90%;
+  }
+  .about-content h1 {
+    margin-top: 10px;
+    font-size: 1.9rem;
+    font-weight: bolder;
+  }
+  .about-content p {
+    width: 40vw;
+    text-align: justify;
+    font-size: 1.1rem;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .about {
+    padding: 120px 20px 40px 60px;
+    margin: -600px 0px 0px 100px;
+    width: 90%;
+  }
+  .about-content h1 {
+    margin-top: 20px;
+    font-size: 1.7rem;
+    font-weight: bolder;
+  }
+  .about-content p {
+    width: 50vw;
+    text-align: justify;
+    font-size: 1rem;
+  }
+}
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .about {
+    padding: 120px 20px 40px 172px;
+    margin: -620px 0px 0px 0px;
+    width: 92vw;
+  }
+
+  .stat-card {
+    background: #f8f9fa;
+    border-radius: 14px;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .stat-card h4 {
+    min-height: 32px;
+  }
+
+  .about-content h1,
+  .about-content p {
+    padding-left: 60px;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    font-size: 1.9rem;
+  }
+  .about-content p {
+    margin-top: 20px;
+    font-size: 1rem;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1617px) {
+  .about {
+    padding: 120px 20px 40px 72px;
+    margin: -620px 0px 0px 100px;
+    width: 90%;
+  }
+  .stat-card h4 {
+    min-height: 32px;
+  }
+
+  .about-content h1,
+  .about-content p {
+    padding-left: 60px;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    font-size: 1.9rem;
+  }
+  .about-content p {
+    margin-top: 20px;
+    font-size: 1rem;
+  }
+}
+@media screen and (min-width: 1618px) and (max-width: 2200px) {
+  .about {
+    padding: 120px 60px 40px 72px;
+    margin: -500px 0px 0px 0px;
+    width: 100%;
+  }
+  .about-avatar {
+    max-width: 470px;
+  }
+  .about-content p {
+    margin-left: 20px;
+    max-width: 600px;
+    font-size: 1.15rem;
+  }
+}

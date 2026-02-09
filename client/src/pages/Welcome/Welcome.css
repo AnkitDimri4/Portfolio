@@ -1,0 +1,103 @@
+/* =========Layer========= */
+
+.parallax {
+  background-image: url(../../assets/images/About/phot.jpg);
+  color: #ecdddd #4e2a0d;
+  /* background-color: #FEDCC8; */
+  /* filter: grayscale(100%); */
+  /* filter: sepia(60%); */
+  /* filter: invert(20%); */
+  filter: brightness(10%);
+  /* filter: contrast(200%); */
+  /* filter: blur(13px); */
+  perspective: 100px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.parallax__layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  img {
+    display: block;
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.parallax__cover {
+  background: #2d112b;
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 470px;
+  z-index: 2;
+}
+
+@media (max-width: 600px) {
+  .parallax {
+    height: 80%;
+    width: 100%;
+    filter: brightness(35%);
+  }
+  .parallax__cover {
+    height: 300px;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .parallax {
+    height: 90%;
+    width: 100%;
+    filter: brightness(28%);
+  }
+  .parallax__cover {
+    height: 350px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .parallax {
+    height: 100%;
+    width: 100%;
+    filter: brightness(24%);
+  }
+  .parallax__cover {
+    height: 400px;
+  }
+}
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .parallax {
+    height: 100%;
+    width: 100%;
+    filter: brightness(20%);
+  }
+  .parallax__cover {
+    height: 400px;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1617px) {
+  .parallax {
+    height: 100%;
+    width: 100%;
+    filter: brightness(16%);
+  }
+  .parallax__cover {
+    height: 470px;
+  }
+}
