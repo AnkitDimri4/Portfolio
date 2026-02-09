@@ -11,24 +11,23 @@
   color: #ecdddd;
   overflow-x: hidden;
   overflow-y: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
+  position: relative; 
+  min-height: 100vh; 
 }
 
 .parallax__layer img {
   display: block;
   position: absolute;
   bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .parallax__cover {
   background: #070307;
   display: block;
   position: absolute;
-  top: 100%;
+  bottom: 0; /* changed from top: 100% */
   left: 0;
   right: 0;
   height: 470px;
@@ -38,7 +37,7 @@
 /* ===== Responsive Brightness & Cover Height ===== */
 @media (max-width: 600px) {
   .parallax {
-    height: 80%;
+    min-height: 80vh;
     filter: brightness(35%);
   }
   .parallax__cover {
@@ -48,7 +47,7 @@
 
 @media (min-width: 601px) and (max-width: 767px) {
   .parallax {
-    height: 90%;
+    min-height: 90vh;
     filter: brightness(28%);
   }
   .parallax__cover {
