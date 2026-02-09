@@ -13,7 +13,7 @@ import ScrollToTop from "react-scroll-to-top";
 import { useTheme } from "./context/ThemeContext";
 import MobileNav from "./components/MobileNav/MobileNav";
 import { ToastContainer } from "react-toastify";
-import Welcome from "./pages/About/Welcome";
+import Welcome from "./pages/Welcome/Welcome";
 
 function App() {
   const [theme] = useTheme();
