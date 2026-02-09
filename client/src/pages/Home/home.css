@@ -1,0 +1,350 @@
+.home-container {
+  height: 270px;
+  color: rgb(243, 241, 241);
+  width: 90%;
+  padding-right: 500px;
+  background-color: transparent;
+  margin-left: 100px;
+  padding-left: 80px;
+}
+.home-content h2 {
+  padding: 5px;
+  padding-top: 60px;
+}
+.home-content h1 {
+  color: #bb620f;
+  padding: 5px;
+  font-weight: 700;
+}
+.home-content h1:hover {
+  color: #bb620f8c;
+  /* color: #ddfbff; */
+  width: 500px;
+  transform: translateX(40px);
+  font-weight: 600;
+  transition: 2.5s;
+  font-size: 40px;
+  opacity: 0.8;
+}
+.home-buttons {
+  margin-top: 30px;
+}
+.home-buttons .btn-hire {
+  background-color: #67bbf3;
+  color: white;
+  width: 160px;
+}
+.home-buttons .btn-hire:hover {
+  background-color: #06273dd1;
+  color: #67bbf3;
+  width: 200px;
+  transform: translateY(15px);
+  font-weight: 700;
+  transition: 2.5s;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.home-buttons .btn-cv {
+  background-color: #f29f67;
+  color: white;
+  width: 160px;
+  margin-left: 10px;
+}
+.home-buttons .btn-cv:hover {
+  background-color: #06273dd1;
+  color: #67bbf3;
+  width: 200px;
+  opacity: 80%;
+  transform: translateY(15px);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 0 15px #06273dd1;
+  transition: 2.5s;
+}
+
+/* ==== Home responsive ==== */
+
+@media (max-width: 380px) {
+  .home-container {
+    width: 100%;
+    height: 90%;
+    margin-top: 0;
+    margin-bottom: 30px;
+    padding: 10px;
+  }
+
+  .home-content {
+    width: 50%;
+    font-size: 1rem;
+  }
+
+  .home-content h2 {
+    padding-top: 30px;
+    font-size: 1.1rem;
+  }
+
+  .home-content h1 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .home-content h1:hover {
+    transform: none;
+    font-size: 1rem;
+  }
+
+  /* Stack buttons vertically */
+  .home-buttons {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .home-buttons .btn-hire,
+  .home-buttons .btn-cv {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 6px 8px;
+  }
+
+  .home-buttons .btn-hire:hover,
+  .home-buttons .btn-cv:hover {
+    transform: none;
+    width: 100%;
+    font-size: 0.8rem;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-container {
+    width: 70%;
+    height: 110vh;
+    margin-top: -200px;
+    margin-bottom: 50px;
+    padding: 2px;
+  }
+  .home-content {
+    width: max-content;
+    font-size: 1.7rem;
+  }
+
+  .home-content h2 {
+    padding-top: 40px;
+    font-size: 1.4rem;
+  }
+
+  .home-content h1 {
+    color: #bb620f;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .home-content h1:hover {
+    color: #bb620f8c;
+    transform: none;
+    width: 100%;
+    font-size: 1.4rem;
+    opacity: 0.9;
+  }
+
+  .home-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .home-buttons .btn-hire,
+  .home-buttons .btn-cv {
+    width: 60%;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .home-buttons .btn-hire:hover,
+  .home-buttons .btn-cv:hover {
+    width: 100%;
+    transform: translateY(10px);
+    font-size: 0.9rem;
+    box-shadow: none;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 767px) {
+  .home-container {
+    width: 70%;
+    height: 100%;
+    padding: 40px 40px 10px 120px;
+    margin-top: -120px;
+  }
+
+  .home-content h2 {
+    padding-right: 100px;
+    padding-top: 40px;
+    font-size: 1.2rem;
+  }
+
+  .home-content h1 {
+    color: #bb620f;
+    font-weight: 700;
+    font-size: 1.4rem;
+  }
+
+  .home-content h1:hover {
+    color: #bb620f8c;
+    transform: none;
+    width: 100%;
+    font-size: 1.8rem;
+    opacity: 0.9;
+  }
+
+  .home-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .home-buttons .btn-hire,
+  .home-buttons .btn-cv {
+    width: 50%;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .home-buttons .btn-hire:hover,
+  .home-buttons .btn-cv:hover {
+    width: 100%;
+    transform: translateY(-20px);
+    font-size: 14px;
+    box-shadow: none;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .home-container {
+    width: 70%;
+    height: 100%;
+    padding: 40px 0 10px 120px;
+    margin-top: -60px;
+  }
+
+  .home-content h2 {
+    padding-right: 200px;
+    padding-top: 40px;
+    font-size: 1.4rem;
+  }
+
+  .home-content h1 {
+    color: #bb620f;
+    font-weight: 700;
+    font-size: 1.9rem;
+  }
+
+  .home-content h1:hover {
+    color: #bb620f8c;
+    transform: none;
+    width: 100%;
+    font-size: 1.8rem;
+    opacity: 0.9;
+  }
+
+  .home-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .home-buttons .btn-hire,
+  .home-buttons .btn-cv {
+    width: 40%;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .home-buttons .btn-hire:hover,
+  .home-buttons .btn-cv:hover {
+    width: 100%;
+    transform: translateY(-20px);
+    font-size: 14px;
+    box-shadow: none;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  .home-container {
+    width: 70%;
+    height: 100%;
+    padding: 40px 0 10px 120px;
+    margin-top: -20px;
+  }
+
+  .home-content h2 {
+    padding-right: 400px;
+    padding-top: 40px;
+    font-size: 1.6rem;
+  }
+
+  .home-content h1 {
+    color: #bb620f;
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+
+  .home-content h1:hover {
+    color: #bb620f8c;
+    transform: none;
+    width: 100%;
+    font-size: 1.8rem;
+    opacity: 0.9;
+  }
+
+  .home-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .home-buttons .btn-hire,
+  .home-buttons .btn-cv {
+    width: 30%;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .home-buttons .btn-hire:hover,
+  .home-buttons .btn-cv:hover {
+    width: 100%;
+    transform: translateY(-20px);
+    font-size: 14px;
+    box-shadow: none;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1617px) {
+  .home-container {
+    padding-left: 200px;
+    margin-top: -40px;
+  }
+  .home-container h2 {
+    font-size: 24px;
+  }
+  .home-container h1 {
+    font-size: 24px;
+  }
+}
+@media screen and (min-width: 1618px) and (max-width: 2200px) {
+  .home-container {
+    padding-left: 220px;
+  }
+  .home-container h2 {
+    font-size: 2.1rem;
+  }
+  .home-container h1 {
+    font-size: 2.5rem;
+  }
+}
