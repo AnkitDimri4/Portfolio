@@ -40,7 +40,7 @@ export const Home = () => {
                 Hire Me
               </a>
               {/* <Link to="contact" spy={true} smooth={true} offset={-100} duration={100} className="btn btn-hire">Hire Me</Link> */}
-              <a className="btn btn-cv" href={Resume} download="your_name.pdf">
+              <a className="btn btn-cv" href={Resume} download="../../assets/docs/AnkitDimri_Resume1.pdf">
                 My Resume
               </a>
             </div>
@@ -50,5 +50,6 @@ export const Home = () => {
     </>
   );
 };
+
 
 
