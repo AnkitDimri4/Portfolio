@@ -1,7 +1,7 @@
 import React from "react";
 import Typewriter from "typewriter-effect";
 import "./Home.css";
-import Resume from "../../assets/docs/resume.txt";
+import Resume from "../../assets/docs/AnkitDimri_Resume1.pdf";
 import Fade from "react-reveal/Fade";
 // import { Link } from "react-scroll";
 export const Home = () => {
@@ -40,7 +40,7 @@ export const Home = () => {
                 Hire Me
               </a>
               {/* <Link to="contact" spy={true} smooth={true} offset={-100} duration={100} className="btn btn-hire">Hire Me</Link> */}
-              <a className="btn btn-cv" href={Resume} download="../../assets/docs/AnkitDimri_Resume1.pdf">
+              <a className="btn btn-cv" href={Resume} download="AnkitDimri_Resume1.pdf">
                 My Resume
               </a>
             </div>
@@ -50,6 +50,7 @@ export const Home = () => {
     </>
   );
 };
+
 
 
 
