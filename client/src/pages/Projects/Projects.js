@@ -101,8 +101,6 @@ const PROJECTS = [
   },
 ];
 
-
-
 /* ================== Helpers ================== */
 
 const fetchCommitCount = async (username, repo) => {
@@ -290,6 +288,7 @@ const Projects = () => {
 };
 
 export default Projects;
+
 
 
 
