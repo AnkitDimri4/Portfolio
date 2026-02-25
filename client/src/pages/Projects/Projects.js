@@ -124,7 +124,7 @@ const Projects = () => {
   const [githubProjects, setGithubProjects] = useState([]);
 
   const staticProjects = PROJECTS.filter((p) =>
-    ["Mobile App", "Full Stack", "Full Stack-Ecom"].includes(p.type)
+    ["Full Stack-Ecom", "Mobile App", "Full Stack"].includes(p.type)
   );
 
   useEffect(() => {
@@ -288,6 +288,7 @@ const Projects = () => {
 };
 
 export default Projects;
+
 
 
 
