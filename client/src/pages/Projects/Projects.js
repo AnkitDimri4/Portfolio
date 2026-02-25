@@ -94,7 +94,7 @@ const PROJECTS = [
     key: "quickcart-mern",
     title: "QuickCart MERN Ecommerce",
     type: "Full Stack-Ecom",
-    image: "https://github.com/user-attachments/assets/93a15a4a-7357-465a-a9e7-332493bd0002",
+    image: "https://github.com/user-attachments/assets/2eefd77e-6808-472b-85be-f4e43edf3b20",
     tech: ["React","Node.js","Express","MongoDB","Redux","JWT Authentication","Stripe Payments","Cloudinary Integration","Responsive UI",
     ],
     github: "https://github.com/AnkitDimri4/quickcart-mern",
@@ -288,6 +288,7 @@ const Projects = () => {
 };
 
 export default Projects;
+
 
 
 
