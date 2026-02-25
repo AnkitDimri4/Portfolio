@@ -91,13 +91,12 @@ const PROJECTS = [
     github: "https://github.com/AnkitDimri4/Portfolio",
   },
   {
-    key: "ecommerce-app-2023",
-    title: "Ecommerce Shopping Website",
+    key: "quickcart-mern",
+    title: "QuickCart MERN Ecommerce",
     type: "Full Stack-Ecom",
-    image:"https://img.freepik.com/free-photo/shop-online-e-commerce-marketing-business-concept_53876-123778.jpg",
-    tech: ["React","Node.js","Express","MongoDB","Full Stack","Web Development","Responsive UI",
-    ],
-    github: "https://github.com/techinfo-youtube/ecommerce-app-2023",
+    image: "https://img.freepik.com/free-photo/online-shopping-ecommerce-concept_53876-24716.jpg",
+    tech: ["React", "Node.js", "Express", "MongoDB", "Redux", "JWT Authentication", "Stripe Payments", "Cloudinary Integration", "Responsive UI", "Full Stack Development"],
+    github: "https://github.com/AnkitDimri4/quickcart-mern.git",
   },
 ];
 
@@ -126,7 +125,7 @@ const Projects = () => {
   const [githubProjects, setGithubProjects] = useState([]);
 
   const staticProjects = PROJECTS.filter((p) =>
-    ["Mobile App", "Full Stack"].includes(p.type),
+    ["Mobile App", "Full Stack", Full Stack-Ecom].includes(p.type),
   );
 
   useEffect(() => {
@@ -290,3 +289,4 @@ const Projects = () => {
 };
 
 export default Projects;
+
