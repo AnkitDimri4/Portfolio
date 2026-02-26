@@ -7,6 +7,7 @@ import {  BsGithub, BsLinkedin } from "react-icons/bs";
 import { SiLeetcode } from "react-icons/si";
 import { SiGmail } from "react-icons/si";
 import "react-toastify/dist/ReactToastify.css";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Contact = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -50,7 +51,7 @@ const Contact = () => {
             <div className="col-md-6 col-lg-6 col-xl-6 col-sm-12">
               <div className="card1">
                 <div className="row border-line">
-                  <motion.img
+                  {/* <motion.img
                     src="https://img.freepik.com/free-photo/hot-line-contact-us-call-center-search-interface_53876-124009.jpg?w=2000"
                     alt="contact"
                     className="image"
@@ -58,6 +59,11 @@ const Contact = () => {
                     whileInView={{ x: 0, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, ease: "easeOut" }}
+                  /> */}
+                  <DotLottieReact
+                    src="https://lottie.host/0013fd71-5b14-4e80-a52a-57376c661363/BVOz5EovdF.json"
+                    loop
+                    autoplay
                   />
                 </div>
               </div>
@@ -162,3 +168,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
