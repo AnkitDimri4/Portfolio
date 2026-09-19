@@ -4,15 +4,21 @@ import { useInView } from "../lib/reveal";
 const fmt = (n, decimals) =>
   n.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
-/** Animates a number from 0 to `value` the first time it scrolls into view. */
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Animates a number from 0 to `value` the first time it scrolls into view.
+ * With reduced motion the real value is shown immediately (never a placeholder 0).
+ */
 const CountUp = ({ value, decimals = 0, prefix = "", suffix = "", duration = 1400 }) => {
   const ref = useRef(null);
   const inView = useInView(ref);
+  const [reduced] = useState(prefersReducedMotion);
   const [shown, setShown] = useState(0);
 
   useEffect(() => {
-    if (!inView || value == null) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setShown(value);
+    if (reduced || !inView || value == null) return;
     let raf;
     const start = performance.now();
     const tick = (now) => {
@@ -22,13 +28,13 @@ const CountUp = ({ value, decimals = 0, prefix = "", suffix = "", duration = 140
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, value, duration]);
+  }, [reduced, inView, value, duration]);
 
   return (
     <span ref={ref} className="countup">
       <span aria-hidden="true">
         {prefix}
-        {fmt(shown, decimals)}
+        {fmt(reduced && value != null ? value : shown, decimals)}
         {suffix}
       </span>
       <span className="sr-only">
