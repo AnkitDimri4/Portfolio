@@ -7,6 +7,9 @@ import CodeCard from "../../components/CodeCard/CodeCard";
 import { PROFILE } from "../../data/profile";
 import "./Hero.css";
 
+// "A D" as 8-bit ASCII — shown when hovering the name
+const INITIALS_BINARY = "01000001 01000100";
+
 const RoleRotator = ({ items }) => {
   const [i, setI] = useState(0);
   useEffect(() => {
@@ -39,7 +42,17 @@ const Hero = () => (
             <ScrambleText text="// hello, world — I'm" immediate speed={26} />
           </p>
 
-          <ScrambleText as="h1" id="hero-name" className="hero-name" text={PROFILE.name} immediate replayOnHover speed={70}>
+          <ScrambleText
+            as="h1"
+            id="hero-name"
+            className="hero-name"
+            text={PROFILE.name}
+            glyphs="01"
+            hoverText={INITIALS_BINARY}
+            title="A · D in binary"
+            immediate
+            speed={70}
+          >
             Ankit Dimr<span className="accent">i</span>
           </ScrambleText>
 

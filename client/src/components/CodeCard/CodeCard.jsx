@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { FiCheckCircle, FiGitBranch } from "react-icons/fi";
-import { SiTypescript } from "../brandIcons";
+import { FiCheckCircle, FiGitBranch, FiGitCommit } from "react-icons/fi";
+import { SiNodedotjs, SiPython, SiReact, SiTypescript } from "../brandIcons";
+import { useApi } from "../../lib/api";
 import "./CodeCard.css";
 
 const SOURCE = `const engineer = {
@@ -37,6 +38,8 @@ const TOTAL = SOURCE.replace(/\n/g, "").length;
 
 const CodeCard = () => {
   const cardRef = useRef(null);
+  const gh = useApi("/api/v1/portfolio/github");
+  const commits = gh.data?.totalCommits;
   const reduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const [typed, setTyped] = useState(reduced ? TOTAL : 0);
   const done = typed >= TOTAL;
@@ -57,11 +60,11 @@ const CodeCard = () => {
   const onMove = (e) => {
     if (reduced) return;
     const el = cardRef.current;
-    const r = el.getBoundingClientRect();
+    const r = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;
     const y = (e.clientY - r.top) / r.height;
-    el.style.setProperty("--ry", `${(x - 0.5) * 10}deg`);
-    el.style.setProperty("--rx", `${(0.5 - y) * 8}deg`);
+    el.style.setProperty("--ry", `${(x - 0.5) * 16}deg`);
+    el.style.setProperty("--rx", `${(0.5 - y) * 12}deg`);
     el.style.setProperty("--gx", `${x * 100}%`);
     el.style.setProperty("--gy", `${y * 100}%`);
   };
@@ -75,8 +78,36 @@ const CodeCard = () => {
   let cursorPlaced = false;
 
   return (
-    <div className="code-card-stage">
-      <figure className="code-card" ref={cardRef} onPointerMove={onMove} onPointerLeave={onLeave} aria-label="Code snippet describing Ankit Dimri as an engineer">
+    // Pointer is tracked on the flat stage: in 3D, parts of the tilted card sit behind
+    // their own wrappers, which would otherwise fire false pointerleave events.
+    <div className="code-card-stage" onPointerMove={onMove} onPointerLeave={onLeave}>
+      <div className="code-sway">
+      <div className="code-tilt" ref={cardRef}>
+      {/* back layer: a second editor window deep behind the card */}
+      <div className="code-ghost" aria-hidden="true">
+        <div className="code-ghost-head">
+          <span className="code-dots">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span className="code-ghost-file">
+            <SiPython /> api.py
+          </span>
+        </div>
+        <div className="code-ghost-body">
+          <div>
+            <span className="t-fn">@app.post</span>(<span className="t-str">"/categorize"</span>)
+          </div>
+          <div>
+            <span className="t-key">def</span> <span className="t-fn">categorize</span>(tx: Tx):
+          </div>
+          <div className="code-ghost-indent">
+            <span className="t-key">return</span> model.<span className="t-fn">predict</span>(tx)
+          </div>
+        </div>
+      </div>
+      <figure className="code-card" aria-label="Code snippet describing Ankit Dimri as an engineer">
         <div className="code-head">
           <span className="code-dots" aria-hidden="true">
             <i />
@@ -138,6 +169,22 @@ const CodeCard = () => {
         </div>
         <span className="code-glare" aria-hidden="true" />
       </figure>
+      {/* front layers: glass chips floating toward the viewer */}
+      <div className="code-chip code-chip--stack" aria-hidden="true">
+        <SiReact style={{ color: "#61DAFB" }} />
+        <SiNodedotjs style={{ color: "#6CC24A" }} />
+        <SiPython style={{ color: "#FFD43B" }} />
+        <SiTypescript style={{ color: "#3178C6" }} />
+      </div>
+      {commits != null && (
+        <div className="code-chip code-chip--commits" aria-hidden="true">
+          <FiGitCommit />
+          <b>{commits.toLocaleString("en-US")}</b> commits
+          <span className="code-chip-live" />
+        </div>
+      )}
+      </div>
+      </div>
     </div>
   );
 };
