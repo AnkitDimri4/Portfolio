@@ -32,11 +32,13 @@ const NeuralField = () => {
     let w = 0, h = 0, nodes = [], raf = 0, running = false, visible = true, ready = false;
     const pointer = { x: 0, y: 0, tx: 0, ty: 0, on: false };
     const LINK = () => Math.max(110, Math.min(170, Math.sqrt(w * h) / 7));
-    const RADIUS = 240;
+    const RADIUS = 190;
+    const IDLE_MS = 1100; // cursor effects fade out this long after the pointer stops
     const BUCKETS = 5;
     // Touch devices have no hover interaction, so 30fps is plenty and saves battery.
     const frameGap = window.matchMedia("(pointer: coarse)").matches ? 1000 / 30 : 0;
     let lastFrame = 0;
+    let idleTimer = 0;
 
     const seed = () => {
       const count = Math.round(Math.max(40, Math.min(160, (w * h) / 11000)));
@@ -77,7 +79,7 @@ const NeuralField = () => {
             const dx = pointer.x - n.x, dy = pointer.y - n.y;
             const d = Math.hypot(dx, dy);
             if (d < RADIUS && d > 1) {
-              const f = (1 - d / RADIUS) * 0.035;
+              const f = (1 - d / RADIUS) * 0.018;
               n.vx += (dx / d) * f;
               n.vy += (dy / d) * f;
             }
@@ -111,7 +113,7 @@ const NeuralField = () => {
           const t = 1 - Math.sqrt(d2) / link;
           const heat = Math.max(a.heat, b.heat);
           if (heat > 0.15) {
-            ctx.strokeStyle = `rgba(${hot}, ${t * 0.55 * heat + t * 0.08})`;
+            ctx.strokeStyle = `rgba(${hot}, ${t * 0.4 * heat + t * 0.05})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -124,14 +126,14 @@ const NeuralField = () => {
         }
       }
       buckets.forEach((p, k) => {
-        ctx.strokeStyle = `rgba(${ink}, ${((k + 0.5) / BUCKETS) * 0.13})`;
+        ctx.strokeStyle = `rgba(${ink}, ${((k + 0.5) / BUCKETS) * 0.08})`;
         ctx.stroke(p);
       });
 
       for (const n of nodes) {
-        ctx.fillStyle = n.heat > 0.1 ? `rgba(${hot}, ${0.5 + n.heat * 0.5})` : `rgba(${ink}, 0.45)`;
+        ctx.fillStyle = n.heat > 0.1 ? `rgba(${hot}, ${0.3 + n.heat * 0.5})` : `rgba(${ink}, 0.28)`;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r + n.heat * 1.6, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, n.r + n.heat * 1.1, 0, Math.PI * 2);
         ctx.fill();
       }
     };
@@ -161,8 +163,15 @@ const NeuralField = () => {
       pointer.on = pointer.ty > 0 && pointer.ty < rect.height;
       host.style.setProperty("--mx", `${(pointer.tx / rect.width) * 100}%`);
       host.style.setProperty("--my", `${(pointer.ty / rect.height) * 100}%`);
+      // Cursor effects (glow + lit links) only while the pointer is actually moving
+      host.classList.toggle("is-pointer", pointer.on);
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(onLeave, IDLE_MS);
     };
-    const onLeave = () => (pointer.on = false);
+    const onLeave = () => {
+      pointer.on = false;
+      host.classList.remove("is-pointer");
+    };
     const onVisibility = () => (document.hidden ? stop() : start());
 
     const ro = new ResizeObserver(resize);
@@ -197,6 +206,7 @@ const NeuralField = () => {
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("load", kickoff);
+      clearTimeout(idleTimer);
     };
   }, []);
 
