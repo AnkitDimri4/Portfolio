@@ -87,22 +87,43 @@ const Nav = () => {
       </header>
 
       <div id="mobile-menu" className={`mobile-menu${open ? " is-open" : ""}`} hidden={!open}>
+        <p className="label mm-heading">Menu</p>
         <nav aria-label="Mobile">
           {NAV.map(({ id, label, icon: Icon }, i) => (
-            <a key={id} href={`#${id}`} onClick={() => setOpen(false)} style={{ "--i": i }}>
-              <Icon className="mobile-menu-icon" aria-hidden="true" />
-              {label}
+            <a
+              key={id}
+              href={`#${id}`}
+              onClick={() => setOpen(false)}
+              style={{ "--i": i }}
+              className={active === id ? "is-active" : undefined}
+              aria-current={active === id ? "true" : undefined}
+            >
+              <span className="mm-icon" aria-hidden="true">
+                <Icon />
+              </span>
+              <span className="mm-label">{label}</span>
+              <span className="mm-num" aria-hidden="true">
+                0{i + 1}
+              </span>
+              <FiArrowUpRight className="mm-arrow" aria-hidden="true" />
             </a>
           ))}
         </nav>
         <div className="mobile-menu-foot">
-          <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
-          <div>
-            {PROFILE.socials.map(({ label, href, icon: Icon }) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" className="icon-btn" aria-label={label}>
-                <Icon />
-              </a>
-            ))}
+          <a className="btn btn-primary mm-cta" href="#contact" onClick={() => setOpen(false)}>
+            Let's talk <FiArrowUpRight size={16} />
+          </a>
+          <div className="mm-row">
+            <a className="mm-email" href={`mailto:${PROFILE.email}`}>
+              {PROFILE.email}
+            </a>
+            <div className="mm-socials">
+              {PROFILE.socials.map(({ label, href, icon: Icon }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer" className="icon-btn" aria-label={label}>
+                  <Icon />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

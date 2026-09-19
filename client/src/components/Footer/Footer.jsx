@@ -1,14 +1,17 @@
-import { FiArrowUp, FiArrowUpRight, FiClock, FiFileText, FiMail, FiMapPin } from "react-icons/fi";
+import { useState } from "react";
+import { FiArrowUp, FiArrowUpRight, FiClock, FiFileText, FiMail, FiMapPin, FiMaximize2 } from "react-icons/fi";
 import LocalTime from "../LocalTime";
 import { NAV, PROFILE } from "../../data/profile";
 import { useTheme } from "../../context/ThemeContext";
 // Pre-rendered from OpenStreetMap tiles (© OpenStreetMap contributors), centred on Dehradun
 import mapDark from "../../assets/img/map-dehradun-dark.webp";
 import mapLight from "../../assets/img/map-dehradun-light.webp";
+import MapDialog from "./MapDialog";
 import "./Footer.css";
 
 const Footer = () => {
   const [theme] = useTheme();
+  const [mapOpen, setMapOpen] = useState(false);
   return (
   <footer className="footer">
     <div className="wrap">
@@ -58,20 +61,18 @@ const Footer = () => {
           <p className="footer-muted">
             <FiMapPin aria-hidden="true" /> {PROFILE.location}
           </p>
-          <a
-            className="footer-map"
-            href="https://www.openstreetmap.org/?mlat=30.3165&mlon=78.0322#map=11/30.3165/78.0322"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Dehradun, India — open in OpenStreetMap"
-          >
+          <button type="button" className="footer-map" onClick={() => setMapOpen(true)} aria-label="Open full-screen map of Dehradun, India">
             <img src={theme === "light" ? mapLight : mapDark} alt="" width="720" height="400" loading="lazy" decoding="async" />
             <span className="map-pin" aria-hidden="true" />
             <span className="map-coords" aria-hidden="true">
               30.32°N · 78.03°E
             </span>
+            <span className="map-expand" aria-hidden="true">
+              <FiMaximize2 />
+            </span>
             <span className="map-credit">© OpenStreetMap</span>
-          </a>
+          </button>
+          <MapDialog open={mapOpen} onClose={() => setMapOpen(false)} />
         </div>
 
         <a href="#home" className="footer-top-link">
