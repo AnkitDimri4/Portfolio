@@ -47,7 +47,7 @@ const Footer = () => {
             </li>
             <li>
               <a href={PROFILE.resume} download="AnkitDimri_Resume.pdf" className="footer-link">
-                <FiFileText aria-hidden="true" /> Résumé (PDF)
+                <FiFileText aria-hidden="true" /> Resume (PDF)
               </a>
             </li>
           </ul>

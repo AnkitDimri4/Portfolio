@@ -70,7 +70,7 @@ const Hero = () => (
               Hire me <FiArrowUpRight size={18} />
             </a>
             <a className="btn" href={PROFILE.resume} download="AnkitDimri_Resume.pdf">
-              Résumé <FiDownload size={17} />
+              Resume <FiDownload size={17} />
             </a>
             <span className="hero-socials">
               {PROFILE.socials.map(({ label, href, icon: Icon }) => (
