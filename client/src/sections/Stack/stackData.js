@@ -4,7 +4,7 @@ import {
   SiHtml5, SiCss3, SiExpo, SiAndroidstudio, SiFirebase, SiNodedotjs, SiExpress, SiFastapi,
   SiDjango, SiFlask, SiClerk, SiPostgresql, SiMongodb, SiMysql, SiRedis, SiPython,
   SiScikitlearn, SiTensorflow, SiNumpy, SiPandas, SiJupyter, SiCplusplus, SiGit, SiGithub,
-  SiPostman, SiPycharm, SiRender, SiVercel, SiRedux, SiPlotly, SiClaude, SiJenkins, SiKubernetes,
+  SiPostman, SiPycharm, SiRender, SiVercel, SiRedux, SiPlotly, SiJenkins, SiKubernetes,
   SiCloudflare, SiAmazonwebservices, SiGooglecloud, SiGooglecloudstorage, SiXcode, SiIos, SiAndroid,
 } from "react-icons/si";
 import { TbBrandVscode, TbApi, TbChartDots, TbPointerFilled, TbShieldLock } from "react-icons/tb";
@@ -47,7 +47,7 @@ export const STACK = [
     group: "Languages & Tools",
     items: [
       ["C++", SiCplusplus], ["Git", SiGit], ["GitHub", SiGithub], ["Postman", SiPostman], ["VS Code", TbBrandVscode],
-      ["Cursor", TbPointerFilled], ["Claude", SiClaude], ["PyCharm", SiPycharm],
+      ["Cursor", TbPointerFilled], ["PyCharm", SiPycharm],
     ],
   },
   {
