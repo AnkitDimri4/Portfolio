@@ -2,10 +2,13 @@
 // browser bundle) and caches results so visitors don't burn the rate limit.
 const USERNAME = "AnkitDimri4";
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+const PARTIAL_RETRY = 5 * 60 * 1000; // retry sooner when some counts failed (e.g. rate limit)
 
 let cachedData = null;
 let lastFetchTime = 0;
 let inFlight = null;
+// Last successful commit count per repo, used when a later request fails.
+const lastKnown = new Map();
 
 const gh = (path) =>
   fetch(`https://api.github.com${path}`, {
@@ -50,13 +53,19 @@ const fetchStats = async () => {
       stars: r.stargazers_count,
       forks: r.forks_count,
       pushedAt: r.pushed_at,
-      commits: await countCommits(r.name).catch(() => null),
+      commits: await countCommits(r.name).then(
+        (n) => (lastKnown.set(r.name, n), n),
+        () => lastKnown.get(r.name) ?? null
+      ),
     }))
   );
 
+  // If any count is still unknown, a total would silently undercount — report null instead.
+  const partial = withCommits.some((r) => r.commits == null);
   return {
     status: "success",
-    totalCommits: withCommits.reduce((sum, r) => sum + (r.commits || 0), 0),
+    totalCommits: partial ? null : withCommits.reduce((sum, r) => sum + r.commits, 0),
+    partial,
     repos: withCommits,
     fetchedAt: new Date().toISOString(),
   };
@@ -68,8 +77,11 @@ exports.getGithubStats = async (req, res) => {
       return res.json(cachedData);
     }
     inFlight = inFlight || fetchStats();
-    cachedData = await inFlight;
-    lastFetchTime = Date.now();
+    const fresh = await inFlight;
+    // Prefer an older complete result over a newer partial one.
+    if (!(fresh.partial && cachedData && !cachedData.partial)) cachedData = fresh;
+    // Partial results are retried after a few minutes instead of being kept for an hour.
+    lastFetchTime = fresh.partial ? Date.now() - CACHE_DURATION + PARTIAL_RETRY : Date.now();
     res.json(cachedData);
   } catch (error) {
     console.error("GitHub API Error:", error.message);
