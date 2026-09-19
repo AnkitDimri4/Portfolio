@@ -50,12 +50,17 @@
 <summary><b>See the previous version</b> — screen recording &amp; screenshots</summary>
 <br>
 
+<!--
+  Inline player: GitHub only plays videos uploaded through its web editor.
+  To embed one, edit this file on github.com, drag docs/media/old-design.mp4 onto this spot,
+  and keep the generated https://github.com/user-attachments/assets/... line (it renders as a player).
+-->
 <div align="center">
-  <a href="docs/media/old-design.mp4" title="Play the recording of the previous design">
+  <a href="docs/media/old-design.mp4" title="Open the recording of the previous design">
     <img src="docs/media/old-design-poster.jpg" alt="Screen recording of the previous design (0:29) — click to play" width="760">
   </a>
   <br>
-  <sub>▶ Click to play the 29-second recording (<code>docs/media/old-design.mp4</code>)</sub>
+  <sub>▶ 29-second screen recording of the previous design — click to open (<code>docs/media/old-design.mp4</code>)</sub>
 </div>
 <br>
 
