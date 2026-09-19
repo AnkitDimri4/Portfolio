@@ -1,0 +1,116 @@
+.stack-slot {
+  min-height: 30rem;
+}
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.stack-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 1.5rem;
+  padding: clamp(1.4rem, 2.4vw, 2.2rem);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  overflow: hidden;
+  isolation: isolate;
+}
+.stack-card::before {
+  content: "";
+  position: absolute;
+  inset: auto -30% -60% auto;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--glow);
+  filter: blur(40px);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.6s var(--ease);
+}
+.stack-card:hover::before {
+  opacity: 1;
+}
+/* first card spans two rows on wide screens — bento rhythm */
+@media (min-width: 1101px) {
+  .stack-card:first-child {
+    grid-row: span 2;
+  }
+  /* 7 groups: the last two share row 3 (1 + 2 columns) */
+  .stack-card:last-child {
+    grid-column: span 2;
+  }
+}
+
+.stack-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.stack-group {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.stack-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+.stack-items li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  font-size: 0.93rem;
+  transition: border-color 0.3s var(--ease), transform 0.4s var(--ease);
+}
+.stack-items li svg {
+  font-size: 1.05rem;
+  color: var(--muted);
+  transition: color 0.3s var(--ease);
+}
+.stack-items li:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.stack-items li:hover svg {
+  color: var(--accent);
+}
+
+@media (min-width: 1101px) {
+  .stack-card:first-child .stack-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 1100px) {
+  .stack-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stack-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .stack-grid {
+    grid-template-columns: 1fr;
+  }
+}

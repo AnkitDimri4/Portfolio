@@ -1,0 +1,216 @@
+:root,
+[data-theme="dark"] {
+  --syn-key: #c792ea;
+  --syn-str: #ffb07a;
+  --syn-prop: #7fdbca;
+  --syn-num: #f78c6c;
+  --syn-fn: #82aaff;
+  --syn-com: #6f6c66;
+  --syn-pun: #8b877f;
+}
+[data-theme="light"] {
+  --syn-key: #7c3aed;
+  --syn-str: #b8400f;
+  --syn-prop: #0b7a69;
+  --syn-num: #c2410c;
+  --syn-fn: #1d4ed8;
+  --syn-com: #8a857a;
+  --syn-pun: #6b675e;
+}
+
+.code-card-stage {
+  perspective: 1200px;
+}
+
+.code-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  margin: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg-2) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: var(--shadow), 0 0 0 1px color-mix(in srgb, var(--accent) 6%, transparent);
+  overflow: hidden;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--ease-out);
+  animation: card-in 1.1s var(--ease-out) 0.35s backwards;
+}
+.code-card:hover {
+  transition-duration: 0.15s;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotateX(10deg);
+  }
+}
+
+.code-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 0%), color-mix(in srgb, var(--text) 7%, transparent), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.code-card:hover .code-glare {
+  opacity: 1;
+}
+
+/* ---------- Header ---------- */
+.code-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-3) 60%, transparent);
+}
+.code-dots {
+  display: flex;
+  gap: 6px;
+}
+.code-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+.code-dots i:nth-child(2) {
+  background: #febc2e;
+}
+.code-dots i:nth-child(3) {
+  background: #28c840;
+}
+.code-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+.code-tab svg {
+  color: #3178c6;
+}
+.code-branch {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+}
+
+/* ---------- Code ---------- */
+.code-body {
+  margin: 0;
+  padding: 1rem 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.55rem + 0.35vw, 0.86rem);
+  line-height: 1.75;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.code-body code {
+  font: inherit;
+}
+.code-line {
+  display: flex;
+  min-height: 1.75em;
+  white-space: pre;
+}
+.code-ln {
+  flex: none;
+  width: 3rem;
+  padding-right: 1rem;
+  text-align: right;
+  color: var(--faint);
+  opacity: 0.6;
+  user-select: none;
+}
+.t-key {
+  color: var(--syn-key);
+}
+.t-str {
+  color: var(--syn-str);
+}
+.t-prop {
+  color: var(--syn-prop);
+}
+.t-num {
+  color: var(--syn-num);
+}
+.t-fn {
+  color: var(--syn-fn);
+}
+.t-com {
+  color: var(--syn-com);
+  font-style: italic;
+}
+.t-pun {
+  color: var(--syn-pun);
+}
+.code-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--accent);
+  animation: blink 1s steps(1) infinite;
+}
+
+/* ---------- Terminal + status ---------- */
+.code-term {
+  margin: 0 1rem 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.code-term.is-done {
+  opacity: 1;
+  transform: none;
+}
+.code-ok {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent-2);
+}
+.code-status {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+.code-status span:first-child {
+  color: var(--accent-ink);
+}
+
+@media (max-width: 640px) {
+  .code-ln {
+    width: 2.1rem;
+    padding-right: 0.7rem;
+  }
+  .code-body {
+    font-size: 0.72rem;
+  }
+  .code-status span:nth-child(2) {
+    display: none;
+  }
+}

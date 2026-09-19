@@ -1,0 +1,201 @@
+.certs-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 2rem;
+}
+.certs-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+.certs-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(270px, 27vw, 480px);
+  gap: clamp(1rem, 1.6vw, 1.5rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  padding: 0.5rem max(var(--gutter), calc((100vw - var(--maxw)) / 2 + var(--gutter))) 1.25rem;
+  scrollbar-width: none; /* replaced by the custom progress line below */
+  cursor: grab;
+}
+.certs-rail::-webkit-scrollbar {
+  display: none;
+}
+.certs-rail.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+.certs-rail.is-dragging .cert-btn {
+  pointer-events: none;
+}
+
+/* ---------- Custom progress line + counter ---------- */
+.certs-foot {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+.certs-track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+  transition: height 0.3s var(--ease);
+}
+.certs:hover .certs-track {
+  height: 4px;
+}
+.certs-thumb {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  border-radius: inherit;
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: transform 0.25s var(--ease-out), width 0.3s var(--ease);
+  will-change: transform;
+}
+.certs-count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.certs-count b {
+  color: var(--text);
+  font-weight: 500;
+}
+.certs-hint {
+  flex: none;
+  color: var(--muted);
+}
+.certs-rail:focus-visible {
+  outline-offset: -2px;
+}
+
+.cert {
+  scroll-snap-align: start;
+}
+.cert-btn {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+}
+.cert-img {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #fbf8ee;
+}
+.cert-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.9s var(--ease-out);
+}
+.cert-btn:hover .cert-img img {
+  transform: scale(1.05);
+}
+.cert-zoom {
+  position: absolute;
+  right: 0.9rem;
+  top: 0.9rem;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  transform: scale(0.6);
+  opacity: 0;
+  transition: all 0.4s var(--ease-out);
+}
+.cert-btn:hover .cert-zoom,
+.cert-btn:focus-visible .cert-zoom {
+  transform: none;
+  opacity: 1;
+}
+.cert-meta {
+  display: grid;
+  gap: 0.3rem;
+}
+.cert-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+/* ---------- Lightbox ---------- */
+.lightbox {
+  margin: auto;
+  width: min(1100px, 94vw);
+  max-height: 92vh;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  color: var(--text);
+  overflow: hidden;
+}
+.lightbox::backdrop {
+  background: rgba(5, 5, 7, 0.78);
+  backdrop-filter: blur(8px);
+}
+.lightbox[open] {
+  animation: lb-in 0.45s var(--ease-out);
+}
+@keyframes lb-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+}
+.lightbox-inner {
+  display: grid;
+}
+.lightbox-inner img {
+  width: 100%;
+  max-height: calc(92vh - 5rem);
+  object-fit: contain;
+  background: #fbf8ee;
+}
+.lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+}
+.lightbox-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+@media (max-width: 640px) {
+  .certs-nav,
+  .certs-hint {
+    display: none;
+  }
+  .certs-rail {
+    grid-auto-columns: 78vw;
+  }
+  .lightbox-bar {
+    flex-direction: column;
+    align-items: start;
+  }
+}
