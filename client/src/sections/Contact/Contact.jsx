@@ -90,7 +90,7 @@ const Contact = () => {
             </div>
             <div className="field">
               <label htmlFor="cf-email">Email</label>
-              <input id="cf-email" name="email" type="email" autoComplete="email" required maxLength={254} value={form.email} onChange={update} placeholder="jane@company.com" />
+              <input id="cf-email" name="email" type="email" autoComplete="email" required maxLength={150} value={form.email} onChange={update} placeholder="jane@company.com" />
             </div>
             <div className="field">
               <label htmlFor="cf-msg">Message</label>

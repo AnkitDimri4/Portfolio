@@ -23,7 +23,7 @@ const sendEmailController = async (req, res) => {
         message: "Name, email, and message are required",
       });
     }
-    if (!EMAIL_RE.test(email) || email.length > 254) {
+    if (!EMAIL_RE.test(email) || email.length > 150) { // contacts.email is VARCHAR(150)
       return res.status(400).json({ success: false, message: "Please enter a valid email address" });
     }
     if (name.length > 100 || msg.length > 5000) {
