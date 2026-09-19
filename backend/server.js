@@ -7,9 +7,12 @@ dotenv.config();
 
 const app = express();
 
+// Render sits behind a proxy; needed so req.ip is the visitor's IP (rate limiting).
+app.set("trust proxy", 1);
+
 // Middlewares
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "20kb" }));
 
 // Routes
 app.get("/", (req, res) => {
