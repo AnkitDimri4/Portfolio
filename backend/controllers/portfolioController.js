@@ -4,9 +4,17 @@ const pool = require("../config/db");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Visitor input is interpolated into the email HTML, so it must be escaped.
+const escapeHtml = (s) =>
+  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
 const sendEmailController = async (req, res) => {
   try {
-    const { name, email, msg } = req.body;
+    const name = String(req.body?.name ?? "").trim();
+    const email = String(req.body?.email ?? "").trim();
+    const msg = String(req.body?.msg ?? "").trim();
 
     // Validation
     if (!name || !email || !msg) {
@@ -15,6 +23,13 @@ const sendEmailController = async (req, res) => {
         message: "Name, email, and message are required",
       });
     }
+    if (!EMAIL_RE.test(email) || email.length > 150) { // contacts.email is VARCHAR(150)
+      return res.status(400).json({ success: false, message: "Please enter a valid email address" });
+    }
+    if (name.length > 100 || msg.length > 5000) {
+      return res.status(400).json({ success: false, message: "Name or message is too long" });
+    }
+    const safe = { name: escapeHtml(name), email: escapeHtml(email), msg: escapeHtml(msg).replace(/\n/g, "<br>") };
 
     // Save contact to Neon/Postgres
     await pool.query(
@@ -24,7 +39,7 @@ const sendEmailController = async (req, res) => {
 
     // Send email using SendGrid
     const message = {
-      to: process.env.SENDGRID_SENDER_EMAIL, // your receiving email
+      to: process.env.SENDGRID_RECEIVER_EMAIL || process.env.SENDGRID_SENDER_EMAIL, // your receiving email
       from: process.env.SENDGRID_SENDER_EMAIL, // verified sender email
       replyTo: email, // allow reply to the contact's email
       subject: "📩 New Portfolio Contact",
@@ -44,13 +59,13 @@ const sendEmailController = async (req, res) => {
               <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
                 <tr>
                   <td style="padding: 8px; font-weight: bold; width: 120px;">Name:</td>
-                  <td style="padding: 8px;">${name}</td>
+                  <td style="padding: 8px;">${safe.name}</td>
                 </tr>
                 <tr style="background: #f9f9f9;">
                   <td style="padding: 8px; font-weight: bold;">Email:</td>
                   <td style="padding: 8px;">
-                    <a href="mailto:${email}" style="color: #0d6efd; text-decoration: none;">
-                      ${email}
+                    <a href="mailto:${safe.email}" style="color: #0d6efd; text-decoration: none;">
+                      ${safe.email}
                     </a>
                   </td>
                 </tr>
@@ -59,7 +74,7 @@ const sendEmailController = async (req, res) => {
               <div style="margin-top: 20px;">
                 <p style="font-weight: bold; margin-bottom: 6px;">Message:</p>
                 <div style="background: #f1f3f5; padding: 12px; border-radius: 4px; line-height: 1.6;">
-                  ${msg}
+                  ${safe.msg}
                 </div>
               </div>
 

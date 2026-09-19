@@ -102,9 +102,10 @@ Portfolio/
 ### Frontend `.env`
 
 ```env
-REACT_APP_GITHUB_TOKEN=your_github_token
 REACT_APP_BACKEND_URL=https://your-backend-url.onrender.com
 ```
+
+⚠️ Every `REACT_APP_*` variable is compiled into the public JavaScript bundle. **Never put tokens or keys in the frontend** — GitHub data is fetched by the backend instead.
 
 ### Backend `.env`
 
@@ -114,6 +115,10 @@ DATABASE_URL=your_neon_postgres_url
 SENDGRID_API_KEY=your_sendgrid_api_key
 SENDGRID_SENDER_EMAIL=sender@example.com
 SENDGRID_RECEIVER_EMAIL=receiver@example.com
+# Optional: raises the GitHub API rate limit (a fine-grained token with public read access is enough)
+GITHUB_TOKEN=your_github_token
+# Optional but recommended: comma-separated origins allowed to call the API
+CORS_ORIGIN=https://portfolio-nine-orcin-33.vercel.app,http://localhost:3000
 ```
 
 ⚠️ **Do not commit `.env` files to GitHub. Use `.gitignore`.**
@@ -127,7 +132,7 @@ SENDGRID_RECEIVER_EMAIL=receiver@example.com
 ```bash
 cd backend
 npm install
-node server.js
+npm run dev   # or: npm start
 ```
 
 Server will run at `http://localhost:8080` (or use the Render deployment URL).
@@ -135,10 +140,12 @@ Server will run at `http://localhost:8080` (or use the Render deployment URL).
 ### Frontend
 
 ```bash
-cd frontend
+cd client
 npm install
 npm start
 ```
+
+For local development, point the frontend at the local API with a `client/.env.development.local` containing `REACT_APP_BACKEND_URL=http://localhost:8080`.
 
 Frontend will run at `http://localhost:3000`
 
@@ -186,6 +193,18 @@ Frontend will run at `http://localhost:3000`
   "message": "Message sent and saved successfully"
 }
 ```
+
+Validation: all fields required, valid email (max 150 chars), name max 100 chars, message max 5,000 chars. Rate limited to 5 messages per 15 minutes per IP (`429` when exceeded).
+
+### GitHub Stats
+
+**GET** `/api/v1/portfolio/github` — public repositories with commit counts, stars, language and last push, plus `totalCommits`. Fetched server-side and cached for 1 hour.
+
+### LeetCode Stats
+
+**GET** `/api/v1/portfolio/leetcode` — `totalSolved`, `acceptanceRate` and global `ranking`. Cached for 10 minutes.
+
+Errors are always JSON (`{ "success": false, "message": "..." }`) and never include stack traces.
 
 ---
 

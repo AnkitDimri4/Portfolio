@@ -1,17 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./Index.css";
+import "./styles/global.css";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <ThemeProvider>
-    <React.StrictMode>
+  <React.StrictMode>
+    <ThemeProvider>
       <App />
-    </React.StrictMode>
-  </ThemeProvider>
+    </ThemeProvider>
+  </React.StrictMode>
 );
-
-reportWebVitals();

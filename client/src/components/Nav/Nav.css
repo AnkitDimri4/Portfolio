@@ -1,0 +1,299 @@
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--nav-h);
+  transition: background 0.5s var(--ease), border-color 0.5s var(--ease), backdrop-filter 0.5s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.nav.is-scrolled {
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom-color: var(--line);
+}
+.nav.is-open {
+  background: var(--bg);
+}
+
+.nav-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: -0.04em;
+  transition: transform 0.6s var(--ease-out), background 0.3s;
+}
+.brand:hover .brand-mark {
+  transform: rotate(-360deg);
+  background: var(--accent);
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-2) 60%, transparent);
+}
+.nav-links a {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  transition: color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.nav-links a:hover {
+  color: var(--text);
+}
+.nav-links a.is-active {
+  color: var(--bg);
+  background: var(--text);
+}
+.nav-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  /* longhands: the minifier sorts declarations, so a shorthand would reset the timeline */
+  animation-name: nav-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: scroll(root);
+}
+@keyframes nav-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+@supports not (animation-timeline: scroll()) {
+  .nav-progress {
+    display: none;
+  }
+}
+
+/* ---------- Menu button (mobile) ---------- */
+.menu-btn {
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  place-items: center;
+}
+.menu-lines,
+.menu-lines::before {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.4s var(--ease);
+}
+.menu-lines {
+  position: relative;
+  transform: translateY(-3px);
+}
+.menu-lines::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+}
+.nav.is-open .menu-lines {
+  transform: rotate(45deg);
+}
+.nav.is-open .menu-lines::before {
+  transform: translateY(-6px) rotate(-90deg);
+}
+
+.mobile-menu {
+  position: fixed;
+  inset: var(--nav-h) 0 0;
+  z-index: 49;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem var(--gutter) calc(1.5rem + env(safe-area-inset-bottom));
+  background: var(--bg);
+  overflow-y: auto;
+}
+.mobile-menu[hidden] {
+  display: none;
+}
+.mm-heading {
+  margin-bottom: 0.5rem;
+  font-size: 0.68rem;
+  color: var(--faint);
+}
+.mobile-menu nav {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+.mobile-menu nav a {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 0.25rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1rem + 1.6vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--muted);
+  transition: color 0.3s var(--ease), padding 0.4s var(--ease-out), background 0.3s var(--ease);
+  animation: menu-in 0.55s var(--ease-out) calc(var(--i) * 45ms) both;
+}
+.mm-icon {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  font-size: 1.05rem;
+  color: var(--muted);
+  transition: all 0.3s var(--ease);
+}
+.mm-num {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+.mm-arrow {
+  font-size: 1rem;
+  color: var(--faint);
+  transition: transform 0.4s var(--ease), color 0.3s;
+}
+.mobile-menu nav a:hover,
+.mobile-menu nav a:focus-visible,
+.mobile-menu nav a.is-active {
+  color: var(--text);
+}
+.mobile-menu nav a:hover {
+  padding-left: 0.6rem;
+}
+.mobile-menu nav a:hover .mm-arrow {
+  transform: translate(3px, -3px);
+  color: var(--accent);
+}
+.mobile-menu nav a.is-active .mm-icon {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.mobile-menu nav a.is-active .mm-num {
+  color: var(--accent-ink);
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.mobile-menu-foot {
+  display: grid;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  animation: menu-in 0.55s var(--ease-out) 0.3s both;
+}
+.mm-cta {
+  width: 100%;
+}
+.mm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.mm-email {
+  font-size: 0.9rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+.mm-socials {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 1180px) {
+  .nav-links a {
+    padding: 0.45rem 0.65rem;
+  }
+  .nav-num {
+    display: none;
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1100px) {
+  .brand-name {
+    display: none;
+  }
+}
+
+@media (max-width: 960px) {
+  .nav-links,
+  .nav-cta {
+    display: none;
+  }
+  .menu-btn {
+    display: grid;
+  }
+}
+
+@media (min-width: 961px) {
+  .mobile-menu {
+    display: none !important;
+  }
+}
