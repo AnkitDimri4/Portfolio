@@ -168,7 +168,6 @@
   background: color-mix(in srgb, var(--bg) 70%, transparent);
   border: 1px solid var(--line-strong);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   transition: background 0.3s var(--ease), color 0.3s var(--ease), transform 0.4s var(--ease-out);
 }
 .footer-map:hover .map-expand,
@@ -197,7 +196,6 @@
 .map-dialog::backdrop {
   background: rgba(5, 5, 7, 0.72);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 .map-dialog[open] {
   animation: map-in 0.5s var(--ease-out);
@@ -300,7 +298,6 @@
   border-radius: 6px;
   background: color-mix(in srgb, var(--bg) 78%, transparent);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 .map-coords {
   left: 0.55rem;

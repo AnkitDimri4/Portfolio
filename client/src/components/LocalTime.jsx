@@ -13,12 +13,14 @@ const format = () => formatter.format(new Date()).replace(/\s?(AM|PM)$/i, (m) =>
 
 /** Live clock in Ankit's timezone (IST), 12-hour format. */
 const LocalTime = () => {
-  const [time, setTime] = useState(format);
+  // Filled in after mount: the pre-rendered HTML is built ahead of time, so a time in it would be stale.
+  const [time, setTime] = useState(null);
   useEffect(() => {
+    setTime(format());
     const id = setInterval(() => setTime(format()), 15000);
     return () => clearInterval(id);
   }, []);
-  return <time>{time} IST</time>;
+  return <time>{time ?? "--:-- --"} IST</time>;
 };
 
 export default LocalTime;

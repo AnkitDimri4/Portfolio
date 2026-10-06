@@ -122,14 +122,22 @@ export const JOURNEY = [
   },
 ];
 
+// Every certificate image, as { "../assets/img/certs/<file>.webp": url }
+const CERT_IMAGES = import.meta.glob("../assets/img/certs/*.webp", { eager: true, import: "default" });
+
+const certImage = (file) => {
+  const url = CERT_IMAGES[`../assets/img/certs/${file}.webp`];
+  if (!url) throw new Error(`Missing certificate image: assets/img/certs/${file}.webp`);
+  return url;
+};
 
 const cert = (slug, title, issuer, date) => ({
   slug,
   title,
   issuer,
   date,
-  thumb: require(`../assets/img/certs/${slug}-thumb.webp`),
-  full: require(`../assets/img/certs/${slug}.webp`),
+  thumb: certImage(`${slug}-thumb`),
+  full: certImage(slug),
 });
 
 export const CERTIFICATES = [

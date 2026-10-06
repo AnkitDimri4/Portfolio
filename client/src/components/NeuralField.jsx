@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../lib/theme";
 
 const readColors = () => {
   const s = getComputedStyle(document.documentElement);
