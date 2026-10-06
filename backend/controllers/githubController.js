@@ -19,6 +19,7 @@ const gh = (path) =>
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
       }),
     },
+    signal: AbortSignal.timeout(10_000), // never let a slow GitHub response hang the request
   });
 
 // Number of commits authored by USERNAME on the repo's default branch,

@@ -8,6 +8,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-Express-3C873A?logo=nodedotjs&logoColor=white)](https://expressjs.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql&logoColor=white)](https://neon.tech)
 [![Lighthouse desktop](https://img.shields.io/badge/Lighthouse%20(desktop)-100%20·%20100%20·%20100%20·%20100-ff6b35)](#performance)
+[![CI](https://github.com/AnkitDimri4/Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/AnkitDimri4/Portfolio/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 
 ### [🌐 portfolio-nine-orcin-33.vercel.app](https://portfolio-nine-orcin-33.vercel.app/)
@@ -17,7 +18,7 @@
   <img src="client/public/og-image.jpg" alt="Live preview of Ankit Dimri's portfolio — click to open the site" width="880">
 </a>
 
-<sub>Click the preview to open the live site · API on Render: <code>https://portfolio-backend-71xj.onrender.com</code></sub>
+<sub>Click the preview to open the live site · API on Render: <code>https://portfolio-backend-ie6f.onrender.com</code></sub>
 
 </div>
 
@@ -97,7 +98,8 @@ Lighthouse on the production build, before → after the redesign:
 | Hand-built CSS design system | PostgreSQL (Neon) via `pg` | Render (API) |
 | CSS scroll-driven animations | SendGrid (email notifications) | GitHub &amp; LeetCode APIs |
 | Canvas 2D (hero network) | In-memory caching &amp; rate limiting | Self-hosted fonts, WebP images |
-| react-icons | dotenv, cors | Jest + Testing Library |
+| react-icons | dotenv, cors | Jest + Testing Library, `node:test` |
+| | | GitHub Actions (CI on every push &amp; PR) |
 
 ---
 
@@ -120,11 +122,15 @@ Portfolio/
 │
 ├── backend/                     # Node.js + Express API (Render root directory)
 │   ├── controllers/             # contact form, GitHub stats, LeetCode stats
-│   ├── middleware/rateLimit.js  # per-IP rate limiting
+│   ├── middleware/rateLimit.js  # per-IP rate limiting (Cloudflare-aware on Render)
 │   ├── routes/portfolioRoutes.js
-│   ├── config/db.js             # PostgreSQL (Neon) pool
-│   └── server.js                # security headers, CORS allow-list, JSON errors
+│   ├── lib/contact.js           # contact form validation, honeypot, HTML escaping
+│   ├── config/db.js             # PostgreSQL (Neon) pool, verified TLS
+│   ├── app.js                   # security headers, CORS allow-list, /health, JSON errors
+│   ├── server.js                # loads .env and starts the server
+│   └── test/                    # API, contact, rate-limit and stats tests (node:test)
 │
+├── .github/workflows/ci.yml     # tests + production build on every push and pull request
 ├── docs/                        # README screenshots and the previous-design recording
 └── README.md
 ```
@@ -138,7 +144,7 @@ Portfolio/
 ### Frontend — `client/.env`
 
 ```env
-REACT_APP_BACKEND_URL=https://portfolio-backend-71xj.onrender.com
+REACT_APP_BACKEND_URL=https://portfolio-backend-ie6f.onrender.com
 ```
 
 ⚠️ Every `REACT_APP_*` variable is compiled into the public JavaScript bundle. **Never put tokens or keys in the frontend** — GitHub data is fetched by the backend instead.
@@ -154,7 +160,8 @@ SENDGRID_RECEIVER_EMAIL=receiver@example.com
 # Strongly recommended: a GitHub token with NO scopes (public read only).
 # Raises the API limit from 60 to 5,000 requests/hour; without it, shared hosting IPs can hit the limit.
 GITHUB_TOKEN=your_github_token
-# Recommended: comma-separated origins allowed to call the API
+# Optional: comma-separated origins allowed to call the API. When unset, the API allows
+# the production site, this project's Vercel preview URLs and localhost (3000 / 5173).
 CORS_ORIGIN=https://portfolio-nine-orcin-33.vercel.app,http://localhost:3000
 ```
 
@@ -183,17 +190,19 @@ npm start          # http://localhost:3000
 To use the local API during development, create `client/.env.development.local` with `REACT_APP_BACKEND_URL=http://localhost:8080`.
 
 ```bash
-npm test                  # client tests
+npm test                  # client tests (in client/) or API tests (in backend/)
 CI=true npm run build     # production build — warnings fail the build, same as Vercel
 ```
+
+The backend tests use Node's built-in test runner and never touch the database, SendGrid, GitHub or LeetCode (network calls are mocked). GitHub Actions runs both test suites and the production build on every push to `main` and on every pull request.
 
 ---
 
 ## Deployment
 
 **Backend → Render**
-- Root directory: `backend` · Build: `npm install` · Start: `npm start`
-- Set the backend environment variables above (including `GITHUB_TOKEN` and `CORS_ORIGIN`).
+- Root directory: `backend` · Build: `npm install` · Start: `npm start` · Health check path: `/health`
+- Set the backend environment variables above (including `GITHUB_TOKEN`; `CORS_ORIGIN` only if you use other domains).
 
 **Frontend → Vercel**
 - Root directory: `client` · Framework preset: Create React App
@@ -204,7 +213,11 @@ CI=true npm run build     # production build — warnings fail the build, same a
 
 ## API
 
-Base URL: `https://portfolio-backend-71xj.onrender.com/api/v1/portfolio`
+Base URL: `https://portfolio-backend-ie6f.onrender.com/api/v1/portfolio`
+
+### `GET /health` — liveness check
+
+Served at the root (`https://portfolio-backend-ie6f.onrender.com/health`), not under the base URL. Returns `{ "status": "ok", "uptime": 42 }` without calling any other service, so it suits uptime monitors and Render's health check.
 
 ### `POST /sendEmail` — contact form
 
@@ -216,7 +229,9 @@ Base URL: `https://portfolio-backend-71xj.onrender.com/api/v1/portfolio`
 { "success": true, "message": "Message sent and saved successfully" }
 ```
 
-Validation: all fields required, valid email (max 150 chars), name max 100 chars, message max 5,000 chars. Rate limited to 5 messages per 15 minutes per IP (`429` when exceeded). Visitor input is HTML-escaped in the notification email.
+Validation: all fields required, valid email (max 150 chars), name max 100 chars, message max 5,000 chars. Rate limited to 5 messages per 15 minutes per IP (`429` with `Retry-After` when exceeded). Visitor input is HTML-escaped in the notification email.
+
+The message is saved and emailed independently: if one of the two fails, the other still delivers it and the visitor gets a success response (so they don't resend and create duplicates). A `500` is returned only when both fail. An optional hidden `company` field acts as a honeypot: if it is filled in, the request gets a normal-looking success response but nothing is saved or sent.
 
 ### `GET /github` — GitHub stats
 
@@ -224,9 +239,11 @@ Public repositories with commit counts, stars, language and last push, plus `tot
 
 ### `GET /leetcode` — LeetCode stats
 
-`totalSolved`, `acceptanceRate` and global `ranking`. Cached for 10 minutes.
+`totalSolved`, `solvedByDifficulty` (`easy` / `medium` / `hard`), `acceptanceRate` and global `ranking`. `acceptanceRate` matches the LeetCode profile: accepted submissions ÷ all submissions. Cached for 10 minutes.
 
-Errors are always JSON (`{ "success": false, "message": "..." }`) and never include stack traces.
+GitHub and LeetCode calls time out after 10 seconds. If either service is slow or down, the last good result is served; `502` is returned only when there is nothing cached yet.
+
+Errors are always JSON with a `message` field and never include stack traces.
 
 ---
 
@@ -249,8 +266,9 @@ CREATE TABLE contacts (
 ## Security
 
 - No secrets in the frontend bundle or the repository; GitHub access is server-side only.
-- JSON-only errors (no stack traces), `X-Powered-By` removed, `nosniff` / frame-deny / referrer headers, optional CORS allow-list.
-- Contact form: validation, HTML escaping, 20 kB body limit, per-IP rate limiting; parameterised SQL.
+- JSON-only errors (no stack traces), `X-Powered-By` removed, `nosniff` / frame-deny / referrer headers, CORS allow-list on by default.
+- Contact form: validation, HTML escaping, honeypot, 20 kB body limit, per-IP rate limiting (using Cloudflare's visitor IP on Render); parameterised SQL.
+- Database connections use TLS with certificate verification.
 - `npm audit`: 0 vulnerabilities in backend dependencies and in the frontend code shipped to visitors.
 
 ---
