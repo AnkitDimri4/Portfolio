@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiCheck, FiCopy, FiMail, FiSend } from "react-icons/fi";
 import { SiWhatsapp } from "../../components/brandIcons";
 import { Reveal } from "../../lib/reveal";
@@ -6,24 +6,39 @@ import { postJSON } from "../../lib/api";
 import { PROFILE } from "../../data/profile";
 import "./Contact.css";
 
-const EMPTY = { name: "", email: "", msg: "" };
+// `company` is the honeypot the API checks: people never see it, bots tend to fill it in.
+const EMPTY = { name: "", email: "", msg: "", company: "" };
+const SLOW_MS = 5000;
 
 const Contact = () => {
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState({ state: "idle", message: "" });
   const [copied, setCopied] = useState(false);
+  // The form is pre-rendered; it can only be sent once React is running (see `ready` below).
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
   const update = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const submit = async (e) => {
     e.preventDefault();
     setStatus({ state: "sending", message: "" });
+    // The API sleeps when idle and can take a while to wake up — say so instead of looking stuck.
+    const slow = setTimeout(
+      () => setStatus({ state: "sending", message: "Still sending — the server is waking up, this can take up to a minute." }),
+      SLOW_MS
+    );
     try {
       await postJSON("/api/v1/portfolio/sendEmail", form);
       setForm(EMPTY);
       setStatus({ state: "sent", message: "Thanks — your message is on its way. I'll reply soon." });
     } catch (err) {
       setStatus({ state: "error", message: err.message });
+    } finally {
+      clearTimeout(slow);
     }
   };
 
@@ -83,7 +98,8 @@ const Contact = () => {
             </ul>
           </Reveal>
 
-          <Reveal as="form" className="contact-form" delay={2} onSubmit={submit}>
+          {/* method="post": if it were ever submitted before React loads, nothing ends up in the URL */}
+          <Reveal as="form" className="contact-form" delay={2} onSubmit={submit} method="post">
             <div className="field">
               <label htmlFor="cf-name">Your name</label>
               <input id="cf-name" name="name" autoComplete="name" required maxLength={100} value={form.name} onChange={update} placeholder="Jane Doe" />
@@ -96,9 +112,22 @@ const Contact = () => {
               <label htmlFor="cf-msg">Message</label>
               <textarea id="cf-msg" name="msg" required rows={5} maxLength={5000} value={form.msg} onChange={update} placeholder="Tell me about your project or role…" />
             </div>
+            {/* Honeypot: off-screen and hidden from assistive tech. Its name avoids "company" so
+                browser autofill (which would fill an organisation field) never triggers it. */}
+            <div className="hp-field" aria-hidden="true">
+              <label htmlFor="cf-bot-field">Leave this field empty</label>
+              <input
+                id="cf-bot-field"
+                name="bot-field"
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.company}
+                onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
+              />
+            </div>
 
             <div className="form-foot">
-              <button className="btn btn-primary" type="submit" disabled={sending}>
+              <button className="btn btn-primary" type="submit" disabled={sending || !ready}>
                 {sending ? "Sending…" : "Send message"} <FiSend size={16} />
               </button>
               <p className={`form-status is-${status.state}`} role="status" aria-live="polite">

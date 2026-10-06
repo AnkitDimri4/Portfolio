@@ -9,7 +9,7 @@ import { PROFILE } from "../../data/profile";
 import portrait from "../../assets/img/portrait.webp";
 import "./About.css";
 
-const Stat = ({ value, loading, label, icon: Icon, ...fmt }) => (
+const Stat = ({ value, loading, label, icon: Icon, children, ...fmt }) => (
   <div className="stat">
     <p className="stat-num">
       {loading ? <span className="skeleton">0000</span> : value == null ? "—" : <CountUp value={value} {...fmt} />}
@@ -17,6 +17,29 @@ const Stat = ({ value, loading, label, icon: Icon, ...fmt }) => (
     <p className="stat-label">
       <Icon className="stat-icon" aria-hidden="true" />
       {label}
+    </p>
+    {children}
+  </div>
+);
+
+const LEVELS = ["easy", "medium", "hard"];
+
+/** Solved problems by difficulty: a proportional bar (LeetCode's colours) plus the counts. */
+const Difficulty = ({ split }) => (
+  <div className="lc-split">
+    <span className="lc-bar" aria-hidden="true">
+      {LEVELS.map((level) => (
+        <i key={level} className={`lc-${level}`} style={{ flexGrow: split[level] }} />
+      ))}
+    </span>
+    <p className="lc-legend label">
+      <span className="sr-only">By difficulty: </span>
+      {LEVELS.map((level) => (
+        <span key={level}>
+          <i className={`lc-dot lc-${level}`} aria-hidden="true" />
+          {split[level]} {level}
+        </span>
+      ))}
     </p>
   </div>
 );
@@ -106,12 +129,19 @@ const About = () => {
               <div className="stats-head">
                 <LiveSignal label="Live stats" />
                 <span className="label">
-                  GitHub &amp; LeetCode APIs{gh.data?.fetchedAt ? ` · synced ${timeAgo(gh.data.fetchedAt)}` : ""}
+                  GitHub &amp; LeetCode APIs
+                  {gh.data?.fetchedAt
+                    ? ` · synced ${timeAgo(gh.data.fetchedAt)}`
+                    : gh.slow || lc.slow
+                      ? " · waking up the server…"
+                      : ""}
                 </span>
               </div>
               <div className="stats">
               <Stat icon={FiGitCommit} label="GitHub commits" loading={ghLoading} value={gh.data?.totalCommits} />
-              <Stat icon={SiLeetcode} label="LeetCode solved" loading={lcLoading} value={lcData?.totalSolved} />
+              <Stat icon={SiLeetcode} label="LeetCode solved" loading={lcLoading} value={lcData?.totalSolved}>
+                {lcData?.solvedByDifficulty && <Difficulty split={lcData.solvedByDifficulty} />}
+              </Stat>
               <Stat icon={FiTarget} label="Acceptance rate" loading={lcLoading} value={lcData ? Number(lcData.acceptanceRate) : null} decimals={1} suffix="%" />
               <Stat icon={FiTrendingUp} label="LeetCode global rank" loading={lcLoading} value={lcData?.ranking} prefix="#" />
               <Stat icon={FiCode} label="Years building" value={3} suffix="+" />

@@ -111,6 +111,7 @@
 .stat {
   position: relative;
   display: grid;
+  align-content: start;
   gap: 0.35rem;
   padding: clamp(1rem, 2vw, 1.75rem);
   border-right: 1px solid var(--line);
@@ -147,6 +148,57 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+/* LeetCode solved by difficulty (LeetCode's own colours) */
+.lc-split {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+.lc-bar {
+  display: flex;
+  gap: 2px;
+  height: 4px;
+  border-radius: 99px;
+  overflow: hidden;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.2s var(--ease-out) 0.5s;
+}
+.in .lc-bar {
+  transform: none;
+}
+.lc-bar i {
+  min-width: 2px;
+  background: var(--lc);
+}
+.lc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.8rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+.lc-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.lc-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lc);
+}
+.lc-easy {
+  --lc: #1cbaba;
+}
+.lc-medium {
+  --lc: #ffb800;
+}
+.lc-hard {
+  --lc: #f63737;
 }
 
 /* ---------- Links ---------- */
