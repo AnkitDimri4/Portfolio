@@ -1,52 +1,18 @@
-require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 const pool = require("../config/db");
+const { escapeHtml, validateContact } = require("../lib/contact");
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+if (process.env.SENDGRID_API_KEY) sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const receivedAt = () =>
+  new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "medium", timeStyle: "short" }) + " IST";
 
-// Visitor input is interpolated into the email HTML, so it must be escaped.
-const escapeHtml = (s) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-
-const sendEmailController = async (req, res) => {
-  try {
-    const name = String(req.body?.name ?? "").trim();
-    const email = String(req.body?.email ?? "").trim();
-    const msg = String(req.body?.msg ?? "").trim();
-
-    // Validation
-    if (!name || !email || !msg) {
-      return res.status(400).json({
-        success: false,
-        message: "Name, email, and message are required",
-      });
-    }
-    if (!EMAIL_RE.test(email) || email.length > 150) { // contacts.email is VARCHAR(150)
-      return res.status(400).json({ success: false, message: "Please enter a valid email address" });
-    }
-    if (name.length > 100 || msg.length > 5000) {
-      return res.status(400).json({ success: false, message: "Name or message is too long" });
-    }
-    const safe = { name: escapeHtml(name), email: escapeHtml(email), msg: escapeHtml(msg).replace(/\n/g, "<br>") };
-
-    // Save contact to Neon/Postgres
-    await pool.query(
-      "INSERT INTO contacts (name, email, message) VALUES ($1, $2, $3)",
-      [name, email, msg]
-    );
-
-    // Send email using SendGrid
-    const message = {
-      to: process.env.SENDGRID_RECEIVER_EMAIL || process.env.SENDGRID_SENDER_EMAIL, // your receiving email
-      from: process.env.SENDGRID_SENDER_EMAIL, // verified sender email
-      replyTo: email, // allow reply to the contact's email
-      subject: "📩 New Portfolio Contact",
-      html: `
+const emailHtml = ({ name, email, msg }) => {
+  const safe = { name: escapeHtml(name), email: escapeHtml(email), msg: escapeHtml(msg).replace(/\n/g, "<br>") };
+  return `
         <div style="font-family: Arial, Helvetica, sans-serif; background-color: #f4f6f8; padding: 20px;">
           <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            
+
             <!-- Header -->
             <div style="background: #0d6efd; color: #ffffff; padding: 16px 20px;">
               <h2 style="margin: 0; font-size: 20px;">New Mail</h2>
@@ -79,7 +45,7 @@ const sendEmailController = async (req, res) => {
               </div>
 
               <p style="font-size: 12px; color: #777; margin-top: 20px;">
-                Received on ${new Date().toLocaleString()}
+                Received on ${receivedAt()}
               </p>
             </div>
 
@@ -90,23 +56,42 @@ const sendEmailController = async (req, res) => {
 
           </div>
         </div>
-      `,
-    };
+      `;
+};
 
-    await sgMail.send(message);
+const sendEmailController = async (req, res) => {
+  const result = validateContact(req.body);
+  if (!result.ok) return res.status(400).json({ success: false, message: result.message });
 
-    return res.status(200).json({
-      success: true,
-      message: "Message sent and saved successfully",
-    });
+  // Honeypot hit: pretend it worked so bots learn nothing, but store/send nothing.
+  if (result.spam) return res.status(200).json({ success: true, message: "Message sent and saved successfully" });
 
-  } catch (error) {
-    console.error("SendGrid Error:", error);
+  const { name, email, msg } = result.data;
+
+  // Save and notify independently: if one channel fails, the message is still delivered
+  // through the other, and the visitor isn't told to resend (which created duplicates).
+  const [saved, emailed] = await Promise.allSettled([
+    pool.query("INSERT INTO contacts (name, email, message) VALUES ($1, $2, $3)", [name, email, msg]),
+    sgMail.send({
+      to: process.env.SENDGRID_RECEIVER_EMAIL || process.env.SENDGRID_SENDER_EMAIL,
+      from: process.env.SENDGRID_SENDER_EMAIL, // verified sender
+      replyTo: email,
+      subject: "📩 New Portfolio Contact",
+      html: emailHtml({ name, email, msg }),
+    }),
+  ]);
+
+  if (saved.status === "rejected") console.error("Contact save failed:", saved.reason?.message || saved.reason);
+  if (emailed.status === "rejected") console.error("Contact email failed:", emailed.reason?.message || emailed.reason);
+
+  if (saved.status === "rejected" && emailed.status === "rejected") {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while sending email",
+      message: "Something went wrong while sending your message. Please try again or email me directly.",
     });
   }
+
+  return res.status(200).json({ success: true, message: "Message sent and saved successfully" });
 };
 
 module.exports = { sendEmailController };
