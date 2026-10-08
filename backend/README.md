@@ -1,9 +1,10 @@
-
 ---
 
 # Portfolio Backend
 
-> #### This is the backend service for the **Portfolio** application.  It is built with **Node.js**, **Express**, and **PostgreSQL (Neon)**, and handles contact form submissions with **email notifications via Gmail SMTP**.
+> #### The API behind the **Portfolio**. Built with **Node.js**, **Express** and **PostgreSQL (Neon)**: it stores contact messages, sends **email notifications via SendGrid**, and serves cached **GitHub and LeetCode stats** so no token ever reaches the browser.
+
+**Live:** [https://portfolio-backend-ie6f.onrender.com](https://portfolio-backend-ie6f.onrender.com/health) (Render free instance — the first request after a quiet period can take ~30 s while it wakes up)
 
 <img width="500" height="900" alt="image" src="https://github.com/user-attachments/assets/a807796c-2723-4985-a8d0-58d068f031a2" />
 <img width="500" height="900" alt="image" src="https://github.com/user-attachments/assets/9537a041-b637-4208-8d6a-bf1ffb02e76c" />
@@ -21,23 +22,23 @@ https://github.com/user-attachments/assets/6688385e-51c2-48a7-b90c-5eef543272c2
 
 ## Tech Stack
 
-- **Node.js**
-- **Express.js**
-- **PostgreSQL (Neon)**
-- **pg** – PostgreSQL client
-- **Nodemailer** – Gmail SMTP email service
-- **dotenv** – Environment variable management
-- **cors** – Cross-Origin Resource Sharing
+- **Node.js** + **Express.js**
+- **PostgreSQL (Neon)** via **pg** — TLS with certificate verification
+- **SendGrid** (`@sendgrid/mail`) – email notifications
+- **GitHub REST** and **LeetCode GraphQL** APIs – live stats, cached in memory
+- **dotenv** – environment variables · **cors** – CORS allow-list
+- **node:test** – Node's built-in test runner (no extra test dependencies)
 
 ---
 
 ##  Features
 
-- REST API for contact form submission
-- Stores contact messages in PostgreSQL (Neon)
-- Sends email notification on each submission
-- Input validation and error handling
-- Secure environment variable usage
+- Contact form API: validation, HTML-escaped notification emails, spam honeypot and per-IP rate limiting
+- Each message is saved and emailed independently, so one failing service never loses it
+- Live stats: GitHub commits and repositories (cached 1 h) and LeetCode solved count, acceptance rate, ranking and easy / medium / hard split (cached 10 min)
+- 10-second timeouts on GitHub and LeetCode; the last good result is served if either is down
+- `/health` endpoint for uptime monitors and Render's health check
+- Security headers, JSON-only errors (no stack traces), 20 kB request limit
 
 ---
 
@@ -47,16 +48,21 @@ https://github.com/user-attachments/assets/6688385e-51c2-48a7-b90c-5eef543272c2
 
 backend/
 │
-├── controllers/
-│   └── portfolioController.js
-│
+├── app.js                   # Express app: security headers, CORS, routes, /health, JSON errors
+├── server.js                # loads .env and starts the server
 ├── routes/
 │   └── portfolioRoutes.js
-│
+├── controllers/
+│   ├── portfolioController.js   # contact form
+│   ├── githubController.js      # GitHub stats
+│   └── leetcodeController.js    # LeetCode stats
+├── middleware/
+│   └── rateLimit.js         # per-IP rate limiting (uses Cloudflare's visitor IP on Render)
+├── lib/
+│   └── contact.js           # validation, honeypot, HTML escaping
 ├── config/
-│   └── db.js
-│
-├── server.js
+│   └── db.js                # PostgreSQL pool (verified TLS)
+├── test/                    # node:test suites
 ├── package.json
 └── README.md
 
@@ -66,25 +72,33 @@ backend/
 
 ## Environment Variables
 
-Create a `.env` file in the `server` directory:
+Create a `.env` file in the `backend` directory:
 
 ```env
 PORT=8080
 DATABASE_URL=your_neon_postgres_url
-GMAIL_USER=yourgmail@gmail.com
-GMAIL_APP_PASSWORD=your_gmail_app_password
+SENDGRID_API_KEY=your_sendgrid_api_key
+SENDGRID_SENDER_EMAIL=sender@example.com       # a verified SendGrid sender
+SENDGRID_RECEIVER_EMAIL=receiver@example.com   # where contact messages are delivered
+# Recommended: a classic GitHub token with NO scopes (public data only).
+# Raises the GitHub API limit from 60 to 5,000 requests/hour.
+GITHUB_TOKEN=your_github_token
+# Optional: comma-separated origins allowed to call the API. When unset, the
+# portfolio site, its Vercel preview URLs and localhost (3000 / 5173) are allowed.
+CORS_ORIGIN=https://portfolio-nine-orcin-33.vercel.app
 ````
 
-⚠️ **Do not commit `.env` to GitHub**
+⚠️ **Do not commit `.env` to GitHub.** On Render, set these in the service's Environment settings.
 
 ---
 
 ## Run Backend Locally
 
 ```bash
-cd server
+cd backend
 npm install
-node server.js
+npm run dev        # restarts on file changes (npm start for production)
+npm test           # 24 tests — no database, email or network needed
 ```
 
 Server will start on:
@@ -96,6 +110,13 @@ http://localhost:8080
 ---
 
 ## API Endpoints
+
+| Method | Path | What it returns |
+|---|---|---|
+| `GET` | `/health` | `{ "status": "ok", "uptime": 42 }` — calls no other service |
+| `POST` | `/api/v1/portfolio/sendEmail` | Saves and emails a contact message |
+| `GET` | `/api/v1/portfolio/github` | Public repositories with commit counts, plus `totalCommits` |
+| `GET` | `/api/v1/portfolio/leetcode` | `totalSolved`, `acceptanceRate`, `ranking`, `solvedByDifficulty` |
 
 ### Send Contact Message
 
@@ -120,6 +141,8 @@ http://localhost:8080
 }
 ```
 
+All fields are required; the email must be valid (max 150 characters), the name max 100 and the message max 5,000 characters. Limited to 5 messages per 15 minutes per visitor (`429` with `Retry-After`). A `500` is returned only if both saving and emailing fail. More detail is in the [main README](../README.md#api).
+
 ---
 
 ##  Database
@@ -140,9 +163,11 @@ CREATE TABLE contacts (
 
 ##  Security Notes
 
-* Uses environment variables for secrets
-* Prevents missing-field submissions
-* Avoids exposing credentials in source code
+* Secrets live only in environment variables; the GitHub token never reaches the browser
+* Parameterised SQL; visitor input is HTML-escaped in notification emails
+* Database connections verify the server's TLS certificate
+* Rate limiting, request size limit, spam honeypot, security headers and a CORS allow-list
+* Errors are JSON and never include stack traces
 
 ---
 
