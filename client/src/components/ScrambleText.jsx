@@ -1,13 +1,17 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useInView } from "../lib/reveal";
+import { useIsomorphicLayoutEffect } from "../lib/useIsomorphicLayoutEffect";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789<>/{}[]=+*#$%&_";
+// `immediate` text is an intro: it only plays this soon after navigation. If the page becomes
+// interactive later (slow device or network), the pre-rendered text is already readable and stays put.
+const INTRO_WINDOW_MS = 2500;
 
 /**
  * Terminal-style "decode" effect. The real text always stays in the DOM (so
  * crawlers and screen readers only ever see the real words); the animated
  * characters are painted by a CSS ::after overlay driven by a data attribute.
- *  - `immediate`: play on mount (above the fold); otherwise it plays on scroll-in
+ *  - `immediate`: play as a page-load intro (above the fold); otherwise it plays on scroll-in
  *  - `glyphs`: characters used as noise while decoding (e.g. "01")
  *  - `hoverText`: on hover, morph into this text and hold it; morph back on leave
  */
@@ -69,8 +73,8 @@ const ScrambleText = ({
 
   const run = useCallback(() => morph(text), [morph, text]);
 
-  useLayoutEffect(() => {
-    if (immediate) run();
+  useIsomorphicLayoutEffect(() => {
+    if (immediate && performance.now() < INTRO_WINDOW_MS) run();
   }, [immediate, run]);
 
   useEffect(() => {

@@ -34,7 +34,6 @@
   padding-block: clamp(0.7rem, 1.3vw, 1.1rem);
   color: var(--text);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
-  -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
   border-block: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
   transform: rotate(-2.5deg);
@@ -139,7 +138,6 @@
   top: 60%;
   padding-block: clamp(0.65rem, 1vw, 0.85rem);
   background: color-mix(in srgb, var(--bg-3) 70%, transparent);
-  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-block: 1px solid var(--line);
   transform: rotate(1.3deg);

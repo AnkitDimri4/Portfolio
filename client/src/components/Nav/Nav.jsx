@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiMoon, FiSun } from "react-icons/fi";
 import { NAV, PROFILE } from "../../data/profile";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../lib/theme";
 import "./Nav.css";
 
 const useActiveSection = (ids) => {

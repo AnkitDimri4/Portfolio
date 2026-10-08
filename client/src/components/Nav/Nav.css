@@ -9,7 +9,6 @@
 .nav.is-scrolled {
   background: color-mix(in srgb, var(--bg) 72%, transparent);
   backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
   border-bottom-color: var(--line);
 }
 .nav.is-open {

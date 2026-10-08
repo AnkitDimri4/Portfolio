@@ -29,28 +29,34 @@
   <meta name="twitter:description" content="MERN web apps, React Native mobile apps and ML-powered products. Mentor to 5,000+ developers." />
   <meta name="twitter:image" content="https://portfolio-nine-orcin-33.vercel.app/og-image.jpg" />
 
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="32x32" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/logo192.png" />
+  <link rel="manifest" href="/manifest.json" />
 
   <!-- Self-hosted fonts (SIL OFL): discovered immediately, no third-party requests -->
-  <link rel="preload" href="%PUBLIC_URL%/fonts/bricolage-grotesque-opsz96.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="%PUBLIC_URL%/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/bricolage-grotesque-opsz96.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
   <style>
-    @font-face { font-family: "Bricolage Grotesque"; src: url("%PUBLIC_URL%/fonts/bricolage-grotesque-opsz96.woff2") format("woff2"); font-weight: 500 800; font-display: swap; }
-    @font-face { font-family: "Geist"; src: url("%PUBLIC_URL%/fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
-    @font-face { font-family: "Geist Mono"; src: url("%PUBLIC_URL%/fonts/geist-mono.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
-    @font-face { font-family: "Instrument Serif"; src: url("%PUBLIC_URL%/fonts/instrument-serif-italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
+    @font-face { font-family: "Bricolage Grotesque"; src: url("/fonts/bricolage-grotesque-opsz96.woff2") format("woff2"); font-weight: 500 800; font-display: swap; }
+    @font-face { font-family: "Geist"; src: url("/fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+    @font-face { font-family: "Geist Mono"; src: url("/fonts/geist-mono.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+    @font-face { font-family: "Instrument Serif"; src: url("/fonts/instrument-serif-italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
   </style>
 
   <!-- Apply the saved theme before first paint (no flash) -->
   <script>
     try {
       var t = localStorage.getItem("theme");
-      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+      if (t === "light" || t === "dark") {
+        document.documentElement.setAttribute("data-theme", t);
+        document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "light" ? "#f3f0e8" : "#0a0a0c");
+      }
     } catch (e) {}
   </script>
+
+  <!-- Without JavaScript, show the content that otherwise fades in on scroll -->
+  <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
 
   <script type="application/ld+json">
   {
@@ -74,18 +80,8 @@
 </head>
 
 <body>
-  <noscript>
-    <main style="font-family:system-ui,sans-serif;max-width:40rem;margin:4rem auto;padding:0 1rem;line-height:1.6">
-      <h1>Ankit Dimri</h1>
-      <p>Full-stack software engineer from Dehradun, India — MERN web apps, mobile apps and ML-powered products. Technical mentor to 5,000+ developers.</p>
-      <p>
-        <a href="https://github.com/AnkitDimri4">GitHub</a> ·
-        <a href="https://www.linkedin.com/in/ankit-dimri-a6ab98263">LinkedIn</a> ·
-        <a href="https://leetcode.com/u/user4612MW/">LeetCode</a> ·
-        <a href="mailto:dimri.ankitdimri@gmail.com">dimri.ankitdimri@gmail.com</a>
-      </p>
-    </main>
-  </noscript>
-  <div id="root"></div>
+  <!-- The production build pre-renders the page into this element (scripts/prerender.js) -->
+  <div id="root"><!--app-html--></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

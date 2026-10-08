@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FiArrowUp, FiArrowUpRight, FiClock, FiFileText, FiMail, FiMapPin, FiMaximize2 } from "react-icons/fi";
 import LocalTime from "../LocalTime";
 import { NAV, PROFILE } from "../../data/profile";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../lib/theme";
 // Pre-rendered from OpenStreetMap tiles (© OpenStreetMap contributors), centred on Dehradun
 import mapDark from "../../assets/img/map-dehradun-dark.webp";
 import mapLight from "../../assets/img/map-dehradun-light.webp";
@@ -61,7 +61,9 @@ const Footer = () => {
           <p className="footer-muted">
             <FiMapPin aria-hidden="true" /> {PROFILE.location}
           </p>
-          <button type="button" className="footer-map" onClick={() => setMapOpen(true)} aria-label="Open full-screen map of Dehradun, India">
+          <button type="button" className="footer-map" onClick={() => setMapOpen(true)}>
+            {/* Named by its content (not aria-label) so the visible map credit is part of the name. */}
+            <span className="sr-only">Open full-screen map of Dehradun, India</span>
             <img src={theme === "light" ? mapLight : mapDark} alt="" width="720" height="400" loading="lazy" decoding="async" />
             <span className="map-pin" aria-hidden="true" />
             <span className="map-coords" aria-hidden="true">
@@ -81,7 +83,8 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} Ankit Dimri. All rights reserved.</p>
+        {/* The page is pre-rendered at build time; the browser corrects the year if it has changed since. */}
+        <p suppressHydrationWarning>{`© ${new Date().getFullYear()} Ankit Dimri. All rights reserved.`}</p>
         <p>Designed &amp; built by Ankit Dimri with React &amp; Node.js.</p>
       </div>
     </div>

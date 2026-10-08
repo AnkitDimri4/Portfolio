@@ -88,17 +88,35 @@ Lighthouse on the production build, before → after the redesign:
 | Total page weight | 1,918 kB · 50 requests | **~250 kB · 15 requests** |
 | Largest Contentful Paint (mobile) | 6.4 s | **~2.9 s** |
 
+### Build tooling: Create React App → Vite with pre-rendering
+
+Same page and same machine, production builds served locally with compression. Lighthouse lab numbers vary from run to run on a laptop, so ranges across runs are shown.
+
+| | CRA build | Vite build, pre-rendered |
+|---|---|---|
+| First HTML response | 2 kB, an empty `<div id="root">` | 22 kB gzipped, the full page |
+| Content without JavaScript | none | **full page, painted in ~0.45 s** |
+| Total Blocking Time, mobile | 120 – 1,450 ms | **140 – 170 ms** |
+| Lighthouse Performance, mobile | 67 – 96 | **91** |
+| Lighthouse Performance, desktop | 99 – 100 | 98 – 99 |
+| Cumulative Layout Shift | 0.001 | **0** |
+| Failing accessibility audits | 1 | **0** |
+| Production build | ~60 s | **~1 s** |
+| Installed dev dependencies | ~1,500 packages | **~200 packages** |
+
+Lighthouse's simulated mobile First Contentful Paint reads later (0.8 s → 1.7 s). That is an effect of the first navigation in a cold browser: in a warm browser the two builds paint the same hero text within about 0.15 s of each other (0.44 s vs 0.58 s), and the pre-rendered page shows its content even where JavaScript is slow, blocked or off.
+
 ---
 
 ## Tech Stack
 
 | Frontend | Backend | Tooling &amp; hosting |
 |---|---|---|
-| React 18 (Create React App) | Node.js + Express | Vercel (frontend) |
+| React 18 + Vite, pre-rendered to static HTML | Node.js + Express | Vercel (frontend) |
 | Hand-built CSS design system | PostgreSQL (Neon) via `pg` | Render (API) |
 | CSS scroll-driven animations | SendGrid (email notifications) | GitHub &amp; LeetCode APIs |
 | Canvas 2D (hero network) | In-memory caching &amp; rate limiting | Self-hosted fonts, WebP images |
-| react-icons | dotenv, cors | Jest + Testing Library, `node:test` |
+| react-icons | dotenv, cors | Vitest + Testing Library, ESLint, `node:test` |
 | | | GitHub Actions (CI on every push &amp; PR) |
 
 ---
@@ -108,13 +126,14 @@ Lighthouse on the production build, before → after the redesign:
 ```
 Portfolio/
 ├── client/                      # React frontend (Vercel root directory)
-│   ├── public/                  # index.html (SEO/meta), fonts, icons, og-image, sitemap, robots
+│   ├── index.html               # SEO/meta, font loading, theme script; the app is pre-rendered into it
+│   ├── public/                  # fonts, icons, og-image, sitemap, robots
+│   ├── scripts/prerender.js     # renders the app to static HTML after `vite build`
 │   ├── src/
 │   │   ├── sections/            # Hero, About, Work, Journey, Stack, Certificates, Contact
 │   │   ├── components/          # Nav, Footer (+ map dialog), CodeCard, Marquee, NeuralField, ScrambleText…
 │   │   ├── data/profile.js      # ← all site content: profile, projects, journey, certificates
-│   │   ├── lib/                 # API client (shared fetch cache), scroll-reveal helpers
-│   │   ├── context/             # ThemeContext (dark / light, persisted)
+│   │   ├── lib/                 # API client (shared cache, retries), theme, scroll-reveal helpers
 │   │   ├── styles/              # global design tokens, scroll "unfold" animations
 │   │   └── assets/              # resume PDF, optimised WebP images, certificates
 │   ├── vercel.json              # security & caching headers
@@ -191,8 +210,11 @@ To use the local API during development, create `client/.env.development.local` 
 
 ```bash
 npm test                  # client tests (in client/) or API tests (in backend/)
-CI=true npm run build     # production build — warnings fail the build, same as Vercel
+npm run lint              # client lint — any warning fails CI
+npm run build             # client production build + pre-rendering (output in client/build)
 ```
+
+The client build pre-renders the page to static HTML (`client/scripts/prerender.js`), so content appears before JavaScript loads and search engines see the full page; React then hydrates it. Node.js 22.13+ is recommended.
 
 The backend tests use Node's built-in test runner and never touch the database, SendGrid, GitHub or LeetCode (network calls are mocked). GitHub Actions runs both test suites and the production build on every push to `main` and on every pull request.
 
@@ -205,7 +227,7 @@ The backend tests use Node's built-in test runner and never touch the database, 
 - Set the backend environment variables above (including `GITHUB_TOKEN`; `CORS_ORIGIN` only if you use other domains).
 
 **Frontend → Vercel**
-- Root directory: `client` · Framework preset: Create React App
+- Root directory: `client` · Framework, build command and output directory come from `client/vercel.json` (Vite, `npm run build`, `build`)
 - Environment variable: `REACT_APP_BACKEND_URL` = your Render URL
 - `client/vercel.json` adds security headers (anti-clickjacking, `nosniff`, referrer &amp; permissions policies) and long-term caching for hashed assets.
 

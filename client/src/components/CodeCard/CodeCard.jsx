@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiCheckCircle, FiGitBranch, FiGitCommit } from "react-icons/fi";
 import { SiNodedotjs, SiPython, SiReact, SiTypescript } from "../brandIcons";
 import { useApi } from "../../lib/api";
+import { useIsomorphicLayoutEffect } from "../../lib/useIsomorphicLayoutEffect";
 import "./CodeCard.css";
 
 const SOURCE = `const engineer = {
@@ -40,9 +41,16 @@ const CodeCard = () => {
   const cardRef = useRef(null);
   const gh = useApi("/api/v1/portfolio/github");
   const commits = gh.data?.totalCommits;
-  const reduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const [typed, setTyped] = useState(reduced ? TOTAL : 0);
+  // Known only in the browser; the pre-rendered HTML starts with an empty editor either way.
+  const [reduced, setReduced] = useState(false);
+  const [typed, setTyped] = useState(0);
   const done = typed >= TOTAL;
+
+  useIsomorphicLayoutEffect(() => {
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setReduced(true);
+    setTyped(TOTAL);
+  }, []);
 
   useEffect(() => {
     if (reduced) return;
