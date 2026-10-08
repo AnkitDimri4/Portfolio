@@ -88,6 +88,24 @@ Lighthouse on the production build, before → after the redesign:
 | Total page weight | 1,918 kB · 50 requests | **~250 kB · 15 requests** |
 | Largest Contentful Paint (mobile) | 6.4 s | **~2.9 s** |
 
+### Build tooling: Create React App → Vite with pre-rendering
+
+Same page and same machine, production builds served locally with compression. Lighthouse lab numbers vary from run to run on a laptop, so ranges across runs are shown.
+
+| | CRA build | Vite build, pre-rendered |
+|---|---|---|
+| First HTML response | 2 kB, an empty `<div id="root">` | 22 kB gzipped, the full page |
+| Content without JavaScript | none | **full page, painted in ~0.45 s** |
+| Total Blocking Time, mobile | 120 – 1,450 ms | **140 – 170 ms** |
+| Lighthouse Performance, mobile | 67 – 96 | **91** |
+| Lighthouse Performance, desktop | 99 – 100 | 98 – 99 |
+| Cumulative Layout Shift | 0.001 | **0** |
+| Failing accessibility audits | 1 | **0** |
+| Production build | ~60 s | **~1 s** |
+| Installed dev dependencies | ~1,500 packages | **~200 packages** |
+
+Lighthouse's simulated mobile First Contentful Paint reads later (0.8 s → 1.7 s). That is an effect of the first navigation in a cold browser: in a warm browser the two builds paint the same hero text within about 0.15 s of each other (0.44 s vs 0.58 s), and the pre-rendered page shows its content even where JavaScript is slow, blocked or off.
+
 ---
 
 ## Tech Stack
