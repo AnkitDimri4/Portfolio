@@ -9,6 +9,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-Express-3C873A?logo=nodedotjs&logoColor=white)](https://expressjs.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql&logoColor=white)](https://neon.tech)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-96%20mobile%20·%20100%20desktop-ff6b35)](#performance)
+[![License: All rights reserved](https://img.shields.io/badge/License-All_rights_reserved-lightgrey)](LICENSE)
 
 ### [🌐 portfolio-nine-orcin-33.vercel.app](https://portfolio-nine-orcin-33.vercel.app/)
 
@@ -20,7 +21,7 @@
 
 </div>
 
-> **This is the public part of my portfolio's code**, copied here from my private repository after every change. The resume builder, the call scheduler, sign-in and the admin view stay private, so this copy is for reading: it doesn't build on its own, and it carries no licence.
+> **This is the public part of my portfolio's code**, copied here from my private repository after every change. The resume builder, the call scheduler, sign-in and the admin view stay private, so this copy is for reading: it doesn't build on its own, and all rights are reserved ([LICENSE](LICENSE)).
 
 ---
 

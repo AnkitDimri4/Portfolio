@@ -10,7 +10,7 @@
     "google:auth": "node scripts/google-auth.js"
   },
   "author": "ANKIT DIMRI",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
