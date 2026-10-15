@@ -2,6 +2,11 @@
 
 The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at build time and served by **Vercel**. Live at [portfolio-nine-orcin-33.vercel.app](https://portfolio-nine-orcin-33.vercel.app/).
 
+[![React 18](https://img.shields.io/badge/React-18-149ECA?logo=react&logoColor=white)](https://react.dev)
+[![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![Hosted on Vercel](https://img.shields.io/badge/Hosted_on-Vercel-000000?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDIgMjMgMjFIMXoiLz48L3N2Zz4=)](https://vercel.com)
+[![Lighthouse: 96 on mobile, 100 on desktop](https://img.shields.io/badge/Lighthouse-96_mobile_%C2%B7_100_desktop-F44B21?logo=lighthouse&logoColor=white)](https://portfolio-nine-orcin-33.vercel.app/)
+
 > This folder is the public part of the site's code. The resume builder (its pages, templates and PDF function) and the call scheduler are private, so it doesn't build on its own: it's here to read.
 
 ## Contents
@@ -82,4 +87,9 @@ Vitest with Testing Library, in jsdom. In this folder:
 
 ## Built with
 
-React 18 · Vite · react-icons · Vitest · Testing Library · ESLint · Vercel
+| Area | Built with |
+|---|---|
+| **Framework** | [![React 18](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev) [![Vite 8](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev) |
+| **Language and styles** | [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript) [![CSS](https://img.shields.io/badge/CSS-663399?style=for-the-badge&logo=css&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS) [![react-icons 5](https://img.shields.io/badge/react--icons_5-E91E63?style=for-the-badge&logo=react&logoColor=white)](https://react-icons.github.io/react-icons/) |
+| **Tests and lint** | [![Vitest 5](https://img.shields.io/badge/Vitest_5-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev) [![Testing Library](https://img.shields.io/badge/Testing_Library-E33332?style=for-the-badge&logo=testinglibrary&logoColor=white)](https://testing-library.com) [![ESLint 10](https://img.shields.io/badge/ESLint_10-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)](https://eslint.org) |
+| **Hosting** | [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDIgMjMgMjFIMXoiLz48L3N2Zz4=)](https://vercel.com) |

@@ -2,6 +2,11 @@
 
 The public parts of the portfolio's API: **Node.js + Express** on **Render**, with **PostgreSQL** on **Neon**. It's what the site's contact form and live stats talk to.
 
+[![Node.js 22](https://img.shields.io/badge/Node.js-22-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Express 4](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)](https://expressjs.com)
+[![PostgreSQL on Neon](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white)](https://neon.tech)
+[![Hosted on Render](https://img.shields.io/badge/Hosted_on-Render-46E3B7?logo=render&logoColor=black)](https://render.com)
+
 > The API also serves the resume builder, sign-in, the call scheduler and the admin view. Their code, and the routes file that wires everything up, are private, so this folder doesn't run on its own: it's here to read.
 
 ## Contents
@@ -92,4 +97,11 @@ From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptanc
 
 ## Built with
 
-Node.js · Express · pg · dotenv · cors · Resend · Render · Neon
+| Area | Built with |
+|---|---|
+| **Runtime** | [![Node.js 22](https://img.shields.io/badge/Node.js_22-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org) [![Express 4](https://img.shields.io/badge/Express_4-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com) [![dotenv 16](https://img.shields.io/badge/dotenv_16-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black)](https://github.com/motdotla/dotenv) |
+| **Data** | [![PostgreSQL (pg 8)](https://img.shields.io/badge/PostgreSQL_(pg_8)-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://node-postgres.com) [![Neon](https://img.shields.io/badge/Neon-00E599?style=for-the-badge&logo=neon&logoColor=black)](https://neon.tech) |
+| **Email** | [![Resend](https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white)](https://resend.com) |
+| **Stats from** | [![GitHub REST API](https://img.shields.io/badge/GitHub_REST_API-181717?style=for-the-badge&logo=github&logoColor=white)](https://docs.github.com/rest) [![LeetCode GraphQL](https://img.shields.io/badge/LeetCode_GraphQL-FFA116?style=for-the-badge&logo=leetcode&logoColor=black)](https://leetcode.com) |
+| **Hosting** | [![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://render.com) |
+| **Tests** | [![node:test](https://img.shields.io/badge/node%3Atest-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/api/test.html) |
