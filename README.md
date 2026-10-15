@@ -193,6 +193,8 @@ Portfolio/
 └── docs/                        # this README's screenshots, and the previous design's recording
 ```
 
+More on each part: [client/README.md](client/README.md) and [backend/README.md](backend/README.md).
+
 **Private, not in this copy:** the resume builder (with sign-in, My resumes and the admin view), its templates and PDF function, Schedule a call, the API's routes, and the docs.
 
 ---
