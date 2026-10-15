@@ -1,0 +1,66 @@
+.cgraph {
+  display: grid;
+  gap: 0.75rem;
+  width: min(100%, 34rem);
+}
+.cgraph-title {
+  color: var(--muted);
+}
+.cgraph-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.cgraph-svg text {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  fill: var(--faint);
+}
+/* Shades of the second accent, from an empty square to full colour */
+.cg-l0 {
+  fill: color-mix(in srgb, var(--text) 7%, transparent);
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+.cg-l1 {
+  fill: color-mix(in srgb, var(--accent-2) 28%, transparent);
+  background: color-mix(in srgb, var(--accent-2) 28%, transparent);
+}
+.cg-l2 {
+  fill: color-mix(in srgb, var(--accent-2) 52%, transparent);
+  background: color-mix(in srgb, var(--accent-2) 52%, transparent);
+}
+.cg-l3 {
+  fill: color-mix(in srgb, var(--accent-2) 76%, transparent);
+  background: color-mix(in srgb, var(--accent-2) 76%, transparent);
+}
+.cg-l4 {
+  fill: var(--accent-2);
+  background: var(--accent-2);
+}
+.cgraph-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.66rem;
+}
+.cgraph-foot b {
+  color: var(--text);
+  font-weight: 500;
+}
+.cgraph-scale {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.cgraph-scale i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+.cgraph-dates {
+  font-size: 0.62rem;
+  color: var(--faint);
+}

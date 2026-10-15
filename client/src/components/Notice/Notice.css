@@ -1,0 +1,22 @@
+/* The site's notice: a line across the top of the resume builder's pages, under the top bar. */
+.site-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem var(--gutter);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.site-notice > svg {
+  flex: none;
+  margin-top: 0.22em;
+  color: var(--accent-ink);
+}
+.site-notice p {
+  margin: 0;
+  max-width: 80ch;
+  overflow-wrap: anywhere;
+}

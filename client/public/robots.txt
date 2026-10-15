@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+# The resume builder's PDF links are private (the admin page says noindex itself).
+Disallow: /api/
+
+Sitemap: https://portfolio-nine-orcin-33.vercel.app/sitemap.xml

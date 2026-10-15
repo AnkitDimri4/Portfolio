@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brain map · Ankit Dimri</title>
+<meta name="description" content="What Ankit Dimri has built, mapped: 1,299 GitHub contributions at FileSure, mobile apps, company search for 3.8M companies, AWS to GCP, web and APIs, and mentoring 25,000+ learners.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  @font-face { font-family: "Geist"; src: url("/fonts/geist.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+  :root, :root[data-theme="light"] {
+    --bg: #ffffff; --dots: rgba(31, 35, 40, .09); --glow: rgba(77, 99, 120, .10);
+    --card: #f6f8fa; --border: #d0d7de; --title: #1f2328; --text: #59636e; --strong: #1f2328;
+    --accent: #4d6378; color-scheme: light;
+    --l0: #e6e9ed; --l1: #9be9a8; --l2: #40c463; --l3: #30a14e; --l4: #216e39;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1117; --dots: rgba(240, 246, 252, .07); --glow: rgba(125, 154, 181, .14);
+    --card: #161b22; --border: #30363d; --title: #e6edf3; --text: #9198a1; --strong: #e6edf3;
+    --accent: #7d9ab5; color-scheme: dark;
+    --l0: #21262d; --l1: #0e4429; --l2: #006d32; --l3: #26a641; --l4: #39d353;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; font-family: "Geist", -apple-system, "Segoe UI", sans-serif; color: var(--text);
+    background: radial-gradient(var(--dots) 1.1px, transparent 1.3px) 0 0 / 22px 22px, var(--bg);
+    transition: background-color .25s, color .25s;
+  }
+  a { color: inherit; }
+
+  header {
+    max-width: 1200px; margin: 0 auto; padding: 20px 24px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand { font-weight: 700; color: var(--title); text-decoration: none; }
+  nav { display: flex; align-items: center; gap: 14px; font-size: 14px; }
+  nav a { text-decoration: none; }
+  nav a:hover { color: var(--title); }
+  /* Light | Dark: a two-way switch with line icons; the current theme is the raised half */
+  .theme-switch {
+    display: inline-flex; align-items: center; gap: 2px; padding: 3px;
+    border: 1px solid var(--border); border-radius: 999px; background: var(--card);
+  }
+  .theme-switch button {
+    font: inherit; font-size: 13px; font-weight: 500; line-height: 1; color: var(--text); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px;
+    border: 1px solid transparent; border-radius: 999px; background: none;
+    transition: color .2s, background-color .2s, border-color .2s, box-shadow .2s;
+  }
+  .theme-switch svg { width: 15px; height: 15px; flex: none; }
+  .theme-switch button:hover { color: var(--title); }
+  .theme-switch button[aria-pressed="true"] {
+    color: var(--title); background: var(--bg); border-color: var(--border); cursor: default;
+    box-shadow: 0 1px 2px rgba(31, 35, 40, .1);
+  }
+  .theme-switch button[aria-pressed="true"] svg { color: var(--accent); }
+  /* Phones: the name and the theme switch on the first row, then the links. The "Portfolio" link
+     hides there: the name already links to the portfolio. */
+  @media (max-width: 640px) {
+    header { position: relative; flex-wrap: wrap; row-gap: 20px; padding: 16px 16px 0; }
+    nav { width: 100%; flex-wrap: wrap; row-gap: 10px; gap: 12px; font-size: 13.5px; }
+    nav > a[href="/"] { display: none; }
+    #book { padding: 7px 12px; font-size: 13px; }
+    .theme-switch { position: absolute; top: 10px; right: 16px; }
+    .theme-switch .tl { display: none; }
+    .theme-switch button { padding: 6px 8px; }
+  }
+  #book {
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 999px;
+    border: 1px solid var(--accent); background: var(--accent); color: var(--bg);
+  }
+  #book svg { width: 15px; height: 15px; }
+  #book:hover { filter: brightness(1.08); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .intro { max-width: 1200px; margin: 28px auto 0; padding: 0 24px; }
+  .intro h1 { font-size: 28px; color: var(--title); letter-spacing: -.02em; }
+  .intro p { margin-top: 6px; }
+
+  .map {
+    position: relative; max-width: 1200px; margin: 0 auto; padding: 36px 24px 56px;
+    display: grid; grid-template-columns: 1fr 260px 1fr; gap: 44px 72px; align-items: start;
+  }
+  .map::before {
+    content: ""; position: absolute; left: 50%; top: 40%; width: 640px; height: 480px; transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, var(--glow), transparent); pointer-events: none;
+  }
+  #wires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  #wires .base { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .55; transition: opacity .2s, stroke-width .2s; }
+  #wires .flow { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 3 15; animation: flow 1.6s linear infinite; }
+  #wires circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+  #wires .on .base { opacity: 1; stroke-width: 3; }
+  @keyframes flow { to { stroke-dashoffset: -36; } }
+
+  .core {
+    grid-column: 2; grid-row: 2 / span 3; align-self: center; justify-self: center; position: relative;
+    width: 228px; height: 228px; border-radius: 50%; border: 2px solid var(--accent); background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .core canvas { width: 118px; height: 83px; }
+  .core strong { margin-top: 8px; font-size: 19px; color: var(--title); }
+  .core span { font-size: 13px; }
+
+  .card {
+    position: relative; width: 100%; max-width: 380px; padding: 14px 18px 16px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card.on { border-color: var(--accent); transform: translateY(-2px); }
+  .card.l { grid-column: 1; justify-self: end; }
+  .card.r { grid-column: 3; justify-self: start; }
+  .card.t, .card.b { grid-column: 1 / -1; justify-self: center; }
+  .card.t { max-width: 420px; }
+  .card h2 { display: flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 650; color: var(--title); }
+  .card h2 svg { width: 20px; height: 20px; flex: none; color: var(--accent); }
+  .card ul { list-style: none; margin-top: 9px; display: grid; gap: 5px; }
+  .card li { position: relative; padding-left: 15px; font-size: 14px; line-height: 1.45; }
+  .card li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .card b { color: var(--strong); font-weight: 650; }
+  .heat { display: block; width: 100%; height: auto; margin-top: 14px; }
+  .heat text { font-size: 8px; fill: var(--text); }
+  .heat rect { stroke: color-mix(in srgb, var(--title) 6%, transparent); stroke-width: .5; }
+  .heat .l0 { fill: var(--l0); } .heat .l1 { fill: var(--l1); } .heat .l2 { fill: var(--l2); }
+  .heat .l3 { fill: var(--l3); } .heat .l4 { fill: var(--l4); }
+  .when { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 8px; font-size: 12px; }
+  .scale { display: inline-flex; align-items: center; gap: 3px; }
+  .scale i { width: 9px; height: 9px; border-radius: 2px; }
+
+  footer { max-width: 1200px; margin: 0 auto; padding: 0 24px 40px; font-size: 13px; }
+
+  /* Live numbers (Side projects), from my portfolio's GitHub and LeetCode stats */
+  .card li.live { color: var(--title); }
+  .card li.live::before { background: #3fb950; box-shadow: 0 0 0 3px rgba(63, 185, 80, .2); }
+
+  /* The capture view (?capture=light|dark): just the map, still, at a fixed width */
+  :root[data-capture] body { width: 1200px; min-height: 0; }
+  :root[data-capture] header, :root[data-capture] .intro, :root[data-capture] .howto, :root[data-capture] footer,
+  :root[data-capture] .focus, :root[data-capture] #tourbar, :root[data-capture] #toast, :root[data-capture] #ghost,
+  :root[data-capture] .more, :root[data-capture] #wires .flow { display: none !important; }
+  :root[data-capture] .map { padding: 32px 24px 36px; }
+  :root[data-capture] *, :root[data-capture] *::before, :root[data-capture] *::after { animation: none !important; transition: none !important; }
+
+  /* How to use, under the title; hidden once dismissed, and back from the header link */
+  .howto { max-width: 1200px; margin: 16px auto 0; padding: 0 24px; }
+  .howto-box {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+    padding: 12px 14px 12px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--card);
+  }
+  .howto ol { list-style: none; flex: 1; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; }
+  .howto li { display: inline-flex; align-items: center; gap: 8px; }
+  .howto li b {
+    display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: var(--bg); font-size: 12px;
+  }
+  /* Below the branch width the details open on their own screen, so the tips step aside. */
+  @media (max-width: 1139px) { body.touring .howto { display: none; } }
+  #tour {
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--bg);
+  }
+  #tour:hover { filter: brightness(1.08); }
+  .howto-x { border: 0; background: none; color: var(--text); font-size: 20px; line-height: 1; cursor: pointer; padding: 4px 6px; }
+  .howto-x:hover { color: var(--title); }
+  #howto-show { font: inherit; font-size: 14px; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  #howto-show:hover { color: var(--title); }
+  :root[data-tips="hidden"] #howto, :root:not([data-tips="hidden"]) #howto-show { display: none; }
+
+  /* The tour bar: always in reach while a card is open */
+  #tourbar {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 10;
+    display: grid; gap: 4px; width: min(640px, calc(100vw - 24px)); padding: 10px 8px 8px; overflow: hidden;
+    border: 1px solid var(--border); border-radius: 16px; font-size: 14px;
+    background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(8px);
+    box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .5); animation: fade .3s both;
+  }
+  #tourbar .caption { margin: 0 8px; line-height: 1.45; color: var(--title); }
+  #tourbar .controls { display: flex; align-items: center; gap: 2px; }
+  #tourbar .progress { position: absolute; left: 0; bottom: 0; width: 0; height: 3px; background: var(--accent); }
+  #tourbar .progress.run { animation: progress linear forwards; }
+  @keyframes progress { to { width: 100%; } }
+
+  /* The tour's pointer: glides to a card's "Open details" and clicks it */
+  #ghost {
+    position: fixed; left: 0; top: 0; z-index: 30; pointer-events: none; opacity: 0;
+    transition: transform .75s cubic-bezier(.2, .7, .1, 1), opacity .2s;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35));
+  }
+  #ghost.show { opacity: 1; }
+  #ghost svg { display: block; transition: transform .15s; }
+  #ghost.click svg { transform: scale(.85); }
+  #ghost::after {
+    content: ""; position: absolute; left: -9px; top: -10px; width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid var(--accent); opacity: 0;
+  }
+  #ghost.click::after { animation: ripple .45s ease-out; }
+  @keyframes ripple { from { opacity: .9; transform: scale(.4); } to { opacity: 0; transform: scale(1.7); } }
+  #toast a {
+    font-weight: 650; color: var(--accent); text-decoration: underline; text-underline-offset: 3px;
+  }
+  #toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 10; margin: 0;
+    max-width: calc(100vw - 24px); padding: 10px 18px; border-radius: 999px; text-align: center;
+    border: 1px solid var(--border); background: var(--card); color: var(--title); font-size: 14px;
+    box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .5); animation: fade .3s both;
+  }
+  #tourbar button { font: inherit; color: var(--title); cursor: pointer; border: 0; background: none; padding: 8px 12px; border-radius: 999px; white-space: nowrap; }
+  #tourbar button:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+  #tourbar .where { flex: 1; min-width: 0; padding: 0 6px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #tourbar .where b { color: var(--title); }
+  body.touring { padding-bottom: 140px; }
+
+  /* Every card opens its details */
+  .map .card[data-id] { cursor: pointer; }
+  .more {
+    margin-top: 12px; padding: 0; border: 0; background: none; cursor: pointer;
+    font: inherit; font-size: 13px; font-weight: 600; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .more span { transition: transform .2s; }
+  .card:hover .more span, .more:focus-visible span { transform: translateX(3px); }
+
+  /* Details: the card in the middle, its sub-cards around it */
+  [hidden] { display: none !important; }
+  .focus { max-width: 1200px; margin: 0 auto; padding: 8px 24px 56px; }
+  .focus-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0 8px; }
+  #back {
+    font: inherit; font-size: 14px; color: var(--title); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--card);
+  }
+  #back:hover { border-color: var(--accent); }
+  .focus-bar .esc { font-size: 13px; }
+  .fmap { position: relative; display: grid; grid-template-columns: 1fr minmax(280px, 380px) 1fr; gap: 28px 64px; align-items: start; padding-top: 24px; }
+  #fwires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  #fwires path { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .6; }
+  #fwires circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+  .fcenter {
+    grid-column: 2; align-self: center; justify-self: center; position: relative; z-index: 1;
+    border: 2px solid var(--accent); box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .fcenter .more { display: none; }
+  .fsub { position: relative; z-index: 1; max-width: 340px; padding: 12px 16px 14px; }
+  .fsub.l { grid-column: 1; justify-self: end; }
+  .fsub.r { grid-column: 3; justify-self: start; }
+  .fsub.b { grid-column: 1 / -1; justify-self: center; }
+  .fsub h3 { font-size: 15px; font-weight: 650; color: var(--title); }
+  .fsub .when { display: block; margin-top: 2px; font-size: 12px; }
+  .fsub p { margin-top: 6px; font-size: 13.5px; line-height: 1.5; }
+  .fsub ul { margin-top: 8px; gap: 4px; }
+  .fsub:has(.skills-toggle) { cursor: pointer; }
+  .skills-toggle {
+    margin-top: 9px; padding: 0; border: 0; background: none; cursor: pointer;
+    font: inherit; font-size: 12px; font-weight: 600; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .skills-toggle span { display: inline-block; transition: transform .2s; }
+  .fsub:not(.bsub) .skills-toggle[aria-expanded="true"] span { transform: rotate(180deg); }
+  .bsub .skills-toggle span { transform: rotate(-90deg); }
+  .bsub.out-left .skills-toggle span { transform: rotate(90deg); }
+  .card ul.skills {
+    display: grid; justify-items: start; gap: 6px; margin: 8px 0 0 7px; padding-left: 14px;
+    border-left: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .card ul.skills li {
+    padding: 2px 9px; font-size: 11.5px; line-height: 1.5; color: var(--title);
+    border: 1px solid var(--border); border-radius: 999px; background: var(--bg);
+  }
+  .card ul.skills li::before {
+    left: -15px; top: calc(50% - 1px); width: 13px; height: 2px; border-radius: 0; opacity: 1;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .bskill {
+    position: absolute; z-index: 2; padding: 4px 11px; border-radius: 999px; white-space: nowrap;
+    border: 1px solid var(--accent); background: var(--card); color: var(--title); font-size: 12.5px; font-weight: 500;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 8%, transparent);
+    animation: pop .4s cubic-bezier(.2, .7, .1, 1) both; animation-delay: calc(var(--i, 0) * 45ms);
+  }
+  .fsub.skills-open { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .fsub li { font-size: 13px; }
+
+  /* Branch (wide screens): the sub-cards open beside the card; the map slides to fit them */
+  html, body { overflow-x: clip; }
+  .map { transition: transform .5s cubic-bezier(.2, .7, .1, 1); }
+  .map > .card, .map > .core { transition: opacity .3s, border-color .2s, transform .2s; }
+  .map.branching > .card:not(.open):not(.bsub), .map.branching > .core { opacity: .3; }
+  .map.branching #wires g:not(.on) { opacity: .25; }
+  .map .card.open { z-index: 2; border-color: var(--accent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 10%, transparent); }
+  .bsub { position: absolute; width: 270px; max-width: none; z-index: 2; }
+  #bwires { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; z-index: 1; animation: fade .5s .1s both; }
+  #bwires path { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .75; }
+  #bwires circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+  .fsub .links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 13px; font-weight: 600; }
+  .fsub .links a { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); text-decoration: none; }
+  .fsub .links a svg { width: 14px; height: 14px; flex: none; }
+  .fsub .links a:hover { text-decoration: underline; }
+  .bars { display: flex; align-items: flex-end; gap: 6px; height: 64px; margin-top: 10px; }
+  .bars span { flex: 1; display: grid; justify-items: center; gap: 4px; font-size: 10px; }
+  .bars i { width: 100%; border-radius: 3px 3px 0 0; background: var(--l3); min-height: 2px; }
+  .fcard { animation: pop .45s cubic-bezier(.2, .7, .1, 1) both; animation-delay: calc(var(--i, 0) * 55ms); }
+  #fwires { animation: fade .5s .15s both; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+  @keyframes fade { from { opacity: 0; } }
+
+  @media (max-width: 900px) {
+    .map { grid-template-columns: 1fr; gap: 18px; padding-top: 24px; }
+    .map::before, #wires { display: none; }
+    /* One column in page order, logo first; the inline grid rows are for the wide layout only. */
+    .map > .core, .map > .card { grid-column: 1; grid-row: auto !important; justify-self: center; }
+    .fmap { grid-template-columns: 1fr; gap: 14px; }
+    .fmap > .card { grid-column: 1 !important; grid-row: auto !important; justify-self: center; width: 100%; }
+    #fwires { display: none; }
+    .focus-bar .esc { display: none; }
+    #tourbar .tl { display: none; }
+    .howto ol { flex-basis: 100%; flex-direction: column; }
+    .core { margin-bottom: 8px; }
+    .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #wires .flow { display: none; }
+    .fcard, #fwires, #bwires, #tourbar, #toast, .bskill { animation: none; }
+    #ghost { display: none; }
+    .map, .map > .card, .map > .core { transition: none; }
+    .card, body { transition: none; }
+  }
+</style>
+<script>
+  // Pick the theme before first paint: saved choice, else the device setting.
+  // ?capture=light|dark is the view the GitHub profile's picture is taken from: just the map.
+  (function () {
+    var capture = /[?&]capture=(light|dark)\b/.exec(location.search);
+    if (capture) {
+      document.documentElement.setAttribute("data-theme", capture[1]);
+      document.documentElement.setAttribute("data-capture", "");
+      return;
+    }
+    var saved = null;
+    try { saved = localStorage.getItem("brain-map-theme"); } catch (e) {}
+    var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    try { if (localStorage.getItem("brain-map-tips") === "hidden") document.documentElement.setAttribute("data-tips", "hidden"); } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/">Ankit Dimri</a>
+    <nav>
+      <a href="/">Portfolio</a>
+      <a href="https://github.com/AnkitDimri4">GitHub</a>
+      <a href="/resume-builder/">Resume builder</a>
+      <button id="howto-show" type="button">How to use</button>
+      <a id="book" hidden><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>Schedule a call</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg><span class="tl">Light</span></button>
+        <button type="button" data-theme-set="dark" aria-pressed="false" aria-label="Dark"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><span class="tl">Dark</span></button>
+      </div>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h1>Brain map</h1>
+    <p>What I've built, mapped.<span class="hint"> Hover a card to trace its line back to the core.</span></p>
+  </section>
+
+  <section class="howto" id="howto" aria-label="How to use this map">
+    <div class="howto-box">
+      <ol>
+        <li><b>1</b> Click any card, or start the tour</li>
+        <li><b>2</b> Inside a card, tap a part to see the skills it used</li>
+        <li><b>3</b> Pause or step with ‹ ›; × or Esc closes</li>
+      </ol>
+      <button id="tour" type="button">Start the tour <span aria-hidden="true">→</span></button>
+      <button class="howto-x" id="howto-hide" type="button" aria-label="Hide these tips">×</button>
+    </div>
+  </section>
+
+  <main class="map">
+    <svg id="wires" aria-hidden="true"></svg>
+
+    <div class="core">
+      <canvas id="logo" width="213" height="149" role="img" aria-label="Ankit Dimri's brain-and-circuit logo"></canvas>
+      <strong>Ankit Dimri</strong>
+      <span>Software Engineer</span>
+    </div>
+
+    <article class="card t" style="grid-row: 1" data-to="bottom" data-id="activity">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="3" x2="9" y1="12" y2="12"/><line x1="15" x2="21" y1="12" y2="12"/></svg>GitHub activity at FileSure</h2>
+      <ul>
+        <li><b>1,299</b> contributions in <b>83</b> active days</li>
+        <li>Busiest day <b>77</b> · mirrored to my <a href="https://github.com/AnkitDimri4">main graph</a></li>
+      </ul>
+      <svg class="heat" viewBox="0 0 319.5 92" role="img" aria-label="Contribution graph: 1,299 contributions between 25 April and 31 October 2026"><text x="0" y="9">Apr</text><text x="23" y="9">May</text><text x="80.5" y="9">Jun</text><text x="126.5" y="9">Jul</text><text x="172.5" y="9">Aug</text><text x="230" y="9">Sep</text><text x="276" y="9">Oct</text><rect class="l0" x="0" y="14" width="9" height="9" rx="2"><title>19 Apr: 0 contributions</title></rect><rect class="l0" x="0" y="25.5" width="9" height="9" rx="2"><title>20 Apr: 0 contributions</title></rect><rect class="l0" x="0" y="37" width="9" height="9" rx="2"><title>21 Apr: 0 contributions</title></rect><rect class="l0" x="0" y="48.5" width="9" height="9" rx="2"><title>22 Apr: 0 contributions</title></rect><rect class="l0" x="0" y="60" width="9" height="9" rx="2"><title>23 Apr: 0 contributions</title></rect><rect class="l0" x="0" y="71.5" width="9" height="9" rx="2"><title>24 Apr: 0 contributions</title></rect><rect class="l1" x="0" y="83" width="9" height="9" rx="2"><title>25 Apr: 2 contributions</title></rect><rect class="l0" x="11.5" y="14" width="9" height="9" rx="2"><title>26 Apr: 0 contributions</title></rect><rect class="l0" x="11.5" y="25.5" width="9" height="9" rx="2"><title>27 Apr: 0 contributions</title></rect><rect class="l0" x="11.5" y="37" width="9" height="9" rx="2"><title>28 Apr: 0 contributions</title></rect><rect class="l0" x="11.5" y="48.5" width="9" height="9" rx="2"><title>29 Apr: 0 contributions</title></rect><rect class="l0" x="11.5" y="60" width="9" height="9" rx="2"><title>30 Apr: 0 contributions</title></rect><rect class="l0" x="11.5" y="71.5" width="9" height="9" rx="2"><title>1 May: 0 contributions</title></rect><rect class="l0" x="11.5" y="83" width="9" height="9" rx="2"><title>2 May: 0 contributions</title></rect><rect class="l0" x="23" y="14" width="9" height="9" rx="2"><title>3 May: 0 contributions</title></rect><rect class="l0" x="23" y="25.5" width="9" height="9" rx="2"><title>4 May: 0 contributions</title></rect><rect class="l0" x="23" y="37" width="9" height="9" rx="2"><title>5 May: 0 contributions</title></rect><rect class="l0" x="23" y="48.5" width="9" height="9" rx="2"><title>6 May: 0 contributions</title></rect><rect class="l0" x="23" y="60" width="9" height="9" rx="2"><title>7 May: 0 contributions</title></rect><rect class="l0" x="23" y="71.5" width="9" height="9" rx="2"><title>8 May: 0 contributions</title></rect><rect class="l0" x="23" y="83" width="9" height="9" rx="2"><title>9 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="14" width="9" height="9" rx="2"><title>10 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="25.5" width="9" height="9" rx="2"><title>11 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="37" width="9" height="9" rx="2"><title>12 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="48.5" width="9" height="9" rx="2"><title>13 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="60" width="9" height="9" rx="2"><title>14 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="71.5" width="9" height="9" rx="2"><title>15 May: 0 contributions</title></rect><rect class="l0" x="34.5" y="83" width="9" height="9" rx="2"><title>16 May: 0 contributions</title></rect><rect class="l0" x="46" y="14" width="9" height="9" rx="2"><title>17 May: 0 contributions</title></rect><rect class="l0" x="46" y="25.5" width="9" height="9" rx="2"><title>18 May: 0 contributions</title></rect><rect class="l1" x="46" y="37" width="9" height="9" rx="2"><title>19 May: 1 contribution</title></rect><rect class="l1" x="46" y="48.5" width="9" height="9" rx="2"><title>20 May: 1 contribution</title></rect><rect class="l0" x="46" y="60" width="9" height="9" rx="2"><title>21 May: 0 contributions</title></rect><rect class="l0" x="46" y="71.5" width="9" height="9" rx="2"><title>22 May: 0 contributions</title></rect><rect class="l0" x="46" y="83" width="9" height="9" rx="2"><title>23 May: 0 contributions</title></rect><rect class="l0" x="57.5" y="14" width="9" height="9" rx="2"><title>24 May: 0 contributions</title></rect><rect class="l0" x="57.5" y="25.5" width="9" height="9" rx="2"><title>25 May: 0 contributions</title></rect><rect class="l0" x="57.5" y="37" width="9" height="9" rx="2"><title>26 May: 0 contributions</title></rect><rect class="l0" x="57.5" y="48.5" width="9" height="9" rx="2"><title>27 May: 0 contributions</title></rect><rect class="l1" x="57.5" y="60" width="9" height="9" rx="2"><title>28 May: 2 contributions</title></rect><rect class="l2" x="57.5" y="71.5" width="9" height="9" rx="2"><title>29 May: 7 contributions</title></rect><rect class="l2" x="57.5" y="83" width="9" height="9" rx="2"><title>30 May: 3 contributions</title></rect><rect class="l0" x="69" y="14" width="9" height="9" rx="2"><title>31 May: 0 contributions</title></rect><rect class="l3" x="69" y="25.5" width="9" height="9" rx="2"><title>1 Jun: 20 contributions</title></rect><rect class="l3" x="69" y="37" width="9" height="9" rx="2"><title>2 Jun: 12 contributions</title></rect><rect class="l2" x="69" y="48.5" width="9" height="9" rx="2"><title>3 Jun: 5 contributions</title></rect><rect class="l0" x="69" y="60" width="9" height="9" rx="2"><title>4 Jun: 0 contributions</title></rect><rect class="l1" x="69" y="71.5" width="9" height="9" rx="2"><title>5 Jun: 2 contributions</title></rect><rect class="l0" x="69" y="83" width="9" height="9" rx="2"><title>6 Jun: 0 contributions</title></rect><rect class="l0" x="80.5" y="14" width="9" height="9" rx="2"><title>7 Jun: 0 contributions</title></rect><rect class="l0" x="80.5" y="25.5" width="9" height="9" rx="2"><title>8 Jun: 0 contributions</title></rect><rect class="l0" x="80.5" y="37" width="9" height="9" rx="2"><title>9 Jun: 0 contributions</title></rect><rect class="l0" x="80.5" y="48.5" width="9" height="9" rx="2"><title>10 Jun: 0 contributions</title></rect><rect class="l1" x="80.5" y="60" width="9" height="9" rx="2"><title>11 Jun: 1 contribution</title></rect><rect class="l3" x="80.5" y="71.5" width="9" height="9" rx="2"><title>12 Jun: 11 contributions</title></rect><rect class="l3" x="80.5" y="83" width="9" height="9" rx="2"><title>13 Jun: 10 contributions</title></rect><rect class="l0" x="92" y="14" width="9" height="9" rx="2"><title>14 Jun: 0 contributions</title></rect><rect class="l0" x="92" y="25.5" width="9" height="9" rx="2"><title>15 Jun: 0 contributions</title></rect><rect class="l0" x="92" y="37" width="9" height="9" rx="2"><title>16 Jun: 0 contributions</title></rect><rect class="l1" x="92" y="48.5" width="9" height="9" rx="2"><title>17 Jun: 2 contributions</title></rect><rect class="l0" x="92" y="60" width="9" height="9" rx="2"><title>18 Jun: 0 contributions</title></rect><rect class="l1" x="92" y="71.5" width="9" height="9" rx="2"><title>19 Jun: 1 contribution</title></rect><rect class="l0" x="92" y="83" width="9" height="9" rx="2"><title>20 Jun: 0 contributions</title></rect><rect class="l0" x="103.5" y="14" width="9" height="9" rx="2"><title>21 Jun: 0 contributions</title></rect><rect class="l1" x="103.5" y="25.5" width="9" height="9" rx="2"><title>22 Jun: 2 contributions</title></rect><rect class="l0" x="103.5" y="37" width="9" height="9" rx="2"><title>23 Jun: 0 contributions</title></rect><rect class="l2" x="103.5" y="48.5" width="9" height="9" rx="2"><title>24 Jun: 8 contributions</title></rect><rect class="l0" x="103.5" y="60" width="9" height="9" rx="2"><title>25 Jun: 0 contributions</title></rect><rect class="l0" x="103.5" y="71.5" width="9" height="9" rx="2"><title>26 Jun: 0 contributions</title></rect><rect class="l0" x="103.5" y="83" width="9" height="9" rx="2"><title>27 Jun: 0 contributions</title></rect><rect class="l1" x="115" y="14" width="9" height="9" rx="2"><title>28 Jun: 1 contribution</title></rect><rect class="l1" x="115" y="25.5" width="9" height="9" rx="2"><title>29 Jun: 1 contribution</title></rect><rect class="l0" x="115" y="37" width="9" height="9" rx="2"><title>30 Jun: 0 contributions</title></rect><rect class="l1" x="115" y="48.5" width="9" height="9" rx="2"><title>1 Jul: 1 contribution</title></rect><rect class="l2" x="115" y="60" width="9" height="9" rx="2"><title>2 Jul: 7 contributions</title></rect><rect class="l1" x="115" y="71.5" width="9" height="9" rx="2"><title>3 Jul: 1 contribution</title></rect><rect class="l0" x="115" y="83" width="9" height="9" rx="2"><title>4 Jul: 0 contributions</title></rect><rect class="l0" x="126.5" y="14" width="9" height="9" rx="2"><title>5 Jul: 0 contributions</title></rect><rect class="l2" x="126.5" y="25.5" width="9" height="9" rx="2"><title>6 Jul: 4 contributions</title></rect><rect class="l0" x="126.5" y="37" width="9" height="9" rx="2"><title>7 Jul: 0 contributions</title></rect><rect class="l0" x="126.5" y="48.5" width="9" height="9" rx="2"><title>8 Jul: 0 contributions</title></rect><rect class="l2" x="126.5" y="60" width="9" height="9" rx="2"><title>9 Jul: 5 contributions</title></rect><rect class="l1" x="126.5" y="71.5" width="9" height="9" rx="2"><title>10 Jul: 2 contributions</title></rect><rect class="l0" x="126.5" y="83" width="9" height="9" rx="2"><title>11 Jul: 0 contributions</title></rect><rect class="l0" x="138" y="14" width="9" height="9" rx="2"><title>12 Jul: 0 contributions</title></rect><rect class="l0" x="138" y="25.5" width="9" height="9" rx="2"><title>13 Jul: 0 contributions</title></rect><rect class="l3" x="138" y="37" width="9" height="9" rx="2"><title>14 Jul: 17 contributions</title></rect><rect class="l3" x="138" y="48.5" width="9" height="9" rx="2"><title>15 Jul: 24 contributions</title></rect><rect class="l3" x="138" y="60" width="9" height="9" rx="2"><title>16 Jul: 10 contributions</title></rect><rect class="l2" x="138" y="71.5" width="9" height="9" rx="2"><title>17 Jul: 6 contributions</title></rect><rect class="l0" x="138" y="83" width="9" height="9" rx="2"><title>18 Jul: 0 contributions</title></rect><rect class="l0" x="149.5" y="14" width="9" height="9" rx="2"><title>19 Jul: 0 contributions</title></rect><rect class="l4" x="149.5" y="25.5" width="9" height="9" rx="2"><title>20 Jul: 26 contributions</title></rect><rect class="l4" x="149.5" y="37" width="9" height="9" rx="2"><title>21 Jul: 32 contributions</title></rect><rect class="l3" x="149.5" y="48.5" width="9" height="9" rx="2"><title>22 Jul: 12 contributions</title></rect><rect class="l2" x="149.5" y="60" width="9" height="9" rx="2"><title>23 Jul: 6 contributions</title></rect><rect class="l1" x="149.5" y="71.5" width="9" height="9" rx="2"><title>24 Jul: 1 contribution</title></rect><rect class="l0" x="149.5" y="83" width="9" height="9" rx="2"><title>25 Jul: 0 contributions</title></rect><rect class="l1" x="161" y="14" width="9" height="9" rx="2"><title>26 Jul: 1 contribution</title></rect><rect class="l0" x="161" y="25.5" width="9" height="9" rx="2"><title>27 Jul: 0 contributions</title></rect><rect class="l0" x="161" y="37" width="9" height="9" rx="2"><title>28 Jul: 0 contributions</title></rect><rect class="l0" x="161" y="48.5" width="9" height="9" rx="2"><title>29 Jul: 0 contributions</title></rect><rect class="l1" x="161" y="60" width="9" height="9" rx="2"><title>30 Jul: 2 contributions</title></rect><rect class="l3" x="161" y="71.5" width="9" height="9" rx="2"><title>31 Jul: 10 contributions</title></rect><rect class="l0" x="161" y="83" width="9" height="9" rx="2"><title>1 Aug: 0 contributions</title></rect><rect class="l0" x="172.5" y="14" width="9" height="9" rx="2"><title>2 Aug: 0 contributions</title></rect><rect class="l4" x="172.5" y="25.5" width="9" height="9" rx="2"><title>3 Aug: 28 contributions</title></rect><rect class="l3" x="172.5" y="37" width="9" height="9" rx="2"><title>4 Aug: 12 contributions</title></rect><rect class="l2" x="172.5" y="48.5" width="9" height="9" rx="2"><title>5 Aug: 6 contributions</title></rect><rect class="l3" x="172.5" y="60" width="9" height="9" rx="2"><title>6 Aug: 21 contributions</title></rect><rect class="l2" x="172.5" y="71.5" width="9" height="9" rx="2"><title>7 Aug: 4 contributions</title></rect><rect class="l0" x="172.5" y="83" width="9" height="9" rx="2"><title>8 Aug: 0 contributions</title></rect><rect class="l0" x="184" y="14" width="9" height="9" rx="2"><title>9 Aug: 0 contributions</title></rect><rect class="l0" x="184" y="25.5" width="9" height="9" rx="2"><title>10 Aug: 0 contributions</title></rect><rect class="l1" x="184" y="37" width="9" height="9" rx="2"><title>11 Aug: 2 contributions</title></rect><rect class="l2" x="184" y="48.5" width="9" height="9" rx="2"><title>12 Aug: 9 contributions</title></rect><rect class="l0" x="184" y="60" width="9" height="9" rx="2"><title>13 Aug: 0 contributions</title></rect><rect class="l1" x="184" y="71.5" width="9" height="9" rx="2"><title>14 Aug: 1 contribution</title></rect><rect class="l0" x="184" y="83" width="9" height="9" rx="2"><title>15 Aug: 0 contributions</title></rect><rect class="l0" x="195.5" y="14" width="9" height="9" rx="2"><title>16 Aug: 0 contributions</title></rect><rect class="l2" x="195.5" y="25.5" width="9" height="9" rx="2"><title>17 Aug: 7 contributions</title></rect><rect class="l3" x="195.5" y="37" width="9" height="9" rx="2"><title>18 Aug: 22 contributions</title></rect><rect class="l2" x="195.5" y="48.5" width="9" height="9" rx="2"><title>19 Aug: 4 contributions</title></rect><rect class="l4" x="195.5" y="60" width="9" height="9" rx="2"><title>20 Aug: 56 contributions</title></rect><rect class="l4" x="195.5" y="71.5" width="9" height="9" rx="2"><title>21 Aug: 31 contributions</title></rect><rect class="l0" x="195.5" y="83" width="9" height="9" rx="2"><title>22 Aug: 0 contributions</title></rect><rect class="l0" x="207" y="14" width="9" height="9" rx="2"><title>23 Aug: 0 contributions</title></rect><rect class="l2" x="207" y="25.5" width="9" height="9" rx="2"><title>24 Aug: 6 contributions</title></rect><rect class="l3" x="207" y="37" width="9" height="9" rx="2"><title>25 Aug: 19 contributions</title></rect><rect class="l3" x="207" y="48.5" width="9" height="9" rx="2"><title>26 Aug: 23 contributions</title></rect><rect class="l2" x="207" y="60" width="9" height="9" rx="2"><title>27 Aug: 3 contributions</title></rect><rect class="l0" x="207" y="71.5" width="9" height="9" rx="2"><title>28 Aug: 0 contributions</title></rect><rect class="l0" x="207" y="83" width="9" height="9" rx="2"><title>29 Aug: 0 contributions</title></rect><rect class="l0" x="218.5" y="14" width="9" height="9" rx="2"><title>30 Aug: 0 contributions</title></rect><rect class="l2" x="218.5" y="25.5" width="9" height="9" rx="2"><title>31 Aug: 8 contributions</title></rect><rect class="l4" x="218.5" y="37" width="9" height="9" rx="2"><title>1 Sep: 26 contributions</title></rect><rect class="l4" x="218.5" y="48.5" width="9" height="9" rx="2"><title>2 Sep: 27 contributions</title></rect><rect class="l4" x="218.5" y="60" width="9" height="9" rx="2"><title>3 Sep: 39 contributions</title></rect><rect class="l2" x="218.5" y="71.5" width="9" height="9" rx="2"><title>4 Sep: 5 contributions</title></rect><rect class="l0" x="218.5" y="83" width="9" height="9" rx="2"><title>5 Sep: 0 contributions</title></rect><rect class="l0" x="230" y="14" width="9" height="9" rx="2"><title>6 Sep: 0 contributions</title></rect><rect class="l3" x="230" y="25.5" width="9" height="9" rx="2"><title>7 Sep: 13 contributions</title></rect><rect class="l2" x="230" y="37" width="9" height="9" rx="2"><title>8 Sep: 6 contributions</title></rect><rect class="l0" x="230" y="48.5" width="9" height="9" rx="2"><title>9 Sep: 0 contributions</title></rect><rect class="l1" x="230" y="60" width="9" height="9" rx="2"><title>10 Sep: 2 contributions</title></rect><rect class="l0" x="230" y="71.5" width="9" height="9" rx="2"><title>11 Sep: 0 contributions</title></rect><rect class="l0" x="230" y="83" width="9" height="9" rx="2"><title>12 Sep: 0 contributions</title></rect><rect class="l0" x="241.5" y="14" width="9" height="9" rx="2"><title>13 Sep: 0 contributions</title></rect><rect class="l0" x="241.5" y="25.5" width="9" height="9" rx="2"><title>14 Sep: 0 contributions</title></rect><rect class="l0" x="241.5" y="37" width="9" height="9" rx="2"><title>15 Sep: 0 contributions</title></rect><rect class="l3" x="241.5" y="48.5" width="9" height="9" rx="2"><title>16 Sep: 15 contributions</title></rect><rect class="l2" x="241.5" y="60" width="9" height="9" rx="2"><title>17 Sep: 4 contributions</title></rect><rect class="l3" x="241.5" y="71.5" width="9" height="9" rx="2"><title>18 Sep: 15 contributions</title></rect><rect class="l0" x="241.5" y="83" width="9" height="9" rx="2"><title>19 Sep: 0 contributions</title></rect><rect class="l1" x="253" y="14" width="9" height="9" rx="2"><title>20 Sep: 1 contribution</title></rect><rect class="l0" x="253" y="25.5" width="9" height="9" rx="2"><title>21 Sep: 0 contributions</title></rect><rect class="l4" x="253" y="37" width="9" height="9" rx="2"><title>22 Sep: 32 contributions</title></rect><rect class="l4" x="253" y="48.5" width="9" height="9" rx="2"><title>23 Sep: 26 contributions</title></rect><rect class="l4" x="253" y="60" width="9" height="9" rx="2"><title>24 Sep: 77 contributions</title></rect><rect class="l4" x="253" y="71.5" width="9" height="9" rx="2"><title>25 Sep: 61 contributions</title></rect><rect class="l3" x="253" y="83" width="9" height="9" rx="2"><title>26 Sep: 22 contributions</title></rect><rect class="l0" x="264.5" y="14" width="9" height="9" rx="2"><title>27 Sep: 0 contributions</title></rect><rect class="l4" x="264.5" y="25.5" width="9" height="9" rx="2"><title>28 Sep: 60 contributions</title></rect><rect class="l4" x="264.5" y="37" width="9" height="9" rx="2"><title>29 Sep: 53 contributions</title></rect><rect class="l4" x="264.5" y="48.5" width="9" height="9" rx="2"><title>30 Sep: 42 contributions</title></rect><rect class="l4" x="264.5" y="60" width="9" height="9" rx="2"><title>1 Oct: 32 contributions</title></rect><rect class="l0" x="264.5" y="71.5" width="9" height="9" rx="2"><title>2 Oct: 0 contributions</title></rect><rect class="l0" x="264.5" y="83" width="9" height="9" rx="2"><title>3 Oct: 0 contributions</title></rect><rect class="l0" x="276" y="14" width="9" height="9" rx="2"><title>4 Oct: 0 contributions</title></rect><rect class="l3" x="276" y="25.5" width="9" height="9" rx="2"><title>5 Oct: 22 contributions</title></rect><rect class="l4" x="276" y="37" width="9" height="9" rx="2"><title>6 Oct: 62 contributions</title></rect><rect class="l3" x="276" y="48.5" width="9" height="9" rx="2"><title>7 Oct: 22 contributions</title></rect><rect class="l3" x="276" y="60" width="9" height="9" rx="2"><title>8 Oct: 11 contributions</title></rect><rect class="l4" x="276" y="71.5" width="9" height="9" rx="2"><title>9 Oct: 50 contributions</title></rect><rect class="l4" x="276" y="83" width="9" height="9" rx="2"><title>10 Oct: 27 contributions</title></rect><rect class="l1" x="287.5" y="14" width="9" height="9" rx="2"><title>11 Oct: 1 contribution</title></rect><rect class="l4" x="287.5" y="25.5" width="9" height="9" rx="2"><title>12 Oct: 25 contributions</title></rect><rect class="l0" x="287.5" y="37" width="9" height="9" rx="2"><title>13 Oct: 0 contributions</title></rect><rect class="l0" x="287.5" y="48.5" width="9" height="9" rx="2"><title>14 Oct: 0 contributions</title></rect><rect class="l0" x="287.5" y="60" width="9" height="9" rx="2"><title>15 Oct: 0 contributions</title></rect><rect class="l0" x="287.5" y="71.5" width="9" height="9" rx="2"><title>16 Oct: 0 contributions</title></rect><rect class="l0" x="287.5" y="83" width="9" height="9" rx="2"><title>17 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="14" width="9" height="9" rx="2"><title>18 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="25.5" width="9" height="9" rx="2"><title>19 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="37" width="9" height="9" rx="2"><title>20 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="48.5" width="9" height="9" rx="2"><title>21 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="60" width="9" height="9" rx="2"><title>22 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="71.5" width="9" height="9" rx="2"><title>23 Oct: 0 contributions</title></rect><rect class="l0" x="299" y="83" width="9" height="9" rx="2"><title>24 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="14" width="9" height="9" rx="2"><title>25 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="25.5" width="9" height="9" rx="2"><title>26 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="37" width="9" height="9" rx="2"><title>27 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="48.5" width="9" height="9" rx="2"><title>28 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="60" width="9" height="9" rx="2"><title>29 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="71.5" width="9" height="9" rx="2"><title>30 Oct: 0 contributions</title></rect><rect class="l0" x="310.5" y="83" width="9" height="9" rx="2"><title>31 Oct: 0 contributions</title></rect></svg>
+      <p class="when"><span>25 Apr – 31 Oct 2026</span><span class="scale" aria-hidden="true">Less <i style="background: var(--l0)"></i><i style="background: var(--l1)"></i><i style="background: var(--l2)"></i><i style="background: var(--l3)"></i><i style="background: var(--l4)"></i> More</span></p>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: GitHub activity at FileSure">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card l" style="grid-row: 2" data-id="filesure">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>FileSure · 2026</h2>
+      <ul>
+        <li>Intern → <b>Software Engineer</b> in 3 months</li>
+        <li>Ran the company's tech with the founder</li>
+        <li>Releases, incidents and <b>21</b> runbooks</li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: FileSure · 2026">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card l" style="grid-row: 3" data-id="search">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search &amp; Data</h2>
+      <ul>
+        <li><b>3.8M</b>-company screening rebuilt in 6 days</li>
+        <li><b>60 s</b> timeouts → answers in seconds</li>
+        <li><b>146</b> sub-sectors, measured precision</li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: Search &amp; Data">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card l" style="grid-row: 4" data-id="mentoring">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>Mentoring</h2>
+      <ul>
+        <li><b>25,000+</b> learners helped</li>
+        <li>3+ years at Tutedude, part-time</li>
+        <li>Full-stack · DSA · ML · React Native</li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: Mentoring">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card r" style="grid-row: 2" data-id="mobile">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>Mobile</h2>
+      <ul>
+        <li>iOS &amp; Android apps <b>built from scratch</b></li>
+        <li>Google Play <b>1.0.7 → 1.0.13</b></li>
+        <li>App Store <b>1.0.9 → 1.0.13</b></li>
+        <li><b>80+</b> over-the-air updates</li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: Mobile">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card r" style="grid-row: 3" data-id="cloud">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Cloud &amp; DevOps</h2>
+      <ul>
+        <li>Led the backend move <b>AWS → GCP</b></li>
+        <li>Gated Jenkins CI/CD with rollbacks</li>
+        <li>Search for <b>3.67M</b> companies, <b>8.7M</b> directors</li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: Cloud &amp; DevOps">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card r" style="grid-row: 4" data-id="web">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>Web &amp; APIs</h2>
+      <ul>
+        <li>Next.js · React · Node.js · Express</li>
+        <li>Developer API: name → CIN/DIN lookup</li>
+        <li>MongoDB · PostgreSQL · ClickHouse</li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: Web &amp; APIs">Open details <span aria-hidden="true">→</span></button>
+    </article>
+
+    <article class="card b" style="grid-row: 5" data-to="top" data-id="projects">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Side projects</h2>
+      <ul>
+        <li><a href="https://github.com/AnkitDimri4/quickcart-mern">QuickCart</a> · <a href="https://github.com/AnkitDimri4/RN-WALLET">RN-Wallet</a></li>
+        <li><a href="https://github.com/AnkitDimri4/ai-first-hcp-interaction-crm">AI-first HCP CRM</a> · <a href="https://github.com/AnkitDimri4/Portfolio">Portfolio</a></li>
+        <li class="live" id="live-stats" hidden></li>
+      </ul>
+      <button class="more" type="button" aria-controls="focus" aria-label="Open details: Side projects">Open details <span aria-hidden="true">→</span></button>
+    </article>
+  </main>
+
+  <section class="focus" id="focus" hidden aria-labelledby="focus-title">
+    <div class="focus-bar">
+      <button id="back" type="button"><span aria-hidden="true">←</span> Back to the map</button>
+      <span class="esc">Esc also goes back</span>
+    </div>
+    <div class="fmap" id="fmap"><svg id="fwires" aria-hidden="true"></svg></div>
+  </section>
+
+  <nav id="tourbar" hidden aria-label="Tour">
+    <p class="caption" aria-live="polite"></p>
+    <div class="controls">
+      <button id="prev" type="button" aria-label="Previous card"><span aria-hidden="true">‹</span><span class="tl"> Previous</span></button>
+      <span class="where"></span>
+      <button id="play" type="button" aria-pressed="false" aria-label="Play the tour"><span aria-hidden="true">▶</span><span class="tl"> Play</span></button>
+      <button id="next" type="button" aria-label="Next card"><span class="tl">Next </span><span aria-hidden="true">›</span></button>
+      <button id="tclose" type="button" aria-label="Close details">×</button>
+    </div>
+    <i class="progress" aria-hidden="true"></i>
+  </nav>
+  <p id="toast" role="status" hidden></p>
+  <div id="ghost" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 2l15 11-6.5 1.2L16 21l-3 1.4-3.5-6.8L4 20z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+
+  <footer>My 2026 work lives in FileSure's private repositories, so the code isn't public. The graph above shows those contributions, which also count on my main GitHub profile.</footer>
+
+<script>
+  var root = document.documentElement;
+  var map = document.querySelector(".map");
+  var wires = document.getElementById("wires");
+  var core = document.querySelector(".core");
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var themeButtons = Array.prototype.slice.call(document.querySelectorAll(".theme-switch button"));
+
+  // Lines from the core to each card: side cards at their title row, the bottom card from above,
+  // the top card from below.
+  function draw() {
+    if (map.hidden || getComputedStyle(wires).display === "none") return;
+    var m = map.getBoundingClientRect();
+    var c = core.getBoundingClientRect();
+    var cx = c.left + c.width / 2 - m.left, cy = c.top + c.height / 2 - m.top, r = c.width / 2;
+    wires.setAttribute("width", m.width);
+    wires.setAttribute("height", m.height);
+    wires.setAttribute("viewBox", "0 0 " + m.width + " " + m.height);
+    wires.innerHTML = cards.map(function (card, i) {
+      var b = card.getBoundingClientRect(), to = card.dataset.to, vertical = !!to;
+      var left = b.left + b.width / 2 < cx + m.left;
+      var ax = vertical ? b.left + b.width / 2 - m.left : (left ? b.right : b.left) - m.left;
+      var ay = to === "top" ? b.top - m.top : to === "bottom" ? b.bottom - m.top : b.top - m.top + 30;
+      var dx = ax - cx, dy = ay - cy, len = Math.hypot(dx, dy);
+      var sx = cx + (dx / len) * r, sy = cy + (dy / len) * r;
+      var d = vertical
+        ? "M" + sx + "," + sy + " C" + sx + "," + (sy + ay) / 2 + " " + ax + "," + (sy + ay) / 2 + " " + ax + "," + ay
+        : "M" + sx + "," + sy + " C" + (sx + ax) / 2 + "," + sy + " " + (sx + ax) / 2 + "," + ay + " " + ax + "," + ay;
+      return '<g data-i="' + i + '"><path class="base" d="' + d + '"/><path class="flow" d="' + d + '"/>' +
+        '<circle cx="' + sx + '" cy="' + sy + '" r="4.5"/><circle cx="' + ax + '" cy="' + ay + '" r="4.5"/></g>';
+    }).join("");
+  }
+
+  function highlight(i, on) {
+    if (!on && typeof branch !== "undefined" && branch && branch.card === cards[i]) return;
+    var g = wires.querySelector('g[data-i="' + i + '"]');
+    if (g) g.classList.toggle("on", on);
+    cards[i].classList.toggle("on", on);
+  }
+  cards.forEach(function (card, i) {
+    card.addEventListener("mouseenter", function () { highlight(i, true); });
+    card.addEventListener("mouseleave", function () { highlight(i, false); });
+    card.addEventListener("focusin", function () { highlight(i, true); });
+    card.addEventListener("focusout", function () { highlight(i, false); });
+  });
+  core.addEventListener("mouseenter", function () { cards.forEach(function (_, i) { highlight(i, true); }); });
+  core.addEventListener("mouseleave", function () { cards.forEach(function (_, i) { highlight(i, false); }); });
+
+  // The logo: keep its dark strokes, drop the background, colour it for the current theme.
+  var logo = new Image();
+  function paintLogo() {
+    if (!logo.complete || !logo.naturalWidth) return;
+    var c = document.getElementById("logo"), ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.drawImage(logo, 0, 0);
+    var d = ctx.getImageData(0, 0, c.width, c.height), p = d.data;
+    var ink = root.getAttribute("data-theme") === "dark" ? [201, 209, 217] : [63, 72, 82];
+    for (var i = 0; i < p.length; i += 4) {
+      var x = (i / 4) % c.width, y = Math.floor(i / 4 / c.width);
+      var lum = (0.2126 * p[i] + 0.7152 * p[i + 1] + 0.0722 * p[i + 2]) / 255;
+      var a = Math.max(0, Math.min(1, (0.86 - lum) / (0.86 - 0.52)));
+      if (x >= 112 && y >= 112) a = 0;
+      p[i] = ink[0]; p[i + 1] = ink[1]; p[i + 2] = ink[2]; p[i + 3] = Math.round(a * 255);
+    }
+    ctx.putImageData(d, 0, 0);
+  }
+  logo.onload = paintLogo;
+  logo.src = "logo.png";
+
+  // The switch shows which theme is on (aria-pressed), and a click on the other half changes it.
+  function label() {
+    var current = root.getAttribute("data-theme");
+    themeButtons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-theme-set") === current)); });
+  }
+  themeButtons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var next = b.getAttribute("data-theme-set");
+      if (root.getAttribute("data-theme") === next) return;
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("brain-map-theme", next); } catch (e) {}
+      label();
+      paintLogo();
+    });
+  });
+
+  label();
+  // Details: each card's sub-cards. Only what is public: the numbers already on the cards,
+  // the apps' features, how the work was done, and links.
+  var A = function (l, h) { return { l: l, h: h }; };
+  var GH = "https://github.com/AnkitDimri4/";
+  var STORES = [A("App Store", "https://apps.apple.com/in/app/filesure/id6759514259"), A("Google Play", "https://play.google.com/store/apps/details?id=in.filesure")];
+  var DETAILS = {
+    activity: [
+      { t: "Month by month", bars: [["Apr", 2], ["May", 14], ["Jun", 76], ["Jul", 167], ["Aug", 262], ["Sep", 526], ["Oct", 252]],
+        p: ["From <b>2</b> in April to <b>526</b> in September", "October: <b>252</b>, all in its first 12 days"] },
+      { t: "Busiest days", p: ["<b>77</b> on 24 Sep", "<b>62</b> on 6 Oct", "<b>61</b> on 25 Sep"] },
+      { t: "Rhythm", p: ["Longest streak: <b>8</b> days in a row", "Monday to Friday, busiest on Tuesdays (<b>296</b>)"] },
+      { t: "Private repositories", p: ["The code stays private", "These contributions also count on my main GitHub graph"], links: [A("Main graph", "https://github.com/AnkitDimri4")] }
+    ],
+    filesure: [
+      { t: "Tech Support & Operations Intern", s: ["Debugging", "Next.js", "Node.js", "MongoDB"], w: "Apr – Jul 2026", p: ["Support tickets end to end: orders, invoices, payments and data errors", "Traced each issue from the screen to the API and the database", "Turned repeat fixes into written steps"] },
+      { t: "Software Engineer", s: ["React Native", "ClickHouse", "GCP", "Jenkins"], w: "Aug – Oct 2026", p: ["Promoted after <b>3</b> months of a planned 6-month internship", "Built the iOS and Android app", "Worked across search, the website, the API and the cloud"] },
+      { t: "Running the tech", s: ["Releases", "Incident response", "Jenkins CI/CD"], p: ["Ran the company's tech with the founder", "<b>7</b> production releases in one week", "Releases, incidents and support, day to day", "Kept production running while shipping new features"] },
+      { t: "Runbooks", s: ["Technical writing", "Incident response"], p: ["<b>21</b> runbooks and technical docs", "Deployments, operations and incident response", "Written so anyone can follow them"] },
+      { t: "What I worked on", p: ["The apps, the website and the developer API"], links: STORES.concat([A("filesure.in", "https://www.filesure.in"), A("api.filesure.in", "https://api.filesure.in")]) }
+    ],
+    search: [
+      { t: "ClickHouse screening", s: ["ClickHouse", "SQL", "Node.js"], p: ["Rebuilt company screening on ClickHouse in <b>6</b> days", "Covers <b>3.8M</b> companies", "Filters combine freely, with or without a name search"] },
+      { t: "Company filters", s: ["ClickHouse", "SQL", "Next.js"], p: ["Company type and status", "State", "Authorised and paid-up capital ranges", "Each option shows how many companies match"] },
+      { t: "Financial filters", s: ["XBRL", "ClickHouse", "SQL"], p: ["Revenue and profit after tax", "Read from the XBRL data in each annual filing", "Charges registered against a company"] },
+      { t: "Sectors", s: ["NIC industry codes", "Data quality"], p: ["<b>42</b> sectors and <b>146</b> sub-sectors", "Each one checked for precision against real companies", "Grouped from the business each company reports"] },
+      { t: "Speed", s: ["ClickHouse", "Query optimisation"], p: ["Filters that timed out at <b>60 s</b> now answer in seconds", "Moved to a column store built for this kind of filtering"] },
+      { t: "Company & director search", s: ["Search indexing", "GCP"], p: ["<b>3.67M</b> companies and <b>8.7M</b> directors", "Search by name across both"] }
+    ],
+    mentoring: [
+      { t: "25,000+ learners", s: ["MERN", "React Native", "DSA", "Python", "C++"], p: ["MERN stack and React Native", "DSA in C++ and Python", "Machine learning and data science"] },
+      { t: "Real ML projects", s: ["Python", "Pandas", "scikit-learn"], p: ["Employee retention analysis", "Food delivery time prediction", "Global pollution analysis"] },
+      { t: "End to end", s: ["Feature engineering", "Model evaluation"], p: ["Preprocessing and feature engineering", "Modelling and evaluation", "Taking a project from idea to a working app"] },
+      { t: "Tutedude", s: ["Mentoring", "Debugging"], w: "Feb 2023 – Apr 2026 · Part-time", p: ["Technical Mentor: full stack, React Native and AI/ML", "Structured mentoring that got more projects finished"] }
+    ],
+    mobile: [
+      { t: "Sign-in", s: ["Clerk", "Google Sign-In", "Sign in with Apple"], p: ["Email with a one-time code", "Google and Apple sign-in", "Password reset"] },
+      { t: "Search & profiles", s: ["React Native", "REST APIs"], p: ["One search for companies and directors", "Profiles with compliance, financials and public documents", "Recent searches and advanced filters"] },
+      { t: "Unlocks & checkout", s: ["Payments integration", "State persistence"], p: ["Unlock companies with credits", "A cart that survives the app being closed", "In-app payments"] },
+      { t: "Offline & downloads", s: ["Offline storage", "File downloads"], p: ["Unlocked companies saved on the phone", "Documents and ZIP downloads to the device"] },
+      { t: "Notifications & help", s: ["Push notifications", "In-app chat"], p: ["Push notifications, with a choice of which kinds", "Payment confirmations", "Support chat shared with the website"] },
+      { t: "More tools", s: ["XBRL", "React Native"], p: ["XBRL Viewer and Compliance Check in the menu", "A full redesign in August"] },
+      { t: "Releases", s: ["EAS Build", "EAS Update", "App Store Connect", "Google Play Console"], p: ["One React Native (Expo) codebase for iOS and Android", "Google Play <b>1.0.7 → 1.0.13</b> · App Store <b>1.0.9 → 1.0.13</b>", "Launched on Google Play on <b>13 Jul 2026</b>, the App Store on <b>3 Aug</b>", "<b>80+</b> over-the-air updates, no store review needed", "<b>92</b> of the app's first <b>100</b> commits"], links: STORES }
+    ],
+    cloud: [
+      { t: "AWS → GCP", s: ["GCP", "AWS", "Kubernetes"], p: ["Led the production backend's move to Google Cloud", "Containers on Kubernetes, images in a registry"] },
+      { t: "CI/CD", s: ["Jenkins", "Docker"], p: ["Jenkins pipelines for every release", "Versioned builds and an approval gate before production", "Rollback to the last good version"] },
+      { t: "Containers", s: ["Docker", "Kubernetes"], p: ["Docker images", "Running on Kubernetes"] },
+      { t: "Edge", s: ["Cloudflare", "DNS"], p: ["Cloudflare in front of the website", "DNS, caching and protection"] },
+      { t: "Search infrastructure", s: ["GCP", "Search indexing"], p: ["<b>3.67M</b> companies and <b>8.7M</b> directors indexed", "Running on Google Cloud"] },
+      { t: "Secure access", s: ["NetBird", "WireGuard", "Zero trust"], p: ["Zero-trust access to servers with NetBird", "Built on WireGuard"] },
+      { t: "Monitoring", s: ["Sentry", "Mixpanel"], p: ["Sentry for errors", "Mixpanel for product analytics"] }
+    ],
+    web: [
+      { t: "Website", s: ["Next.js", "React"], p: ["Production features on the Next.js site", "Company pages, search and screening"], links: [A("filesure.in", "https://www.filesure.in")] },
+      { t: "API", s: ["Node.js", "Express", "MongoDB"], p: ["Node.js and Express on MongoDB", "Serves the website and the app"] },
+      { t: "Name → CIN/DIN lookup", s: ["Node.js", "OpenAPI", "Sandbox tests"], p: ["Send a company or director name, get its registry ID", "Extra fields to pick the right match", "Wrote the API docs and a developer guide"] },
+      { t: "Director history", s: ["MongoDB", "REST APIs"], p: ["Past appointments and when they ended", "Returned even when the main record is empty"] },
+      { t: "Capital, ready to show", s: ["Node.js", "API design"], p: ["Amounts like ₹7.69 Cr and ₹7,69,34,000", "Correct for companies that file in a foreign currency"] },
+      { t: "Developer API", s: ["OpenAPI", "API docs"], p: ["FileSure's MCA data API for developers", "Fixed the public docs page", "Sandbox tests before each release"], links: [A("api.filesure.in", "https://api.filesure.in")] }
+    ],
+    projects: [
+      { t: "QuickCart", s: ["React", "Redux", "Node.js", "MongoDB", "Stripe"], p: ["MERN store with user and admin roles (JWT)", "Stripe payments and Cloudinary images", "Admin dashboard with sales analytics"], links: [A("GitHub", GH + "quickcart-mern"), A("Live", "https://quickcart-mern.vercel.app/")] },
+      { t: "AI-first HCP CRM", s: ["FastAPI", "LangGraph", "PostgreSQL", "React"], p: ["Field reps log doctor visits in plain English", "A LangGraph agent with <b>5</b> tools fills in the record", "FastAPI, PostgreSQL and React"], links: [A("GitHub", GH + "ai-first-hcp-interaction-crm"), A("Live", "https://ai-first-hcp-interaction-crm.vercel.app/")] },
+      { t: "RN-Wallet", s: ["React Native", "PostgreSQL", "Redis", "scikit-learn"], p: ["React Native expense tracker", "Express + PostgreSQL API with Redis caching", "An ML service sorts transactions into categories"], links: [A("GitHub", GH + "RN-WALLET")] },
+      { t: "Portfolio", s: ["React", "Vite", "Node.js", "PostgreSQL", "Google Calendar"], p: ["This site: pre-rendered React and a Node.js API", "Schedule a call: Google Meet, straight into Google Calendar", "Contact form on PostgreSQL, emailed via Resend", "Live GitHub and LeetCode stats"], links: [A("GitHub", GH + "Portfolio"), A("Live", "/")] },
+      { t: "Real-time Todo", s: ["Expo", "Convex", "TypeScript"], p: ["Expo and Convex", "Edits sync instantly across devices"], links: [A("GitHub", GH + "TODO-RN")] },
+      { t: "Neural network", s: ["Python", "NumPy"], p: ["Built from scratch in NumPy", "<b>95.67%</b> accuracy on the letters A–C"], links: [A("GitHub", GH + "DataScience_Project")] },
+      { t: "LeetCode", s: ["C++", "Python", "DSA"], p: ["<b>690+</b> problems solved", "<b>590+</b> commits of daily-challenge solutions"], links: [A("Profile", "https://leetcode.com/u/user4612MW/"), A("Solutions", GH + "LeetCode2024-25DCC")] }
+    ]
+  };
+
+  // Wide screens open a card's sub-cards beside it, on its outer side (a branch); narrower
+  // screens open the details view (#focus) with the card in the middle.
+  var BRANCH_MIN = 1140, SUB_W = 270, GAP = 56, VGAP = 12, SKILL_GAP = 40;
+  var focusEl = document.getElementById("focus");
+  var fmap = document.getElementById("fmap");
+  var fwires = document.getElementById("fwires");
+  var back = document.getElementById("back");
+  var footer = document.querySelector("footer");
+  var opener = null, pushed = false, current = null, branch = null;
+
+  function bars(list) {
+    var max = Math.max.apply(null, list.map(function (b) { return b[1]; }));
+    return '<div class="bars" role="img" aria-label="' + list.map(function (b) { return b[0] + " " + b[1]; }).join(", ") + '">' +
+      list.map(function (b) { return '<span><i style="height:' + Math.max(3, Math.round(b[1] / max * 46)) + 'px"></i>' + b[0] + "</span>"; }).join("") + "</div>";
+  }
+
+  // Each link shows the icon of where it goes (Simple Icons, Feather and Tabler marks).
+  var LINK_ICONS = {"appstore":"<svg stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" role=\"img\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8.8086 14.9194l6.1107-11.0368c.0837-.1513.1682-.302.2437-.4584.0685-.142.1267-.2854.1646-.4403.0803-.3259.0588-.6656-.066-.9767-.1238-.3095-.3417-.5678-.6201-.7355a1.4175 1.4175 0 0 0-.921-.1924c-.3207.043-.6135.1935-.8443.4288-.1094.1118-.1996.2361-.2832.369-.092.1463-.175.2979-.259.4492l-.3864.6979-.3865-.6979c-.0837-.1515-.1667-.303-.2587-.4492-.0837-.1329-.1739-.2572-.2835-.369-.2305-.2353-.5233-.3857-.844-.429a1.4181 1.4181 0 0 0-.921.1926c-.2784.1677-.4964.426-.6203.7355-.1246.311-.1461.6508-.066.9767.038.155.0962.2984.1648.4403.0753.1564.1598.307.2437.4584l1.248 2.2543-4.8625 8.7825H2.0295c-.1676 0-.3351-.0007-.5026.0092-.1522.009-.3004.0284-.448.0714-.3108.0906-.5822.2798-.7783.548-.195.2665-.3006.5929-.3006.9279 0 .3352.1057.6612.3006.9277.196.2683.4675.4575.7782.548.1477.043.296.0623.4481.0715.1675.01.335.009.5026.009h13.0974c.0171-.0357.059-.1294.1-.2697.415-1.4151-.6156-2.843-2.0347-2.843zM3.113 18.5418l-.7922 1.5008c-.0818.1553-.1644.31-.2384.4705-.067.1458-.124.293-.1611.452-.0785.3346-.0576.6834.0645 1.0029.1212.3175.3346.583.607.7549.2727.172.5891.2416.9013.1975.3139-.044.6005-.1986.8263-.4402.1072-.1148.1954-.2424.2772-.3787.0902-.1503.1714-.3059.2535-.4612L6 19.4636c-.0896-.149-.9473-1.4704-2.887-.9218m20.5861-3.0056a1.4707 1.4707 0 0 0-.779-.5407c-.1476-.0425-.2961-.0616-.4483-.0705-.1678-.0099-.3352-.0091-.503-.0091H18.648l-4.3891-7.817c-.6655.7005-.9632 1.485-1.0773 2.1976-.1655 1.0333.0367 2.0934.546 3.0004l5.2741 9.3933c.084.1494.167.299.2591.4435.0837.131.1739.2537.2836.364.231.2323.5238.3809.8449.4232.3192.0424.643-.0244.9217-.1899.2784-.1653.4968-.4204.621-.7257.1246-.3072.146-.6425.0658-.9641-.0381-.1529-.0962-.2945-.165-.4346-.0753-.1543-.1598-.303-.2438-.4524l-1.216-2.1662h1.596c.1677 0 .3351.0009.5029-.009.1522-.009.3007-.028.4483-.0705a1.4707 1.4707 0 0 0 .779-.5407A1.5386 1.5386 0 0 0 24 16.452a1.539 1.539 0 0 0-.3009-.9158Z\"></path></svg>","googleplay":"<svg stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" role=\"img\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z\"></path></svg>","github":"<svg stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" role=\"img\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12\"></path></svg>","leetcode":"<svg stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" role=\"img\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z\"></path></svg>","api":"<svg stroke=\"currentColor\" fill=\"none\" stroke-width=\"2\" viewBox=\"0 0 24 24\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4 13h5\"></path><path d=\"M12 16v-8h3a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-3\"></path><path d=\"M20 8v8\"></path><path d=\"M9 16v-5.5a2.5 2.5 0 0 0 -5 0v5.5\"></path></svg>","globe":"<svg stroke=\"currentColor\" fill=\"none\" stroke-width=\"2\" viewBox=\"0 0 24 24\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"></line><path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"></path></svg>"};
+  function linkIcon(href) {
+    return LINK_ICONS[/apps\.apple\.com/.test(href) ? "appstore" : /play\.google\.com/.test(href) ? "googleplay" :
+      /github\.com/.test(href) ? "github" : /leetcode\.com/.test(href) ? "leetcode" : /api\.filesure\.in/.test(href) ? "api" : "globe"];
+  }
+
+  function subHTML(x) {
+    return "<h3>" + x.t + "</h3>" + (x.w ? '<span class="when">' + x.w + "</span>" : "") +
+      (x.bars ? bars(x.bars) : "") +
+      (x.p ? "<ul>" + x.p.map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ul>" : "") +
+      (x.links ? '<p class="links">' + x.links.map(function (a) {
+        return '<a href="' + a.h + '"' + (a.h.charAt(0) === "/" ? "" : ' target="_blank" rel="noreferrer"') + ">" + linkIcon(a.h) + a.l + "</a>";
+      }).join("") + "</p>" : "") +
+      (x.s ? '<button class="skills-toggle" type="button" aria-expanded="false">Skills used <span aria-hidden="true">▾</span></button>' +
+        '<ul class="skills" hidden>' + x.s.map(function (k) { return "<li>" + k + "</li>"; }).join("") + "</ul>" : "");
+  }
+
+  function curve(sx, sy, ax, ay) {
+    var mx = (sx + ax) / 2;
+    return '<path d="M' + sx + "," + sy + " C" + mx + "," + sy + " " + mx + "," + ay + " " + ax + "," + ay + '"/>' +
+      '<circle cx="' + sx + '" cy="' + sy + '" r="4"/><circle cx="' + ax + '" cy="' + ay + '" r="4"/>';
+  }
+
+  function setButton(card, open) {
+    var b = card.querySelector(".more");
+    b.setAttribute("aria-expanded", String(open));
+    b.innerHTML = open ? 'Close details <span aria-hidden="true">×</span>' : 'Open details <span aria-hidden="true">→</span>';
+  }
+
+  // ---- Branch: the sub-cards in a column beside the card, joined to it by lines
+  function openBranch(id) {
+    var card = document.querySelector('.map .card[data-id="' + id + '"]');
+    closeBranch();
+    var els = DETAILS[id].map(function (x, i) {
+      var el = document.createElement("article");
+      el.className = "card fsub bsub fcard";
+      el.style.setProperty("--i", i + 1);
+      el.innerHTML = subHTML(x);
+      return el;
+    });
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.id = "bwires";
+    svg.setAttribute("aria-hidden", "true");
+    map.appendChild(svg);
+    card.after.apply(card, els); // right after the card, so Tab reaches them next
+    branch = { id: id, card: card, els: els, svg: svg, skillsFor: null, skillEls: [] };
+    map.classList.add("branching");
+    card.classList.add("open");
+    setButton(card, true);
+    highlight(cards.indexOf(card), true);
+    layoutBranch();
+  }
+
+  // Side cards branch outwards; the top and bottom cards branch to both sides. Positions come
+  // from offsetLeft/Top, so the map's slide (a transform) doesn't skew them.
+  function layoutBranch() {
+    if (!branch) return;
+    var c = branch.card, cx = c.offsetLeft, cy = c.offsetTop, cw = c.offsetWidth, ch = c.offsetHeight;
+    var side = c.classList.contains("l") ? "left" : c.classList.contains("r") ? "right" : null;
+    var cols = { left: [], right: [] }, bottom = 0, lines = "", minX = cx, maxX = cx + cw;
+    branch.els.forEach(function (el, i) { cols[side || (i % 2 ? "right" : "left")].push(el); });
+    map.style.paddingBottom = "";
+    // An open sub-card's skills branch out one more level, beyond it, when that still fits on
+    // screen; otherwise they open as a small tree inside the sub-card.
+    var open = branch.skillsFor, pills = branch.skillEls, outSide = null, pillW = 0, pillH = 0;
+    if (open != null) {
+      outSide = side || (open % 2 ? "right" : "left");
+      pills.forEach(function (el) { el.hidden = false; pillW = Math.max(pillW, el.offsetWidth); pillH = el.offsetHeight; });
+      var lo = cols.left.length ? cx - GAP - SUB_W : cx, hi = cols.right.length ? cx + cw + GAP + SUB_W : cx + cw;
+      if (outSide === "left") lo -= SKILL_GAP + pillW; else hi += SKILL_GAP + pillW;
+      var fits = hi - lo <= document.documentElement.clientWidth - 32;
+      branch.els[open].querySelector(".skills").hidden = fits;
+      pills.forEach(function (el) { el.hidden = !fits; });
+      if (!fits) pills = [];
+    }
+    ["left", "right"].forEach(function (s) {
+      var list = cols[s];
+      if (!list.length) return;
+      var x = s === "right" ? cx + cw + GAP : cx - GAP - SUB_W;
+      var total = list.reduce(function (sum, el) { return sum + el.offsetHeight; }, 0) + VGAP * (list.length - 1);
+      // Centred on the card; the bottom card's columns grow downwards, clear of the cards above.
+      var y = c.classList.contains("b") ? cy : Math.max(8, cy + ch / 2 - total / 2);
+      list.forEach(function (el) {
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.classList.toggle("out-left", s === "left");
+        // Every line fans out from one point: the middle of the card's side.
+        var ay = y + 22, sy = cy + ch / 2;
+        lines += s === "right" ? curve(cx + cw, sy, x, ay) : curve(cx, sy, x + SUB_W, ay);
+        y += el.offsetHeight + VGAP;
+      });
+      bottom = Math.max(bottom, y - VGAP);
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x + SUB_W);
+    });
+    // The skills, centred on the sub-card's "Skills used" row and joined to it.
+    if (pills.length) {
+      var sc = branch.els[open], btn = sc.querySelector(".skills-toggle");
+      var from = outSide === "right" ? sc.offsetLeft + SUB_W : sc.offsetLeft, ty = sc.offsetTop + btn.offsetTop + btn.offsetHeight / 2;
+      var py = Math.max(8, ty - (pills.length * pillH + (pills.length - 1) * 8) / 2);
+      pills.forEach(function (el) {
+        var w = el.offsetWidth, px = outSide === "right" ? from + SKILL_GAP : from - SKILL_GAP - w;
+        el.style.left = px + "px";
+        el.style.top = py + "px";
+        lines += curve(from, ty, outSide === "right" ? px : px + w, py + pillH / 2);
+        minX = Math.min(minX, px);
+        maxX = Math.max(maxX, px + w);
+        bottom = Math.max(bottom, py + pillH);
+        py += pillH + 8;
+      });
+    }
+    // Room below a tall branch.
+    var pad = parseFloat(getComputedStyle(map).paddingBottom);
+    if (bottom + 40 > map.offsetHeight) map.style.paddingBottom = (pad + bottom + 40 - map.offsetHeight) + "px";
+    branch.svg.setAttribute("width", map.offsetWidth);
+    branch.svg.setAttribute("height", map.offsetHeight);
+    branch.svg.setAttribute("viewBox", "0 0 " + map.offsetWidth + " " + map.offsetHeight);
+    branch.svg.innerHTML = lines;
+    // Slide the map so the whole branch is on screen.
+    var vw = document.documentElement.clientWidth, left = map.offsetLeft + minX, right = map.offsetLeft + maxX, shift = 0;
+    if (right > vw - 16) shift = vw - 16 - right;
+    if (left + shift < 16) shift = 16 - left;
+    map.style.transform = shift ? "translateX(" + shift + "px)" : "";
+  }
+
+  function closeBranch() {
+    if (!branch) return;
+    var card = branch.card;
+    branch.els.concat(branch.skillEls).forEach(function (el) { el.remove(); });
+    branch.svg.remove();
+    branch = null;
+    card.classList.remove("open");
+    setButton(card, false);
+    highlight(cards.indexOf(card), false);
+    map.classList.remove("branching");
+    map.style.transform = "";
+    map.style.paddingBottom = "";
+  }
+
+  // ---- Details view: the card in the middle; sub-cards alternate left and right, an odd last one below
+  function render(id) {
+    var card = document.querySelector('.map .card[data-id="' + id + '"]');
+    var subs = DETAILS[id], n = subs.length, below = n % 2 === 1, rows = Math.ceil((below ? n - 1 : n) / 2);
+    var center = card.cloneNode(true);
+    center.className = "card fcenter fcard";
+    center.removeAttribute("data-to");
+    center.removeAttribute("data-id");
+    center.setAttribute("style", "grid-row: 1 / span " + Math.max(rows, 1));
+    center.querySelector("h2").id = "focus-title";
+    fmap.innerHTML = '<svg id="fwires" aria-hidden="true"></svg>';
+    fwires = document.getElementById("fwires");
+    fmap.appendChild(center);
+    fmap.insertAdjacentHTML("beforeend", subs.map(function (x, i) {
+      var pos = below && i === n - 1 ? "b" : i % 2 ? "r" : "l";
+      var row = pos === "b" ? rows + 1 : Math.floor(i / 2) + 1;
+      return '<article class="card fsub fcard ' + pos + '" style="grid-row: ' + row + "; --i: " + (i + 1) + '">' + subHTML(x) + "</article>";
+    }).join(""));
+  }
+
+  // Lines from the middle card: side cards meet at their title row, the one below at its top.
+  function drawFocus() {
+    if (focusEl.hidden || getComputedStyle(fwires).display === "none") return;
+    var m = fmap.getBoundingClientRect(), c = fmap.querySelector(".fcenter").getBoundingClientRect(), out = "";
+    fwires.setAttribute("width", m.width);
+    fwires.setAttribute("height", m.height);
+    fwires.setAttribute("viewBox", "0 0 " + m.width + " " + m.height);
+    Array.prototype.forEach.call(fmap.querySelectorAll(".fsub"), function (el) {
+      var b = el.getBoundingClientRect(), sx, sy, ax, ay;
+      if (el.classList.contains("b")) {
+        sx = c.left + c.width / 2 - m.left; sy = c.bottom - m.top;
+        ax = b.left + b.width / 2 - m.left; ay = b.top - m.top;
+        out += '<path d="M' + sx + "," + sy + " C" + sx + "," + (sy + ay) / 2 + " " + ax + "," + (sy + ay) / 2 + " " + ax + "," + ay + '"/>' +
+          '<circle cx="' + sx + '" cy="' + sy + '" r="4"/><circle cx="' + ax + '" cy="' + ay + '" r="4"/>';
+      } else {
+        var left = el.classList.contains("l");
+        ax = (left ? b.right : b.left) - m.left; ay = b.top - m.top + 22;
+        sx = (left ? c.left : c.right) - m.left; sy = Math.min(Math.max(ay, c.top - m.top + 28), c.bottom - m.top - 28);
+        out += curve(sx, sy, ax, ay);
+      }
+    });
+    fwires.innerHTML = out;
+  }
+
+  function openFocus(id) {
+    render(id);
+    map.hidden = true;
+    footer.hidden = true;
+    focusEl.hidden = false;
+    window.scrollTo(0, 0);
+    drawFocus();
+    back.focus({ preventScroll: true });
+  }
+
+  function closeFocus() {
+    if (focusEl.hidden) return;
+    focusEl.hidden = true;
+    map.hidden = false;
+    footer.hidden = false;
+    fmap.innerHTML = '<svg id="fwires" aria-hidden="true"></svg>';
+    fwires = document.getElementById("fwires");
+    draw();
+  }
+
+  // ---- Showing and hiding, with the address following along (/brain-map/#mobile)
+  function show(id, mode) {
+    if (!DETAILS[id]) return;
+    if (window.innerWidth >= BRANCH_MIN) { closeFocus(); openBranch(id); }
+    else { closeBranch(); openFocus(id); }
+    current = id;
+    if (mode === "push") { history.pushState({ card: id }, "", "#" + id); pushed = true; }
+    else if (mode === "replace") history.replaceState({ card: id }, "", "#" + id);
+    updateTourbar();
+  }
+
+  function hide(fromHistory) {
+    if (!current) return;
+    closeBranch();
+    closeFocus();
+    current = null;
+    if (!fromHistory) {
+      if (pushed) history.back();
+      else history.replaceState(null, "", location.pathname + location.search);
+    }
+    pushed = false;
+    stopTour();
+    updateTourbar();
+    if (opener) opener.focus({ preventScroll: true });
+  }
+
+  function sync() {
+    var id = location.hash.slice(1);
+    if (DETAILS[id]) { if (id !== current) show(id, "none"); }
+    else if (current) hide(true);
+  }
+
+  cards.forEach(function (card) {
+    card.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return; // links inside a card still just open
+      opener = card.querySelector(".more");
+      stopTour(); // the visitor has taken over
+      if (current === card.dataset.id) return hide(false);
+      show(card.dataset.id, current ? "replace" : "push");
+    });
+  });
+  // On the wide map one sub-card's skills open at a time, as their own branch; in the details view
+  // each sub-card opens its tree.
+  function toggleSkills(subcard) {
+    var btn = subcard.querySelector(".skills-toggle");
+    if (!btn) return;
+    if (branch && subcard.classList.contains("bsub")) {
+      var i = branch.els.indexOf(subcard);
+      return setBranchSkills(branch.skillsFor === i ? null : i);
+    }
+    var open = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(open));
+    subcard.querySelector(".skills").hidden = !open;
+    subcard.classList.toggle("skills-open", open);
+    drawFocus();
+  }
+  function setBranchSkills(i) {
+    branch.skillEls.forEach(function (el) { el.remove(); });
+    branch.els.forEach(function (el, k) {
+      var b = el.querySelector(".skills-toggle"), list = el.querySelector(".skills");
+      el.classList.toggle("skills-open", k === i);
+      if (b) b.setAttribute("aria-expanded", String(k === i));
+      if (list && k !== i) list.hidden = true;
+    });
+    branch.skillsFor = i;
+    branch.skillEls = i == null ? [] : Array.prototype.map.call(branch.els[i].querySelectorAll(".skills li"), function (li, k) {
+      var el = document.createElement("span");
+      el.className = "bskill";
+      el.style.setProperty("--i", k);
+      el.textContent = li.textContent;
+      map.appendChild(el);
+      return el;
+    });
+    layoutBranch();
+  }
+  function onSubcardClick(e) {
+    var subcard = e.target.closest(".fsub");
+    if (!subcard || e.target.closest("a")) return;
+    toggleSkills(subcard);
+  }
+  map.addEventListener("click", onSubcardClick);
+  fmap.addEventListener("click", onSubcardClick);
+
+  // A click on the map's empty space closes an open branch.
+  map.addEventListener("click", function (e) { if (branch && !e.target.closest(".card, .bskill")) hide(false); });
+  back.addEventListener("click", function () { hide(false); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") hide(false);
+    else if (current && (e.key === "ArrowRight" || e.key === "ArrowLeft") && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      step(e.key === "ArrowRight" ? 1 : -1);
+    }
+  });
+  window.addEventListener("popstate", sync);
+  window.addEventListener("hashchange", sync);
+  fmap.addEventListener("animationend", drawFocus);
+
+  // ---- How to use, and a tour that plays through every card by itself: a pointer glides to
+  // each card's "Open details", clicks it, and the bar says what you're looking at.
+  var ORDER = ["filesure", "mobile", "search", "cloud", "web", "activity", "mentoring", "projects"];
+  var CAPTIONS = {
+    filesure: "My job at FileSure: intern to Software Engineer in 3 months. The sub-cards cover each role, running the tech and what I worked on.",
+    mobile: "The iOS and Android app I built from scratch. Each sub-card is one part of it: sign-in, search, checkout, alerts and releases.",
+    search: "Company screening I rebuilt on ClickHouse: the filters it offers, the sectors and how fast it answers.",
+    cloud: "Moving the backend to Google Cloud, and how releases go out safely.",
+    web: "The website, the API behind it, and what the developer API (api.filesure.in) can do.",
+    activity: "My FileSure GitHub activity: month by month, the busiest days and my longest streak.",
+    mentoring: "Over three years at Tutedude, part-time, helping 25,000+ learners with full stack, DSA and ML.",
+    projects: "My own builds, each with its code and a live link."
+  };
+  var INTRO = "Each card is one area of my work. Watch: clicking a card opens its details.";
+  var DWELL = 9000; // time on each card
+  var tourbar = document.getElementById("tourbar"), where = tourbar.querySelector(".where");
+  var caption = tourbar.querySelector(".caption"), progress = tourbar.querySelector(".progress");
+  var playBtn = document.getElementById("play"), ghost = document.getElementById("ghost"), toast = document.getElementById("toast");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var playing = false, timer = null, demoTimers = [];
+
+  function titleOf(id) { return document.querySelector('.map .card[data-id="' + id + '"] h2').textContent.trim(); }
+  function updateTourbar() {
+    var on = !!current || playing;
+    tourbar.hidden = !on;
+    document.body.classList.toggle("touring", on);
+    if (current) {
+      where.innerHTML = "<b>" + (ORDER.indexOf(current) + 1) + " / " + ORDER.length + "</b> · " + titleOf(current);
+      caption.textContent = CAPTIONS[current];
+    }
+  }
+  function go(id, mode) {
+    opener = document.querySelector('.map .card[data-id="' + id + '"] .more');
+    show(id, mode);
+    if (branch) branch.card.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+  }
+
+  function later(fn, ms) { demoTimers.push(setTimeout(fn, ms)); }
+  function clearDemo() {
+    demoTimers.forEach(clearTimeout);
+    demoTimers = [];
+    ghost.classList.remove("show", "click");
+  }
+  function placeGhost(el, glide) {
+    var b = el.getBoundingClientRect();
+    if (!glide) ghost.style.transition = "none";
+    ghost.style.transform = "translate(" + (b.left + Math.min(28, b.width / 2)) + "px," + (b.top + b.height / 2) + "px)";
+    if (!glide) { ghost.getBoundingClientRect(); ghost.style.transition = ""; }
+  }
+  // Show the click, then open the card. Without the map on screen (the details view on narrow
+  // screens) or with reduced motion, it just opens.
+  function demo(id, mode, from) {
+    clearDemo();
+    var card = document.querySelector('.map .card[data-id="' + id + '"]');
+    if (reduce || map.hidden) { go(id, mode); schedule(); return; }
+    placeGhost(from || document.getElementById("next"), false);
+    ghost.classList.add("show");
+    card.scrollIntoView({ block: "center", behavior: "smooth" });
+    later(function () {
+      placeGhost(card.querySelector(".more"), true);
+      later(function () {
+        ghost.classList.add("click");
+        later(function () { clearDemo(); go(id, mode); schedule(); }, 380);
+      }, 800);
+    }, 450);
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    progress.classList.remove("run");
+    if (!playing || !current) return;
+    progress.style.animationDuration = DWELL + "ms";
+    progress.getBoundingClientRect(); // restart the line
+    progress.classList.add("run");
+    timer = setTimeout(function () {
+      var i = ORDER.indexOf(current);
+      if (i === ORDER.length - 1) finishTour();
+      else demo(ORDER[i + 1], "replace");
+    }, DWELL);
+  }
+  function setPlaying(on) {
+    playing = on;
+    playBtn.setAttribute("aria-pressed", String(on));
+    playBtn.setAttribute("aria-label", on ? "Pause the tour" : "Play the tour");
+    playBtn.innerHTML = on ? '<span aria-hidden="true">❚❚</span><span class="tl"> Pause</span>' : '<span aria-hidden="true">▶</span><span class="tl"> Play</span>';
+    if (!on) clearDemo();
+    schedule();
+  }
+  function stopTour() { if (playing) setPlaying(false); }
+  function startTour() {
+    var first = !current;
+    setPlaying(true);
+    caption.textContent = INTRO;
+    where.innerHTML = "<b>Tour</b>";
+    updateTourbar();
+    demo(ORDER[0], first ? "push" : "replace", document.getElementById("tour"));
+  }
+  // The tour ends on an invitation: explore, or schedule a call.
+  function finishTour() {
+    hide(false);
+    toast.innerHTML = SCHEDULE_URL
+      ? 'That\'s the tour. Explore any card on your own, or <a id="toast-book" href="' + SCHEDULE_URL + '">schedule a call</a>.'
+      : "That's the tour. Click any card to explore on your own.";
+    toast.hidden = false;
+    clearTimeout(finishTour.t);
+    finishTour.t = setTimeout(function () { toast.hidden = true; }, SCHEDULE_URL ? 9000 : 5000);
+  }
+  function step(d) {
+    if (!current) return;
+    clearDemo();
+    go(ORDER[(ORDER.indexOf(current) + d + ORDER.length) % ORDER.length], "replace");
+    schedule(); // a playing tour carries on from here
+  }
+  function setTips(on) {
+    if (on) root.removeAttribute("data-tips"); else root.setAttribute("data-tips", "hidden");
+    try { localStorage.setItem("brain-map-tips", on ? "shown" : "hidden"); } catch (e) {}
+  }
+  document.getElementById("tour").addEventListener("click", startTour);
+  playBtn.addEventListener("click", function () { setPlaying(!playing); });
+  document.getElementById("prev").addEventListener("click", function () { step(-1); });
+  document.getElementById("next").addEventListener("click", function () { step(1); });
+  document.getElementById("tclose").addEventListener("click", function () { hide(false); });
+  document.getElementById("howto-hide").addEventListener("click", function () { setTips(false); document.getElementById("howto-show").focus(); });
+  document.getElementById("howto-show").addEventListener("click", function () { setTips(true); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) stopTour(); });
+
+  // ---- "Schedule a call": the portfolio's own scheduler (Google Calendar + Meet), which opens on
+  // arrival at /#schedule. Set SCHEDULE_URL to "/#schedule" when the site's BOOKING.enabled goes on.
+  var SCHEDULE_URL = "/#schedule";
+  var bookLink = document.getElementById("book");
+  if (SCHEDULE_URL) {
+    bookLink.href = SCHEDULE_URL;
+    bookLink.hidden = false;
+  }
+
+  function redraw() {
+    // Crossing the width limit swaps a branch for the details view, or back.
+    if (current && (window.innerWidth >= BRANCH_MIN) !== !!branch) show(current, "none");
+    draw();
+    layoutBranch();
+    drawFocus();
+  }
+  draw();
+  sync();
+  window.addEventListener("resize", redraw);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+
+  // ---- Live numbers: my public GitHub commits and LeetCode solved, from the portfolio's API (the
+  // same figures as its About section). The line stays hidden if neither answers in time.
+  var API = "https://portfolio-backend-ie6f.onrender.com/api/v1/portfolio/";
+  var capturing = root.hasAttribute("data-capture");
+  function getJSON(path, ms) {
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = ctl && setTimeout(function () { ctl.abort(); }, ms);
+    return fetch(API + path, ctl ? { signal: ctl.signal } : undefined)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .finally(function () { clearTimeout(timer); });
+  }
+  var num = function (n) { return Number(n).toLocaleString("en-US"); };
+  // The API sleeps when idle and can take ~30 s to wake up, so the capture waits longer.
+  var liveDone = Promise.all([getJSON("github", capturing ? 50000 : 20000), getJSON("leetcode", capturing ? 50000 : 20000)])
+    .then(function (res) {
+      var gh = res[0], lc = res[1], parts = [];
+      if (gh && gh.totalCommits != null) parts.push("<b>" + num(gh.totalCommits) + "</b> public commits");
+      if (lc && lc.status === "success" && lc.totalSolved != null) parts.push("<b>" + num(lc.totalSolved) + "</b> LeetCode solved");
+      var li = document.getElementById("live-stats");
+      if (parts.length) { li.innerHTML = parts.join(" · "); li.hidden = false; }
+      redraw();
+    });
+
+  // The capture view: once the fonts, the logo, the live numbers and the lines are all in, mark the
+  // page ready for the picture.
+  if (capturing) {
+    var logoDone = new Promise(function (resolve) {
+      if (logo.complete && logo.naturalWidth) resolve();
+      else { logo.addEventListener("load", resolve); logo.addEventListener("error", resolve); }
+    });
+    Promise.all([document.fonts ? document.fonts.ready : null, logoDone, liveDone]).then(function () {
+      paintLogo();
+      draw();
+      requestAnimationFrame(function () { root.setAttribute("data-capture-ready", ""); });
+    });
+  }
+</script>
+</body>
+</html>

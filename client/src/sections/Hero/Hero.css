@@ -1,0 +1,365 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.neural-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  -webkit-mask-image: radial-gradient(120% 90% at 60% 40%, #000 35%, transparent 85%);
+  mask-image: radial-gradient(120% 90% at 60% 40%, #000 35%, transparent 85%);
+}
+
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 75%, var(--bg));
+}
+/* Cursor spotlight: a faint ambient wash at rest, brighter only while the pointer moves */
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(520px circle at var(--mx, 72%) var(--my, 40%), var(--glow), transparent 70%);
+  opacity: 0.28;
+  transition: opacity 1.1s var(--ease);
+}
+.hero.is-pointer .hero-glow::before {
+  opacity: 0.8;
+  transition-duration: 0.35s;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--nav-h) + clamp(1.5rem, 5vh, 3.5rem));
+  padding-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.hero-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 3vw, 3.5rem);
+  row-gap: 3rem;
+  align-items: center;
+}
+.hero-main {
+  grid-column: 1 / span 7;
+  display: grid;
+  justify-items: start;
+}
+.hero-aside {
+  grid-column: 8 / span 5;
+}
+
+/* ---------- Status pill ---------- */
+.hero-status {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 1rem 0.45rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(6px);
+  animation: hero-fade 0.9s var(--ease-out) 0.05s backwards;
+}
+
+/* A streak of light that keeps travelling around the pill's border */
+@property --beam {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.hero-status::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--beam),
+    transparent 0 68%,
+    var(--accent) 80%,
+    var(--accent-2) 88%,
+    transparent 95%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: beam 4.5s linear infinite;
+}
+@keyframes beam {
+  to {
+    --beam: 360deg;
+  }
+}
+
+/* Radar scanner: rings + rotating sweep + a blip that lights as the beam passes */
+.radar {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 55%, transparent);
+  background:
+    radial-gradient(circle, var(--accent-2) 0 1.6px, transparent 2.2px),
+    radial-gradient(circle, transparent 0 4.4px, color-mix(in srgb, var(--accent-2) 30%, transparent) 4.6px 5.2px, transparent 5.4px);
+}
+.radar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(transparent 0 250deg, color-mix(in srgb, var(--accent-2) 75%, transparent) 360deg);
+  animation: radar-sweep 2.4s linear infinite;
+}
+.radar::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 6px var(--accent-2);
+  opacity: 0;
+  animation: radar-blip 2.4s linear infinite;
+}
+@keyframes radar-sweep {
+  to {
+    transform: rotate(1turn);
+  }
+}
+/* the blip sits at ~45° — the sweep reaches it 12.5% into each turn */
+@keyframes radar-blip {
+  0%,
+  11% {
+    opacity: 0;
+  }
+  13% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.hero-hello {
+  margin-top: clamp(1.75rem, 4vh, 2.75rem);
+  color: var(--accent-ink);
+  --scramble-color: var(--accent-ink);
+}
+
+/* ---------- Name ---------- */
+.hero-name {
+  margin-top: 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8.4vw, 9.5rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  margin-left: -0.04em;
+  cursor: default;
+}
+.hero-name .accent {
+  color: var(--accent);
+}
+
+.hero-role {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  animation: hero-fade 1s var(--ease-out) 0.35s backwards;
+}
+.hero-role .serif {
+  color: var(--accent);
+  font-size: 1.12em;
+}
+
+.hero-lede {
+  margin-top: 1.1rem;
+  max-width: 50ch;
+  font-size: clamp(1.02rem, 0.9rem + 0.4vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--muted);
+  /* transform-only: this paragraph is the LCP element, so it must be visible on first paint */
+  animation: hero-rise 1s var(--ease-out) 0.1s backwards;
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  animation: hero-fade 1s var(--ease-out) 0.55s backwards;
+}
+.hero-socials {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: 0.25rem;
+}
+.hero-socials .icon-btn {
+  width: 3.25rem;
+  height: 3.25rem;
+}
+
+/* ---------- Footer row ---------- */
+.hero-foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem 2rem;
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line);
+  animation: hero-fade 1s var(--ease-out) 0.7s backwards;
+}
+.hero-where {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero-sep {
+  width: 1px;
+  height: 0.9rem;
+  margin: 0 0.5rem;
+  background: var(--line-strong);
+}
+.hero-building {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+.rotator {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.rotator-item {
+  display: inline-block;
+  animation: rot-in 0.6s var(--ease-out) both;
+}
+.rotator-item::after {
+  content: "_";
+  color: var(--accent);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes rot-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.scroll-cue {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s;
+}
+.scroll-cue svg {
+  animation: nudge 1.8s var(--ease) infinite;
+}
+.scroll-cue:hover {
+  color: var(--accent);
+}
+@keyframes nudge {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translateY(14px);
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .hero-socials .icon-btn {
+    width: 2.9rem;
+    height: 2.9rem;
+  }
+}
+
+@media (max-width: 960px) {
+  .hero-main,
+  .hero-aside {
+    grid-column: 1 / -1;
+  }
+  .hero-aside {
+    max-width: 560px;
+    width: 100%;
+  }
+  .hero-name {
+    font-size: clamp(3rem, 12vw, 6.5rem);
+  }
+  .hero-foot {
+    grid-template-columns: 1fr auto;
+  }
+  .hero-building {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-name {
+    font-size: clamp(2.8rem, 16vw, 4.5rem);
+  }
+  .hero-cta .btn {
+    flex: 1 1 auto;
+  }
+  .hero-socials {
+    width: 100%;
+    margin-left: 0;
+  }
+  .scroll-cue {
+    display: none;
+  }
+  .hero-foot {
+    grid-template-columns: 1fr;
+  }
+}

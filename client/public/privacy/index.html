@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy · Ankit Dimri</title>
+  <meta name="description" content="What Ankit Dimri's portfolio does with your details: the contact form, Schedule a call (Google Calendar and Meet), the resume builder, and what stays in your browser." />
+  <meta name="theme-color" content="#0a0a0c" />
+  <link rel="canonical" href="https://portfolio-nine-orcin-33.vercel.app/privacy/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    @font-face { font-family: "Bricolage Grotesque"; src: url("/fonts/bricolage-grotesque-opsz96.woff2") format("woff2"); font-weight: 500 800; font-display: swap; }
+    @font-face { font-family: "Geist"; src: url("/fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+    @font-face { font-family: "Geist Mono"; src: url("/fonts/geist-mono.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+
+    :root, [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0a0a0c; --bg-2: #111114; --line: rgba(255, 255, 255, 0.09); --line-strong: rgba(255, 255, 255, 0.2);
+      --text: #f2efe8; --muted: #a3a097; --faint: #6f6c66; --accent: #ff6b35; --accent-ink: #ff8a5c;
+    }
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #f3f0e8; --bg-2: #fbfaf6; --line: rgba(20, 18, 14, 0.1); --line-strong: rgba(20, 18, 14, 0.24);
+      --text: #141310; --muted: #58544b; --faint: #8a857a; --accent: #cf4a12; --accent-ink: #a83a0c;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font: 1.0625rem/1.65 "Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent-ink); text-underline-offset: 3px; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    .wrap { max-width: 46rem; margin: 0 auto; padding: 0 1.25rem 5rem; }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      max-width: 46rem; margin: 0 auto; padding: 1.5rem 1.25rem;
+    }
+    .home { color: var(--text); text-decoration: none; font-weight: 600; }
+    .home span { color: var(--muted); font-weight: 400; }
+    .label {
+      font: 500 0.72rem/1.4 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    h1 {
+      font: 700 clamp(2.4rem, 1.6rem + 3vw, 3.6rem)/1 "Bricolage Grotesque", system-ui, sans-serif;
+      letter-spacing: -0.03em; margin: 2.5rem 0 1rem;
+    }
+    .lede { font-size: 1.2rem; color: var(--muted); max-width: 38ch; }
+    .updated { margin-top: 1.25rem; }
+    section { margin-top: 2.75rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+    h2 {
+      font: 600 1.45rem/1.2 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -0.02em;
+      margin-bottom: 0.9rem;
+    }
+    p + p, p + ul, ul + p { margin-top: 0.85rem; }
+    ul { padding-left: 1.2rem; }
+    li + li { margin-top: 0.55rem; }
+    li::marker { color: var(--accent); }
+    strong { font-weight: 600; }
+    .note {
+      margin-top: 1rem; padding: 0.9rem 1.1rem; border: 1px solid var(--line-strong); border-radius: 12px;
+      background: var(--bg-2); color: var(--muted);
+    }
+    footer { margin-top: 3.5rem; color: var(--faint); font-size: 0.92rem; }
+  </style>
+  <script>
+    // The same saved theme as the rest of the site
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header>
+    <a class="home" href="/">Ankit Dimri <span>· Portfolio</span></a>
+    <a class="label" href="/#contact">Contact</a>
+  </header>
+
+  <main class="wrap">
+    <p class="label">Privacy</p>
+    <h1>What this site does with your details</h1>
+    <p class="lede">It's my personal portfolio. Here's everything it collects, why, and where it goes.</p>
+    <p class="label updated">Last updated 15 October 2026</p>
+
+    <section>
+      <h2>Who I am</h2>
+      <p>
+        I'm Ankit Dimri, a software engineer in Dehradun, India. This site,
+        portfolio-nine-orcin-33.vercel.app, is mine and I run it myself. For any question about your
+        details, or to have them deleted, email
+        <a href="mailto:dimri.ankitdimri@gmail.com">dimri.ankitdimri@gmail.com</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>What it collects, and why</h2>
+      <ul>
+        <li>
+          <strong>Schedule a call.</strong> When you book a call, you give your name, your email, the
+          time you picked and your time zone, and if you like, a phone number and a note. They're used
+          to put the call in my Google Calendar with a Google Meet link and to send you the invitation,
+          which Google Calendar emails to you. The event, with these details, stays in my calendar. I
+          may also get an email with the same details. I use your phone number only about the call,
+          for example if it needs to move.
+        </li>
+        <li>
+          <strong>The contact form.</strong> Your name, email and message are saved in my database and
+          emailed to me, so I can reply.
+        </li>
+        <li id="resume-builder">
+          <strong>The resume builder.</strong> What you type stays in your browser until you ask for the
+          PDF. Then your email address and your resume are saved in my database for 30 days, so the link
+          in the email works, and deleted after that. Only you and I can see them: you with that link
+          or by signing in, and I on an admin page only my address can open. The email comes from my
+          Gmail, with a link to your PDF and a link to edit or delete the resume sooner. It greets you by
+          the first name on your resume; nothing else you typed is in it. The PDF is made from the saved
+          resume each time you open it.
+        </li>
+        <li id="signing-in">
+          <strong>Signing in (optional).</strong> To see your saved resumes on any device, you can sign
+          in with Google, which tells me your email address and name, or with a one-time link emailed to
+          you. Your account is that address, your name, the dates you joined and last used it, and, while
+          you're signed in, your drafts (up to 5 versions), saved as you type so you can carry on from
+          another device. It's deleted with its drafts 30 days after you last used it if you have no
+          saved resume, or at once with “Delete my data”. There are no passwords.
+        </li>
+      </ul>
+      <p>
+        That's all. There are no newsletters, and nothing is sold, shared for advertising or used for
+        anything other than what's above.
+      </p>
+    </section>
+
+    <section>
+      <h2>Google Calendar, Gmail and Google user data</h2>
+      <p>
+        The site's server uses Google's Calendar API with <strong>my</strong> Google account only. It
+        checks when I'm busy (not what my events are), so it can show free times, and it adds the calls
+        you book to my calendar with a Google Meet link. It also uses Gmail's API, with my account, to
+        send the resume builder's emails: it can send email, and can't read any. If you choose
+        “Continue with Google” to sign in to the resume builder, Google tells the site your email address
+        and name, and nothing else; it never reads anything else of your Google account.
+      </p>
+      <p class="note">
+        The use of information received from Google APIs adheres to the
+        <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+        including the Limited Use requirements.
+      </p>
+    </section>
+
+    <section>
+      <h2>The services that handle it</h2>
+      <ul>
+        <li><strong>Vercel</strong> hosts this site, and makes the resume builder's PDFs.</li>
+        <li><strong>Render</strong> runs its server (the API), behind Cloudflare.</li>
+        <li><strong>Neon</strong> is the database where contact messages, resumes (for 30 days), and accounts with their drafts are saved.</li>
+        <li><strong>Google</strong> holds the calendar events and the Meet calls, sends the resume builder's emails from my Gmail, and signs you in if you continue with Google.</li>
+        <li><strong>Resend</strong> sends the emails that tell me about messages and bookings.</li>
+      </ul>
+      <p>
+        Each one handles the details only to provide its service. As with any website, their logs may
+        briefly record your IP address. The server also uses your IP address, in memory only, to stop
+        repeated requests, and doesn't store it.
+      </p>
+    </section>
+
+    <section>
+      <h2>In your browser</h2>
+      <p>
+        No cookies, no analytics, no tracking. Your browser keeps a few things in its local storage:
+        light or dark theme, the 12- or 24-hour clock for the scheduler, the brain map's settings, and the
+        resume builder's draft and any job posting you paste into its ATS check, and, if you sign in,
+        your session (for 30 days, or until you sign out). They never leave your device, unless you ask
+        for your resume's PDF or sign in (above). The map of Dehradun in the footer loads from OpenStreetMap only if
+        you open it.
+      </p>
+    </section>
+
+    <section>
+      <h2>How long it's kept, and your choices</h2>
+      <ul>
+        <li>Calendar events and contact messages are kept until I delete them. If a call is cancelled, I delete its event.</li>
+        <li>A resume from the builder is deleted 30 days after you ask for its PDF, or sooner with the link in the email or in My resumes.</li>
+        <li>An account, with its drafts, is deleted 30 days after you last used it when it has no saved resume, or at once with “Delete my data”.</li>
+        <li>Email me to see, correct or delete what you've sent, and I'll do it.</li>
+        <li>You can decline or remove the calendar invitation at any time.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Changes</h2>
+      <p>If this page changes, the date at the top changes with it.</p>
+    </section>
+
+    <footer>
+      <a href="/">Back to the portfolio</a> · <a href="/terms/">Terms</a>
+    </footer>
+  </main>
+</body>
+</html>

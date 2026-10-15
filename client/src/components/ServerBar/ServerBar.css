@@ -1,0 +1,37 @@
+/* The bar when the server can't be reached: the notice's line (Notice.css), with its timer. */
+.server-bar-body {
+  display: grid;
+  gap: 0.3rem;
+}
+.server-bar-time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 1rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+.server-bar-try {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.server-bar-try:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.server-bar-try:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.server-bar.is-back > svg {
+  color: var(--accent-2);
+}
