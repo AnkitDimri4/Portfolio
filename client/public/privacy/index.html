@@ -111,18 +111,19 @@
         </li>
         <li id="resume-builder">
           <strong>The resume builder.</strong> What you type stays in your browser until you ask for the
-          PDF. Then your email address and your resume are saved in my database for 30 days, so the link
-          in the email works, and deleted after that. Only you and I can see them: you with that link
+          PDF. Then your email address and your resume are saved in my database for 30 days, or until
+          your plan ends, so the link in the email works, and deleted after that. Only you and I can see them: you with that link
           or by signing in, and I on an admin page only my address can open. The email comes from my
           Gmail, with a link to download your PDF and a link to edit or delete the resume sooner. It
           greets you by the first name on your resume; nothing else you typed is in it. The PDF is made
           from the saved resume each time you open it.
         </li>
-        <li id="support">
-          <strong>Supporting the builder (optional).</strong> The page the email's download link opens
-          shows my Google Pay QR code and UPI ID. If you send something, it happens in your UPI app,
-          between your bank and mine: the site never sees it. As with any UPI payment, I see the name
-          your bank has for you, your UPI ID and the amount, and I use them for nothing else.
+        <li id="payments">
+          <strong>Paying for PDFs.</strong> You pay through Razorpay, on the page the email's link opens:
+          your UPI ID, card or bank details go to Razorpay, not to me. I keep the address the PDF was sent
+          to, what you paid and when, and Razorpay's order and payment numbers, for my accounts; with a
+          plan, the date it ends too. Razorpay handles the payment under its own
+          <a href="https://razorpay.com/privacy/">privacy policy</a>.
         </li>
         <li id="signing-in">
           <strong>Signing in (optional).</strong> To see your saved resumes on any device, you can sign
@@ -164,6 +165,7 @@
         <li><strong>Neon</strong> is the database where contact messages, resumes (for 30 days), and accounts with their drafts are saved.</li>
         <li><strong>Google</strong> holds the calendar events and the Meet calls, sends the resume builder's emails from my Gmail, and signs you in if you continue with Google.</li>
         <li><strong>Resend</strong> sends the emails that tell me about messages and bookings.</li>
+        <li><strong>Razorpay</strong> takes the payments for PDFs and plans.</li>
       </ul>
       <p>
         Each one handles the details only to provide its service. As with any website, their logs may
@@ -180,7 +182,7 @@
         resume builder's draft and any job posting you paste into its ATS check, and, if you sign in,
         your session (for 30 days, or until you sign out). They never leave your device, unless you ask
         for your resume's PDF or sign in (above). The map of Dehradun in the footer loads from OpenStreetMap only if
-        you open it.
+        you open it, and Razorpay's payment window only when you pay.
       </p>
     </section>
 
@@ -188,7 +190,8 @@
       <h2>How long it's kept, and your choices</h2>
       <ul>
         <li>Calendar events and contact messages are kept until I delete them. If a call is cancelled, I delete its event.</li>
-        <li>A resume from the builder is deleted 30 days after you ask for its PDF, or sooner with the link in the email or in My resumes.</li>
+        <li>A resume from the builder is deleted 30 days after you ask for its PDF (or when your plan ends, if that's later), or sooner with the link in the email or in My resumes.</li>
+        <li>Payment records are kept for my accounts. Orders that were never paid are deleted after 7 days, and a plan's end date when it ends.</li>
         <li>An account, with its drafts, is deleted 30 days after you last used it when it has no saved resume, or at once with “Delete my data”.</li>
         <li>Email me to see, correct or delete what you've sent, and I'll do it.</li>
         <li>You can decline or remove the calendar invitation at any time.</li>

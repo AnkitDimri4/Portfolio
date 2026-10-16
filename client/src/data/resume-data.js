@@ -212,7 +212,7 @@ export default {
       ],
       "summary": "Pre-rendered React site and Node.js API, with live GitHub and LeetCode stats.",
       "points": [
-        "Free [resume builder](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): 3 templates, ATS check, PDF by email and Google sign-in.",
+        "[Resume builder](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): 3 templates, ATS check, PDF by email and Google sign-in.",
         "Scheduler books Google Meet calls into Google Calendar; 200+ tests run in CI."
       ],
       "tech": "React, Vite, Node.js, Express, PostgreSQL (Neon), Google Calendar & Gmail APIs, GitHub Actions"

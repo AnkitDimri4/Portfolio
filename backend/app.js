@@ -34,6 +34,9 @@ const configured = (process.env.CORS_ORIGIN || "")
   .filter(Boolean);
 app.use(cors({ origin: configured.length ? configured : DEFAULT_ORIGINS }));
 
+// Razorpay's webhook is signed over its body exactly as it was sent, so that one stays raw
+// (controllers/paymentController.js).
+app.use("/api/v1/portfolio/payments/razorpay", express.raw({ type: "*/*", limit: "100kb" }));
 // A resume or a draft from the builder can be longer than a contact message (lib/resumes.js caps each field).
 app.use(["/api/v1/portfolio/resumes", "/api/v1/portfolio/me/drafts", "/api/v1/portfolio/admin/site-resume"], express.json({ limit: "100kb" }));
 app.use(express.json({ limit: "20kb" }));
