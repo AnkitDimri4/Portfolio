@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { renderToString } from "react-dom/server";
 import App from "./App";
+import { structuredDataScript } from "./builder/faq";
 import { Shell as BuilderShell } from "./builder/Intro";
 
 /** Renders the page to HTML at build time (see scripts/prerender.js). */
@@ -13,3 +14,6 @@ export const render = () =>
 
 /** The resume builder's top bar and heading, written into resume-builder/index.html the same way. */
 export const renderBuilder = () => renderToString(<BuilderShell />);
+
+/** The resume builder's structured data (its FAQ, and what it is), for its <head>. */
+export const builderStructuredData = structuredDataScript;
