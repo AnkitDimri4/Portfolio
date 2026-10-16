@@ -7,7 +7,11 @@ const BEHIND_CLOUDFLARE = Boolean(process.env.RENDER) || process.env.TRUST_CF_CO
 
 const clientKey = (req) => (BEHIND_CLOUDFLARE && req.get("cf-connecting-ip")) || req.ip;
 
-const rateLimit = ({ windowMs, max, message }) => {
+/**
+ * At most `max` requests per `windowMs`, per visitor, or per whatever `key(req)` returns (e.g. a
+ * resume's id). Requests `skip(req)` is true for aren't counted.
+ */
+const rateLimit = ({ windowMs, max, message, key: keyOf = clientKey, skip }) => {
   const hits = new Map();
 
   setInterval(() => {
@@ -16,8 +20,9 @@ const rateLimit = ({ windowMs, max, message }) => {
   }, windowMs).unref();
 
   return (req, res, next) => {
+    if (skip?.(req)) return next();
     const now = Date.now();
-    const key = clientKey(req);
+    const key = keyOf(req);
     const entry = hits.get(key);
     if (!entry || now > entry.resetAt) {
       hits.set(key, { count: 1, resetAt: now + windowMs });
