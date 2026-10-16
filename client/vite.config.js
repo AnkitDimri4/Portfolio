@@ -1,9 +1,26 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+// `npm start` serves public/'s own pages (the download page, privacy, terms, the brain map) at their
+// folder's URL, as Vercel does, instead of falling back to the portfolio.
+const publicPages = {
+  name: "public-pages",
+  configureServer(server) {
+    server.middlewares.use((req, _res, next) => {
+      const [path, query] = req.url.split("?");
+      if (path.endsWith("/") && existsSync(join(server.config.publicDir, path, "index.html"))) {
+        req.url = `${path}index.html${query ? `?${query}` : ""}`;
+      }
+      next();
+    });
+  },
+};
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), publicPages],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
   envPrefix: ["VITE_", "REACT_APP_"],
   server: {
