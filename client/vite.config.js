@@ -39,8 +39,9 @@ export default defineConfig({
   server: {
     port: 3000,
     // Relative /api requests, and /health (the server bar's check), go to the local backend when
-    // REACT_APP_BACKEND_URL is unset.
-    proxy: { "/api": "http://localhost:8080", "/health": "http://localhost:8080" },
+    // REACT_APP_BACKEND_URL is unset. By IP: the mock API listens only on 127.0.0.1, and "localhost"
+    // can mean ::1 first.
+    proxy: { "/api": "http://127.0.0.1:8080", "/health": "http://127.0.0.1:8080" },
   },
   preview: { headers: siteHeaders },
   build: {
