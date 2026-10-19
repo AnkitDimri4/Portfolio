@@ -1,0 +1,123 @@
+/* The Portfolio's activity card (SiteActivity.jsx). Its calendar reuses ContributionGraph's shades. */
+.sa {
+  container: sa / inline-size;
+  display: grid;
+  gap: 1.1rem;
+  width: 100%;
+  min-width: 0;
+}
+.sa-title {
+  color: var(--muted);
+}
+
+/* ---------- The numbers ---------- */
+.sa-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+}
+@container sa (min-width: 34rem) {
+  .sa-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+/* The number on top, its words below (a dl keeps the words first, for screen readers) */
+.sa-stat {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg) 40%, transparent);
+}
+.sa-stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.sa-stat dt {
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* ---------- The graphs: one above the other, each as wide as the card ---------- */
+.sa-graphs {
+  display: grid;
+  gap: 1.1rem;
+}
+.sa-graph {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.sa-graph-title {
+  font-size: 0.62rem;
+  color: var(--faint);
+}
+.sa-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.sa-svg text {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  fill: var(--faint);
+}
+/* A day the site was deployed: a small triangle over its square */
+.sa-deploy {
+  fill: var(--text);
+  opacity: 0.85;
+}
+.sa-bar-commits {
+  fill: var(--accent-2);
+  background: var(--accent-2);
+}
+.sa-bar-pullRequests {
+  fill: var(--accent);
+  background: var(--accent);
+}
+.sa-bar-deployments {
+  fill: color-mix(in srgb, var(--text) 75%, transparent);
+  background: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+/* ---------- Keys and dates ---------- */
+.sa-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.9rem;
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+.sa-legend span,
+.sa-scale {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.sa-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+.sa-tri {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text);
+}
+.sa-dates {
+  font-size: 0.62rem;
+  color: var(--faint);
+}

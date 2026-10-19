@@ -1,0 +1,96 @@
+{
+  "repository": "AnkitDimri4/Portfolio-app",
+  "publicCopy": "AnkitDimri4/Portfolio",
+  "timeZone": "Asia/Kolkata",
+  "from": "2026-02-02",
+  "to": "2026-10-19",
+  "totals": {
+    "commits": 386,
+    "mergedPullRequests": 125,
+    "deployments": 287,
+    "productionDeploys": 138,
+    "activeDays": 16
+  },
+  "days": {
+    "2026-02-02": {
+      "commits": 7,
+      "pullRequests": 0,
+      "deployments": 0
+    },
+    "2026-02-09": {
+      "commits": 40,
+      "pullRequests": 0,
+      "deployments": 22
+    },
+    "2026-02-10": {
+      "commits": 1,
+      "pullRequests": 0,
+      "deployments": 1
+    },
+    "2026-02-16": {
+      "commits": 4,
+      "pullRequests": 0,
+      "deployments": 4
+    },
+    "2026-02-22": {
+      "commits": 5,
+      "pullRequests": 0,
+      "deployments": 5
+    },
+    "2026-02-25": {
+      "commits": 6,
+      "pullRequests": 0,
+      "deployments": 6
+    },
+    "2026-02-27": {
+      "commits": 3,
+      "pullRequests": 0,
+      "deployments": 3
+    },
+    "2026-03-11": {
+      "commits": 5,
+      "pullRequests": 0,
+      "deployments": 5
+    },
+    "2026-09-19": {
+      "commits": 14,
+      "pullRequests": 2,
+      "deployments": 0
+    },
+    "2026-10-06": {
+      "commits": 12,
+      "pullRequests": 1,
+      "deployments": 0
+    },
+    "2026-10-08": {
+      "commits": 7,
+      "pullRequests": 3,
+      "deployments": 0
+    },
+    "2026-10-13": {
+      "commits": 79,
+      "pullRequests": 31,
+      "deployments": 74
+    },
+    "2026-10-14": {
+      "commits": 79,
+      "pullRequests": 35,
+      "deployments": 74
+    },
+    "2026-10-15": {
+      "commits": 83,
+      "pullRequests": 34,
+      "deployments": 59
+    },
+    "2026-10-16": {
+      "commits": 37,
+      "pullRequests": 18,
+      "deployments": 33
+    },
+    "2026-10-17": {
+      "commits": 4,
+      "pullRequests": 1,
+      "deployments": 1
+    }
+  }
+}

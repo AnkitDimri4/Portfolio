@@ -54,6 +54,20 @@ export const PROJECTS = [
     links: FILESURE.links,
   },
   {
+    // This site, in a full row after FileSure rather than with my own projects: its activity card
+    // (commits, merged pull requests, deployments, day by day and month by month) replaces the demo.
+    activity: true,
+    lighthouse: [96, 100], // mobile, desktop: Lighthouse on the live site, as on my GitHub profile's card
+    repo: "Portfolio",
+    title: "This Portfolio",
+    short: "Portfolio",
+    kind: "Full Stack · My site",
+    summary:
+      "The site you're on. Pre-rendered React with a hand-built design system, on a Node/Express API with Neon PostgreSQL. It has a one-page resume builder (three templates, an ATS check, the PDF by email, and Google sign-in with drafts on any device), cached live GitHub & LeetCode stats, and Google Meet calls booked straight into Google Calendar.",
+    tech: ["React", "Vite", "Node.js", "Express", "PostgreSQL", "Google Calendar API", "Gmail API", "Puppeteer", "Resend", "Canvas"],
+    github: "https://github.com/AnkitDimri4/Portfolio",
+  },
+  {
     repo: "RN-WALLET",
     title: "RN-Wallet",
     short: "RN-Wallet",
@@ -89,17 +103,6 @@ export const PROJECTS = [
     tech: ["React", "Redux", "Node.js", "Express", "MongoDB", "JWT", "Stripe", "Cloudinary"],
     image: `${GH}2eefd77e-6808-472b-85be-f4e43edf3b20`,
     github: "https://github.com/AnkitDimri4/quickcart-mern",
-  },
-  {
-    repo: "Portfolio",
-    title: "This Portfolio",
-    short: "Portfolio",
-    kind: "Full Stack",
-    summary:
-      "The site you're on. Pre-rendered React with a hand-built design system, on a Node/Express API with Neon PostgreSQL. It has a one-page resume builder (three templates, an ATS check, the PDF by email, and Google sign-in with drafts on any device), cached live GitHub & LeetCode stats, and Google Meet calls booked straight into Google Calendar.",
-    tech: ["React", "Vite", "Node.js", "Express", "PostgreSQL", "Google Calendar API", "Gmail API", "Puppeteer", "Resend", "Canvas"],
-    videos: [{ src: `${GH}6688385e-51c2-48a7-b90c-5eef543272c2`, label: "Walkthrough" }],
-    github: "https://github.com/AnkitDimri4/Portfolio",
   },
 ];
 

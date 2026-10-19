@@ -3,6 +3,7 @@ import { FiArrowUpRight, FiGitCommit, FiGithub, FiStar } from "react-icons/fi";
 import SectionHead from "../../components/SectionHead";
 import LiveSignal from "../../components/LiveSignal";
 import ContributionGraph from "../../components/ContributionGraph/ContributionGraph";
+import SiteActivity from "../../components/SiteActivity/SiteActivity";
 import { Reveal, useInView } from "../../lib/reveal";
 import { useApi } from "../../lib/api";
 import { PINNED_REPOS, PROFILE, PROJECTS } from "../../data/profile";
@@ -53,6 +54,12 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
           <div className="project-media">
             <div className="project-screen project-screen--graph">
               <ContributionGraph title={`GitHub activity at ${project.work}`} />
+            </div>
+          </div>
+        ) : project.activity ? (
+          <div className="project-media">
+            <div className="project-screen project-screen--graph project-screen--activity">
+              <SiteActivity title="GitHub activity on this site" lighthouse={project.lighthouse} />
             </div>
           </div>
         ) : (
@@ -211,8 +218,10 @@ const Work = () => {
   const repos = data?.repos || [];
   const byName = Object.fromEntries(repos.map((r) => [r.name, r]));
   const featured = new Set(PROJECTS.map((p) => p.repo));
-  const own = PROJECTS.filter((p) => !p.work);
-  const offset = PROJECTS.length - own.length;
+  // First, full rows: my work (FileSure), then this site with its activity. The rest are "My own projects".
+  const top = PROJECTS.filter((p) => p.work || p.activity);
+  const own = PROJECTS.filter((p) => !p.work && !p.activity);
+  const offset = top.length;
   const more = [
     ...PINNED_REPOS.map((n) => byName[n]).filter(Boolean),
     ...repos.filter((r) => !featured.has(r.name) && !PINNED_REPOS.includes(r.name)),
@@ -235,8 +244,8 @@ const Work = () => {
         </SectionHead>
 
         <div className="projects">
-          {PROJECTS.filter((p) => p.work).map((p, i) => (
-            <ProjectRow key={p.title} project={p} index={i} />
+          {top.map((p, i) => (
+            <ProjectRow key={p.title} project={p} index={i} repo={p.repo && byName[p.repo]} />
           ))}
         </div>
 

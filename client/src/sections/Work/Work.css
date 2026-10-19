@@ -54,6 +54,10 @@
   overflow: visible;
   min-width: 0;
 }
+/* The site's activity card holds more than a graph: it sets its own height instead of 16:9 */
+.project-screen--activity {
+  aspect-ratio: auto;
+}
 .project:hover .project-screen {
   border-color: var(--line-strong);
   transform: translateY(-4px);
