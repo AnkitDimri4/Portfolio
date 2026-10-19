@@ -62,7 +62,7 @@ From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptanc
 - **CORS:** only the site, its Vercel previews and `localhost` can call it; `CORS_ORIGIN` replaces that list.
 - **Errors:** JSON without stack traces or file paths (`Invalid request body`, `Request too large`, `Something went wrong`). A request that fails, for any reason, gets a JSON 500; it never stops the server.
 - **Input:** checked and length-limited; anything a visitor types is escaped before it goes into an email; SQL is parameterised.
-- **Rate limits:** every route has its own limit per visitor, and every request, whatever its path, counts toward a ceiling of 600 a minute. They count each visitor by their real address: on Render, traffic comes through Cloudflare, so its `CF-Connecting-IP` header is used there, and only there.
+- **Rate limits:** every route has its own limit per visitor, and every request, whatever its path, counts toward a ceiling of 600 a minute. They count each visitor by their real address: on Render, traffic comes through Cloudflare, so its `CF-Connecting-IP` header is used there, and only on requests from Cloudflare's own addresses: any other request is counted by its own.
 - **Database:** TLS, with the certificate verified.
 - **Secrets** live only in Render's settings, never in the code.
 

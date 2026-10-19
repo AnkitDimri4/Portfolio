@@ -82,7 +82,7 @@
     <p class="label">Privacy</p>
     <h1>What this site does with your details</h1>
     <p class="lede">It's my personal portfolio. Here's everything it collects, why, and where it goes.</p>
-    <p class="label updated">Last updated 16 October 2026</p>
+    <p class="label updated">Last updated 19 October 2026</p>
 
     <section>
       <h2>Who I am</h2>
@@ -101,9 +101,11 @@
           <strong>Schedule a call.</strong> When you book a call, you give your name, your email, the
           time you picked and your time zone, and if you like, a phone number and a note. They're used
           to put the call in my Google Calendar with a Google Meet link and to send you the invitation,
-          which Google Calendar emails to you. The event, with these details, stays in my calendar. I
-          may also get an email with the same details. I use your phone number only about the call,
-          for example if it needs to move.
+          which Google Calendar emails to you. The event, with your name and email, stays in my calendar.
+          Your phone number and note aren't in it: they come to me in an email. I use your phone number
+          only about the call, for example if it needs to move. So the form can't be used to send
+          invitations to other people, the server counts the calls booked for each address for a week,
+          under a one-way code made from it (a hash), never the address itself.
         </li>
         <li>
           <strong>The contact form.</strong> Your name, email and message are saved in my database and
@@ -171,15 +173,17 @@
       <ul>
         <li><strong>Vercel</strong> hosts this site, and makes the resume builder's PDFs.</li>
         <li><strong>Render</strong> runs its server (the API), behind Cloudflare.</li>
-        <li><strong>Neon</strong> is the database where contact messages, resumes (for 30 days), and accounts with their drafts are saved.</li>
+        <li><strong>Neon</strong> is the database where contact messages, resumes (for 30 days), accounts with their drafts, and the counts that stop repeated requests (below) are saved.</li>
         <li><strong>Google</strong> holds the calendar events and the Meet calls, sends the resume builder's emails from my Gmail, and signs you in if you continue with Google.</li>
         <li><strong>Resend</strong> sends the emails that tell me about messages and bookings.</li>
         <li><strong>Razorpay</strong> takes the payments for PDFs and plans.</li>
       </ul>
       <p>
         Each one handles the details only to provide its service. As with any website, their logs may
-        briefly record your IP address. The server also uses your IP address, in memory only, to stop
-        repeated requests, and doesn't store it.
+        briefly record your IP address. The server also uses your IP address to stop repeated
+        requests: in memory only, except that for sign-in emails and ₹1 payments it keeps a count for a
+        day, and for sign-in emails a count for each address for an hour, under a one-way code made
+        from them (a hash), never the IP address or email address itself.
       </p>
     </section>
 
@@ -204,6 +208,7 @@
         <li>A resume from the builder is deleted 30 days after you ask for its PDF (or when your plan ends, if that's later), or sooner with the link in the email or in My resumes.</li>
         <li>Payment records, refunded ones too, are kept for my accounts. Orders that were never paid are deleted after 7 days, payments that failed after 30, and a plan's end date when it ends.</li>
         <li>An account, with its drafts, is deleted 30 days after you last used it when it has no saved resume, or at once with “Delete my data”.</li>
+        <li>The counts that stop repeated requests are deleted within 8 days.</li>
         <li>Email me to see, correct or delete what you've sent, and I'll do it.</li>
         <li>You can decline or remove the calendar invitation at any time.</li>
       </ul>

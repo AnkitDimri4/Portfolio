@@ -48,3 +48,12 @@ test("CF-Connecting-IP is only trusted on Render (behind Cloudflare)", () => {
   assert.equal(load({ RENDER: "true" }).clientKey(req), "203.0.113.7", "used on Render");
   assert.equal(load({ RENDER: "true" }).clientKey(fakeReq("10.0.0.1")), "10.0.0.1", "falls back to req.ip");
 });
+
+test("on Render, CF-Connecting-IP counts only on a request from Cloudflare, or from inside Render", () => {
+  const { clientKey } = load({ RENDER: "true" });
+  const header = { "cf-connecting-ip": "203.0.113.7" };
+  for (const hop of ["172.68.0.1", "::ffff:172.68.0.1", "2606:4700::6810:84e5", "10.12.0.4"]) assert.equal(clientKey(fakeReq(hop, header)), "203.0.113.7", hop);
+  for (const elsewhere of ["198.51.100.20", "2001:db8::1", "::ffff:198.51.100.20", "not an address"]) {
+    assert.equal(clientKey(fakeReq(elsewhere, header)), elsewhere, `${elsewhere}: the header could be made up`);
+  }
+});
