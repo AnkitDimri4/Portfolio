@@ -70,9 +70,13 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: "Not found" });
 });
 
-// Errors (e.g. malformed JSON bodies) → JSON without stack traces or file paths
-// eslint-disable-next-line no-unused-vars
+// Errors (e.g. malformed JSON bodies, or a handler that failed: middleware/caught.js) → JSON without
+// stack traces or file paths. One that fails after answering is only logged.
 app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    console.error(err);
+    return next(err);
+  }
   const status = err.status || err.statusCode || 500;
   if (status >= 500) console.error(err);
   res.status(status).json({
