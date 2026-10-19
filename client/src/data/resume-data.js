@@ -184,7 +184,7 @@ export default {
           "title": "Technical Mentor – Full Stack, React Native & AI/ML",
           "type": "Part-time",
           "start": "Feb 2023",
-          "end": "Apr 2026",
+          "end": "Present",
           "points": [
             "Mentored 25,000+ students in MERN, DSA (C++/Python), ML and React Native.",
             "Led real-world ML projects end to end: employee retention, food delivery time prediction and global pollution analysis."
