@@ -59,7 +59,18 @@ describe("this site's activity card", () => {
     }
   });
 
+  it("draws its squares only once the card comes near; until then, the calendar's size, months and summary", () => {
+    render(<SiteActivity />); // the IntersectionObserver of the tests never says "near"
+    const calendar = screen.getByRole("img", { name: /^Commits day by day/ });
+    expect(calendar.querySelectorAll("rect, .sa-deploy")).toHaveLength(0);
+    expect(calendar.getAttribute("viewBox")).toMatch(/^0 0 \d+(\.\d+)? \d+(\.\d+)?$/);
+    expect(within(calendar).getAllByText(/^[A-Z][a-z]{2}$/).length).toBeGreaterThan(0);
+    // The month-by-month bars are few, so they're there at once
+    expect(screen.getByRole("img", { name: /: \d/ }).querySelectorAll(".sa-bar").length).toBeGreaterThan(0);
+  });
+
   it("draws a square for every day from the Sunday before the first, and a triangle on each day the site was deployed", () => {
+    nearAtOnce();
     render(<SiteActivity />);
     const calendar = screen.getByRole("img", { name: /^Commits day by day/ });
     const last = Date.parse(`${SNAPSHOT.to}T00:00:00Z`);

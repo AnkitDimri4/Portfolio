@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   SiClickhouse, SiCplusplus, SiExpress, SiFastapi, SiJenkins, SiMixpanel, SiMongodb, SiNextdotjs, SiNodedotjs,
   SiPostgresql, SiPython, SiReact, SiSentry, SiTensorflow, SiTypescript,
@@ -37,11 +37,15 @@ const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "s
 
 const Lane = ({ className, speed, direction, children }) => {
   const track = useRef(null);
+  // The loop needs three copies so it never shows a gap, but only once it moves: the page the build
+  // writes has one (three were a fifth of its HTML), and the other two come when the page runs.
+  const [copies, setCopies] = useState(1);
+  useEffect(() => setCopies(3), []);
   useVelocityMarquee(track, { speed, direction });
   return (
     <div className={`lane ${className}`}>
       <div className="lane-track" ref={track}>
-        {[0, 1, 2].map((copy) => (
+        {Array.from({ length: copies }, (_, copy) => (
           <div className="lane-group" key={copy}>
             {children}
           </div>

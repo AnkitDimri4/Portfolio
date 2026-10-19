@@ -177,7 +177,9 @@ const SiteActivity = ({ title }) => {
                 {label}
               </text>
             ))}
-            {cells.map((c) => {
+            {/* A square (and its tooltip) a day, drawn once the card comes near: the page the build
+                writes keeps the calendar's size, months and summary, so nothing moves when they appear */}
+            {near && cells.map((c) => {
               const x = c.col * P;
               const y = TOP + c.row * P;
               const busy = c.commits || c.pullRequests || c.deployments;

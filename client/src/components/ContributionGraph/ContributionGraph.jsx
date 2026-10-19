@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import ACTIVITY from "../../data/workActivity.json";
+import { useInView } from "../../lib/reveal";
 import "./ContributionGraph.css";
 
 // My GitHub contribution graph from FileSure (date → contributions, copied from the work
@@ -35,38 +37,45 @@ const ACTIVE_DAYS = ACTIVE.length;
 const FROM = DAYS.find((d) => ACTIVITY[d]);
 const TO = DAYS.at(-1);
 
-const ContributionGraph = ({ title }) => (
-  <figure className="cgraph">
-    {title && <figcaption className="cgraph-title label">{title}</figcaption>}
-    <svg
-      className="cgraph-svg"
-      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-      role="img"
-      aria-label={`${TOTAL.toLocaleString("en-US")} contributions on ${ACTIVE_DAYS} days between ${day(FROM)} and ${day(TO)} ${TO.slice(0, 4)}`}
-    >
-      {MONTHS.map((m) => (
-        <text key={m.col} x={m.col * P} y="9">
-          {m.label}
-        </text>
-      ))}
-      {CELLS.map((c) => (
-        <rect key={c.iso} className={`cg-l${level(c.n)}`} x={c.col * P} y={TOP + c.row * P} width={C} height={C} rx="2">
-          <title>{`${day(c.iso)}: ${c.n} contribution${c.n === 1 ? "" : "s"}`}</title>
-        </rect>
-      ))}
-    </svg>
-    <p className="cgraph-foot label">
-      <span>
-        <b>{TOTAL.toLocaleString("en-US")}</b> contributions · <b>{ACTIVE_DAYS}</b> active days
-      </span>
-      <span className="cgraph-scale" aria-hidden="true">
-        Less {[0, 1, 2, 3, 4].map((l) => <i key={l} className={`cg-l${l}`} />)} More
-      </span>
-    </p>
-    <p className="cgraph-dates label">
-      {day(FROM)} – {day(TO)} {TO.slice(0, 4)} · private repositories
-    </p>
-  </figure>
-);
+const ContributionGraph = ({ title }) => {
+  const ref = useRef(null);
+  // A square (and its tooltip) for every day is drawn once the graph comes near: the page the build
+  // writes keeps the graph's size, its months and its summary, so nothing moves when they appear.
+  const near = useInView(ref, "800px 0px");
+  return (
+    <figure className="cgraph" ref={ref}>
+      {title && <figcaption className="cgraph-title label">{title}</figcaption>}
+      <svg
+        className="cgraph-svg"
+        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        role="img"
+        aria-label={`${TOTAL.toLocaleString("en-US")} contributions on ${ACTIVE_DAYS} days between ${day(FROM)} and ${day(TO)} ${TO.slice(0, 4)}`}
+      >
+        {MONTHS.map((m) => (
+          <text key={m.col} x={m.col * P} y="9">
+            {m.label}
+          </text>
+        ))}
+        {near &&
+          CELLS.map((c) => (
+            <rect key={c.iso} className={`cg-l${level(c.n)}`} x={c.col * P} y={TOP + c.row * P} width={C} height={C} rx="2">
+              <title>{`${day(c.iso)}: ${c.n} contribution${c.n === 1 ? "" : "s"}`}</title>
+            </rect>
+          ))}
+      </svg>
+      <p className="cgraph-foot label">
+        <span>
+          <b>{TOTAL.toLocaleString("en-US")}</b> contributions · <b>{ACTIVE_DAYS}</b> active days
+        </span>
+        <span className="cgraph-scale" aria-hidden="true">
+          Less {[0, 1, 2, 3, 4].map((l) => <i key={l} className={`cg-l${l}`} />)} More
+        </span>
+      </p>
+      <p className="cgraph-dates label">
+        {day(FROM)} – {day(TO)} {TO.slice(0, 4)} · private repositories
+      </p>
+    </figure>
+  );
+};
 
 export default ContributionGraph;
