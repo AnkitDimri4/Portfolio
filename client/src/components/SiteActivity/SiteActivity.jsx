@@ -37,10 +37,22 @@ const dayLabel = (iso) => `${Number(iso.slice(8, 10))} ${month(iso)}`;
 const num = (n) => n.toLocaleString("en-US");
 const plural = (n, one, many = `${one}s`) => `${num(n)} ${n === 1 ? one : many}`;
 
+/** A total per active day (a day with a commit), said as the profile card says it: whole from 10, one decimal below. */
+export const perActiveDay = (n, days) => {
+  const rate = n / days;
+  return rate >= 10 ? String(Math.round(rate)) : rate.toFixed(1).replace(/\.0$/, "");
+};
+
 // The calendar, drawn like ContributionGraph (GitHub's own): a column per week, Sunday on top.
 const P = 11.5; // cell pitch
 const C = 9; // cell size
 const TOP = 14; // room for the month labels
+const LEFT = 22; // room for the weekdays' names
+const WEEKDAYS = [
+  [1, "Mon"],
+  [3, "Wed"],
+  [5, "Fri"],
+];
 
 /**
  * The calendar's cells, with their levels: at most the last year (53 weeks), like GitHub's own graph,
@@ -66,10 +78,27 @@ const calendar = (a) => {
   return {
     cells: cells.map((c) => ({ ...c, level: level(c.commits) })),
     months: [...months],
-    width: cols * P - (P - C),
+    width: LEFT + cols * P - (P - C),
     height: TOP + 7 * P - (P - C),
     shownFrom: new Date(first).toISOString().slice(0, 10),
   };
+};
+
+/** The day and the month with the most commits (the earlier on a tie), for the notes under the graphs, as on the profile card. */
+const busiest = (a) => {
+  const dates = Object.keys(a.days).filter((d) => DATE.test(d)).sort();
+  if (!dates.length) return null;
+  const on = (date) => ({ ...EMPTY, ...a.days[date] });
+  const day = dates.reduce((best, date) => (on(date).commits > on(best).commits ? date : best));
+  const months = new Map();
+  for (const date of dates) {
+    const key = date.slice(0, 7);
+    if (!months.has(key)) months.set(key, { key, ...EMPTY });
+    const sum = months.get(key);
+    for (const k of Object.keys(EMPTY)) sum[k] += on(date)[k] || 0;
+  }
+  const month = [...months.values()].reduce((best, m) => (m.commits > best.commits ? m : best));
+  return { day: { iso: day, ...on(day) }, month };
 };
 
 /** The last 12 months (fewer when it began later), each with its commits, merged pull requests and deployments. */
@@ -117,9 +146,14 @@ const SiteActivity = ({ title }) => {
 
   const { cells, months, width, height, shownFrom } = useMemo(() => calendar(activity), [activity]);
   const byMonth = useMemo(() => monthly(activity), [activity]);
+  const best = useMemo(() => busiest(activity), [activity]);
   const { totals, from, to } = activity;
   // The latest file's scores; the build's copy has them too, should the latest file not
   const lighthouse = [activity.lighthouse, SNAPSHOT.lighthouse].find(isLighthouse);
+  // Each total per active day, under its number, when the file says how many days had a commit
+  const days = Number.isInteger(totals.activeDays) && totals.activeDays > 0 ? totals.activeDays : null;
+  const rate = (n) => days && <dd className="sa-rate">{perActiveDay(n, days)} per active day</dd>;
+  const bestMonth = best && `${MON[Number(best.month.key.slice(5)) - 1]}${best.month.key.slice(0, 4) === to.slice(0, 4) ? "" : ` ${best.month.key.slice(0, 4)}`}`;
   const top = Math.max(1, ...byMonth.flatMap((m) => SERIES.map(([k]) => m[k])));
   const slot = width / byMonth.length;
   const bar = Math.min(9, (slot * 0.72 - 2 * GAP) / 3);
@@ -129,7 +163,7 @@ const SiteActivity = ({ title }) => {
     <figure className="sa" ref={ref}>
       {title && <figcaption className="sa-title label">{title}</figcaption>}
 
-      {/* Each number with its maker's logo, as on the profile card */}
+      {/* Each number with its maker's logo, and its rate per active day, as on the profile card */}
       <dl className="sa-stats">
         {lighthouse && (
           <div className="sa-stat">
@@ -138,6 +172,7 @@ const SiteActivity = ({ title }) => {
               <SiLighthouse className="sa-icon sa-icon-lighthouse" aria-hidden="true" />
               {`${lighthouse.mobile} · ${lighthouse.desktop}`}
             </dd>
+            <dd className="sa-rate">on the live site</dd>
           </div>
         )}
         <div className="sa-stat">
@@ -146,6 +181,7 @@ const SiteActivity = ({ title }) => {
             <SiGit className="sa-icon sa-icon-git" aria-hidden="true" />
             {num(totals.commits)}
           </dd>
+          {rate(totals.commits)}
         </div>
         <div className="sa-stat">
           <dt>pull requests merged</dt>
@@ -153,6 +189,7 @@ const SiteActivity = ({ title }) => {
             <SiGithub className="sa-icon sa-icon-github" aria-hidden="true" />
             {num(totals.mergedPullRequests)}
           </dd>
+          {rate(totals.mergedPullRequests)}
         </div>
         <div className="sa-stat">
           <dt>deployments, {num(totals.productionDeploys)} to production</dt>
@@ -160,6 +197,7 @@ const SiteActivity = ({ title }) => {
             <SiVercel className="sa-icon sa-icon-vercel" aria-hidden="true" />
             {num(totals.deployments)}
           </dd>
+          {rate(totals.deployments)}
         </div>
       </dl>
 
@@ -173,14 +211,19 @@ const SiteActivity = ({ title }) => {
             aria-label={`Commits day by day from ${dayLabel(shownFrom)} ${shownFrom.slice(0, 4)} to ${dayLabel(to)} ${to.slice(0, 4)}, with each day the site was deployed marked`}
           >
             {months.map(([col, label]) => (
-              <text key={col} x={col * P} y="9">
+              <text key={col} x={LEFT + col * P} y="9">
+                {label}
+              </text>
+            ))}
+            {WEEKDAYS.map(([row, label]) => (
+              <text key={label} x="0" y={TOP + row * P + 7}>
                 {label}
               </text>
             ))}
             {/* A square (and its tooltip) a day, drawn once the card comes near: the page the build
                 writes keeps the calendar's size, months and summary, so nothing moves when they appear */}
             {near && cells.map((c) => {
-              const x = c.col * P;
+              const x = LEFT + c.col * P;
               const y = TOP + c.row * P;
               const busy = c.commits || c.pullRequests || c.deployments;
               return (
@@ -205,6 +248,12 @@ const SiteActivity = ({ title }) => {
               <b className="sa-tri">▲</b> deployed
             </span>
           </p>
+          {best && (
+            <p className="sa-note">
+              Busiest day, <b>{dayLabel(best.day.iso)}</b>: {plural(best.day.commits, "commit")} · {plural(best.day.pullRequests, "pull request")} ·{" "}
+              {plural(best.day.deployments, "deployment")}
+            </p>
+          )}
         </div>
 
         <div className="sa-graph">
@@ -237,11 +286,18 @@ const SiteActivity = ({ title }) => {
               </span>
             ))}
           </p>
+          {best && (
+            <p className="sa-note">
+              Busiest month, <b>{bestMonth}</b>: {plural(best.month.commits, "commit")} · {plural(best.month.pullRequests, "PR")} ·{" "}
+              {plural(best.month.deployments, "deploy")}
+            </p>
+          )}
         </div>
       </div>
 
       <p className="sa-dates label">
-        Since {month(from)} {from.slice(0, 4)} · private repository · updated after every deploy
+        Since {month(from)} {from.slice(0, 4)}
+        {days && ` · ${plural(days, "active day")}`} · private repository · updated after every deploy
       </p>
     </figure>
   );

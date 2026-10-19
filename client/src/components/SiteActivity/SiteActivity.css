@@ -22,11 +22,10 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-/* The number on top, its words below (a dl keeps the words first, for screen readers) */
+/* The number on top, its words below, its rate at the foot (a dl keeps the words first, for screen readers) */
 .sa-stat {
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 0.3rem;
   min-width: 0;
   padding: 0.75rem 0.85rem;
@@ -35,6 +34,7 @@
   background: color-mix(in srgb, var(--bg) 40%, transparent);
 }
 .sa-stat dd {
+  order: 1;
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -63,9 +63,39 @@
   color: var(--text);
 }
 .sa-stat dt {
+  order: 2;
   font-size: 0.68rem;
   line-height: 1.35;
   color: var(--muted);
+}
+/* Its rate per active day, in the site's green, at the tile's foot so a row's rates line up */
+.sa-stat .sa-rate {
+  order: 3;
+  display: block;
+  margin-top: auto;
+  padding-top: 0.15rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0;
+  white-space: normal;
+  color: var(--accent-2);
+}
+/* The light theme's green is too pale for small text: a darker one, for contrast */
+[data-theme="light"] .sa-stat .sa-rate {
+  color: color-mix(in srgb, var(--accent-2) 72%, #000);
+}
+
+/* Busiest day and month, under each graph's key, as on the profile card */
+.sa-note {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.sa-note b {
+  font-weight: 600;
+  color: var(--text);
 }
 
 /* ---------- The graphs: one above the other, each as wide as the card ---------- */

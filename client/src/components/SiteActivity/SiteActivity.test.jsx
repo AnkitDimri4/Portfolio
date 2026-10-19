@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import SNAPSHOT from "../../data/portfolioActivity.json";
-import SiteActivity, { LIVE_URL, isActivity, isLighthouse } from "./SiteActivity";
+import SiteActivity, { LIVE_URL, isActivity, isLighthouse, perActiveDay } from "./SiteActivity";
 
 const num = (n) => n.toLocaleString("en-US");
 const stat = (label) => within(document.querySelector(".sa-stats")).getByText(label).closest(".sa-stat").querySelector("dd").textContent;
@@ -37,7 +37,7 @@ describe("this site's activity card", () => {
 
   it("puts each number's logo before it, as on the profile card, and keeps the logos from screen readers", () => {
     render(<SiteActivity />);
-    const logos = [...document.querySelectorAll(".sa-stat dd")].map((dd) => dd.firstElementChild);
+    const logos = [...document.querySelectorAll(".sa-stat dd:not(.sa-rate)")].map((dd) => dd.firstElementChild);
     expect(logos.map((logo) => [...logo.classList].find((c) => c.startsWith("sa-icon-")))).toEqual(["sa-icon-lighthouse", "sa-icon-git", "sa-icon-github", "sa-icon-vercel"]);
     for (const logo of logos) {
       expect(logo.tagName).toBe("svg");
@@ -45,6 +45,50 @@ describe("this site's activity card", () => {
     }
     // The logos add no words: each number reads as before
     expect(stat("commits")).toBe(num(SNAPSHOT.totals.commits));
+  });
+
+  it("says each total per active day under its number, the Lighthouse scores' source, and the active days", () => {
+    render(<SiteActivity />);
+    const rateOf = (label) => within(document.querySelector(".sa-stats")).getByText(label).closest(".sa-stat").querySelector(".sa-rate").textContent;
+    const { activeDays } = SNAPSHOT.totals;
+    expect(rateOf("Lighthouse, mobile · desktop")).toBe("on the live site");
+    expect(rateOf("commits")).toBe(`${perActiveDay(SNAPSHOT.totals.commits, activeDays)} per active day`);
+    expect(rateOf("pull requests merged")).toBe(`${perActiveDay(SNAPSHOT.totals.mergedPullRequests, activeDays)} per active day`);
+    expect(rateOf(`deployments, ${num(SNAPSHOT.totals.productionDeploys)} to production`)).toBe(`${perActiveDay(SNAPSHOT.totals.deployments, activeDays)} per active day`);
+    expect(document.querySelector(".sa-dates")).toHaveTextContent(new RegExp(`^Since \\w{3} \\d{4} · ${activeDays} active days · private repository`));
+  });
+
+  it("leaves the rates and active days out when the latest file doesn't say how many days had a commit", async () => {
+    nearAtOnce();
+    answer({ ...NEWER, totals: { ...NEWER.totals, activeDays: undefined } });
+    render(<SiteActivity />);
+    await waitFor(() => expect(stat("commits")).toBe("4,321"));
+    expect([...document.querySelectorAll(".sa-rate")].map((r) => r.textContent)).toEqual(["on the live site"]);
+    expect(document.querySelector(".sa-dates")).not.toHaveTextContent("active day");
+  });
+
+  it("says the busiest day and month, the earlier on a tie, as on the profile card", async () => {
+    nearAtOnce();
+    answer({
+      ...NEWER,
+      days: {
+        "2026-10-16": { commits: 83, pullRequests: 1, deployments: 1 },
+        "2026-10-15": { commits: 83, pullRequests: 34, deployments: 59 },
+        [SNAPSHOT.from]: { commits: 5, deployments: 1 },
+      },
+    });
+    render(<SiteActivity />);
+    await waitFor(() => expect(stat("commits")).toBe("4,321"));
+    const notes = [...document.querySelectorAll(".sa-note")].map((p) => p.textContent);
+    expect(notes).toEqual(["Busiest day, 15 Oct: 83 commits · 34 pull requests · 59 deployments", "Busiest month, Oct: 166 commits · 35 PRs · 60 deploys"]);
+  });
+
+  it("names Mon, Wed and Fri beside the calendar, as GitHub does", () => {
+    render(<SiteActivity />);
+    const calendar = screen.getByRole("img", { name: /^Commits day by day/ });
+    expect(within(calendar).getByText("Mon")).toBeInTheDocument();
+    expect(within(calendar).getByText("Wed")).toBeInTheDocument();
+    expect(within(calendar).getByText("Fri")).toBeInTheDocument();
   });
 
   it("keeps the build's Lighthouse scores when the latest file has none, or broken ones", async () => {
@@ -158,5 +202,16 @@ describe("isLighthouse", () => {
     expect(isLighthouse({ mobile: 0, desktop: 100 })).toBe(true);
     for (const bad of [undefined, null, {}, { mobile: 96 }, { mobile: 96.5, desktop: 100 }, { mobile: -1, desktop: 100 }, { mobile: "96", desktop: "100" }, [96, 100]])
       expect(isLighthouse(bad)).toBe(false);
+  });
+});
+
+describe("perActiveDay", () => {
+  it("says a rate as the profile card does: whole from 10, one decimal below, without a trailing .0", () => {
+    // The profile card's numbers on 19 October: 438 commits, 149 pull requests, 326 deployments, 17 active days
+    expect(perActiveDay(438, 17)).toBe("26");
+    expect(perActiveDay(149, 17)).toBe("8.8");
+    expect(perActiveDay(326, 17)).toBe("19");
+    expect(perActiveDay(20, 10)).toBe("2");
+    expect(perActiveDay(100, 10)).toBe("10");
   });
 });
