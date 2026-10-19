@@ -55,9 +55,9 @@ export const PROJECTS = [
   },
   {
     // This site, in a full row after FileSure rather than with my own projects: its activity card
-    // (commits, merged pull requests, deployments, day by day and month by month) replaces the demo.
+    // (Lighthouse on the live site, commits, merged pull requests, deployments, day by day and month by
+    // month) replaces the demo.
     activity: true,
-    lighthouse: [96, 100], // mobile, desktop: Lighthouse on the live site, as on my GitHub profile's card
     repo: "Portfolio",
     title: "This Portfolio",
     short: "Portfolio",

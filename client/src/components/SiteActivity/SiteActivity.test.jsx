@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import SNAPSHOT from "../../data/portfolioActivity.json";
-import SiteActivity, { LIVE_URL, isActivity } from "./SiteActivity";
+import SiteActivity, { LIVE_URL, isActivity, isLighthouse } from "./SiteActivity";
 
 const num = (n) => n.toLocaleString("en-US");
 const stat = (label) => within(document.querySelector(".sa-stats")).getByText(label).closest(".sa-stat").querySelector("dd").textContent;
@@ -15,27 +15,36 @@ const NEWER = {
   ...SNAPSHOT,
   to: NEXT_DAY,
   totals: { ...SNAPSHOT.totals, commits: 4321, mergedPullRequests: 765, deployments: 1234, productionDeploys: 567 },
+  lighthouse: { mobile: 87, desktop: 99, measured: NEXT_DAY },
   days: { ...SNAPSHOT.days, [NEXT_DAY]: { commits: 12, pullRequests: 3, deployments: 4 } },
 };
+const BUILD_SCORES = `${SNAPSHOT.lighthouse.mobile} · ${SNAPSHOT.lighthouse.desktop}`;
 const dayLabel = (date) => `${Number(date.slice(8))} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(date.slice(5, 7)) - 1]}`;
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe("this site's activity card", () => {
   it("shows the build's numbers first: Lighthouse, then commits, merged pull requests and deployments", () => {
-    render(<SiteActivity title="GitHub activity on this site" lighthouse={[96, 100]} />);
+    render(<SiteActivity title="GitHub activity on this site" />);
     expect(screen.getByText("GitHub activity on this site")).toBeInTheDocument();
     const labels = [...document.querySelectorAll(".sa-stat dt")].map((dt) => dt.textContent);
     expect(labels).toEqual(["Lighthouse, mobile · desktop", "commits", "pull requests merged", `deployments, ${num(SNAPSHOT.totals.productionDeploys)} to production`]);
-    expect(stat("Lighthouse, mobile · desktop")).toBe("96 · 100");
+    expect(stat("Lighthouse, mobile · desktop")).toBe(BUILD_SCORES);
     expect(stat("commits")).toBe(num(SNAPSHOT.totals.commits));
     expect(stat("pull requests merged")).toBe(num(SNAPSHOT.totals.mergedPullRequests));
+    expect(screen.getByText(/· updated after every deploy$/)).toBeInTheDocument();
   });
 
-  it("leaves out Lighthouse when it isn't given", () => {
-    render(<SiteActivity />);
-    expect(screen.queryByText("Lighthouse, mobile · desktop")).not.toBeInTheDocument();
-    expect(document.querySelectorAll(".sa-stat")).toHaveLength(3);
+  it("keeps the build's Lighthouse scores when the latest file has none, or broken ones", async () => {
+    for (const lighthouse of [undefined, { mobile: "fast", desktop: 100 }, { mobile: 101, desktop: 99 }]) {
+      nearAtOnce();
+      answer({ ...NEWER, lighthouse });
+      const { unmount } = render(<SiteActivity />);
+      await waitFor(() => expect(stat("commits")).toBe("4,321"));
+      expect(stat("Lighthouse, mobile · desktop")).toBe(BUILD_SCORES);
+      unmount();
+      vi.unstubAllGlobals();
+    }
   });
 
   it("draws a square for every day from the Sunday before the first, and a triangle on each day the site was deployed", () => {
@@ -62,12 +71,13 @@ describe("this site's activity card", () => {
     expect(bars.getAttribute("aria-label")).toMatch(/^Feb: \d+ commits?, /);
   });
 
-  it("swaps in the latest file when the card comes near", async () => {
+  it("swaps in the latest file when the card comes near, Lighthouse included", async () => {
     nearAtOnce();
     answer(NEWER);
-    render(<SiteActivity lighthouse={[96, 100]} />);
+    render(<SiteActivity />);
     await waitFor(() => expect(stat("commits")).toBe("4,321"));
     expect(fetch).toHaveBeenCalledWith(LIVE_URL, expect.objectContaining({ signal: expect.any(AbortSignal) }));
+    expect(stat("Lighthouse, mobile · desktop")).toBe("87 · 99");
     expect(stat("pull requests merged")).toBe("765");
     expect(screen.getByText("deployments, 567 to production")).toBeInTheDocument();
     expect(screen.getByText(`${dayLabel(NEXT_DAY)}: 12 commits · 3 pull requests · 4 deployments`)).toBeInTheDocument();
@@ -116,5 +126,14 @@ describe("isActivity", () => {
     expect(isActivity(SNAPSHOT)).toBe(true);
     for (const bad of [null, {}, { ...SNAPSHOT, from: "Feb" }, { ...SNAPSHOT, from: "2026-12-01", to: "2026-01-01" }, { ...SNAPSHOT, days: null }, { ...SNAPSHOT, totals: { ...SNAPSHOT.totals, deployments: "x" } }])
       expect(isActivity(bad)).toBe(false);
+  });
+});
+
+describe("isLighthouse", () => {
+  it("accepts two whole scores from 0 to 100, and nothing else", () => {
+    expect(isLighthouse(SNAPSHOT.lighthouse)).toBe(true);
+    expect(isLighthouse({ mobile: 0, desktop: 100 })).toBe(true);
+    for (const bad of [undefined, null, {}, { mobile: 96 }, { mobile: 96.5, desktop: 100 }, { mobile: -1, desktop: 100 }, { mobile: "96", desktop: "100" }, [96, 100]])
+      expect(isLighthouse(bad)).toBe(false);
   });
 });

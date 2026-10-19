@@ -59,7 +59,7 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
         ) : project.activity ? (
           <div className="project-media">
             <div className="project-screen project-screen--graph project-screen--activity">
-              <SiteActivity title="GitHub activity on this site" lighthouse={project.lighthouse} />
+              <SiteActivity title="GitHub activity on this site" />
             </div>
           </div>
         ) : (

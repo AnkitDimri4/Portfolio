@@ -4,11 +4,13 @@ import SNAPSHOT from "../../data/portfolioActivity.json";
 import "../ContributionGraph/ContributionGraph.css";
 import "./SiteActivity.css";
 
-// This site's own activity, as on my GitHub profile's Portfolio card: my commits, its merged pull
-// requests and its deployments (Vercel's builds, as GitHub records them), day by day and month by month.
-// The profile repository's "Portfolio card" workflow counts them in the private Portfolio-app every
-// 6 hours and publishes the file below. The build keeps a copy (data/portfolioActivity.json), so the
-// pre-rendered page has the numbers; when the card comes near, the browser swaps in the latest file.
+// This site's own activity, as on my GitHub profile's Portfolio card: Lighthouse on the live site, my
+// commits, its merged pull requests and its deployments (Vercel's builds, as GitHub records them), day by
+// day and month by month. The profile repository's "Portfolio card" workflow counts them in the private
+// Portfolio-app after each deploy (the Public copy workflow asks it to, after each merge that changes the
+// site or the API), measures Lighthouse, and publishes the file below. The build keeps a copy
+// (data/portfolioActivity.json), so the pre-rendered page has the numbers; when the card comes near, the
+// browser swaps in the latest file.
 export const LIVE_URL = "https://raw.githubusercontent.com/AnkitDimri4/AnkitDimri4/main/assets/cards/portfolio-activity.json";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -21,6 +23,9 @@ export const isActivity = (a) =>
   ["commits", "mergedPullRequests", "deployments", "productionDeploys"].every((k) => Number.isFinite(a.totals?.[k])) &&
   typeof a.days === "object" &&
   a.days !== null;
+
+/** True when `l` has the two Lighthouse scores, 0 to 100, mobile and desktop. */
+export const isLighthouse = (l) => Boolean(l) && [l.mobile, l.desktop].every((n) => Number.isInteger(n) && n >= 0 && n <= 100);
 
 const DAY = 864e5;
 const EMPTY = { commits: 0, pullRequests: 0, deployments: 0 };
@@ -92,7 +97,7 @@ const GAP = 1.5; // between a month's bars
 const BARS_H = 58; // the tallest bar
 const LABELS = 12; // room for the months' names
 
-const SiteActivity = ({ title, lighthouse }) => {
+const SiteActivity = ({ title }) => {
   const ref = useRef(null);
   const near = useInView(ref, "800px 0px");
   const [activity, setActivity] = useState(SNAPSHOT);
@@ -112,6 +117,8 @@ const SiteActivity = ({ title, lighthouse }) => {
   const { cells, months, width, height, shownFrom } = useMemo(() => calendar(activity), [activity]);
   const byMonth = useMemo(() => monthly(activity), [activity]);
   const { totals, from, to } = activity;
+  // The latest file's scores; the build's copy has them too, should the latest file not
+  const lighthouse = [activity.lighthouse, SNAPSHOT.lighthouse].find(isLighthouse);
   const top = Math.max(1, ...byMonth.flatMap((m) => SERIES.map(([k]) => m[k])));
   const slot = width / byMonth.length;
   const bar = Math.min(9, (slot * 0.72 - 2 * GAP) / 3);
@@ -125,7 +132,7 @@ const SiteActivity = ({ title, lighthouse }) => {
         {lighthouse && (
           <div className="sa-stat">
             <dt>Lighthouse, mobile · desktop</dt>
-            <dd>{`${lighthouse[0]} · ${lighthouse[1]}`}</dd>
+            <dd>{`${lighthouse.mobile} · ${lighthouse.desktop}`}</dd>
           </div>
         )}
         <div className="sa-stat">
@@ -218,7 +225,7 @@ const SiteActivity = ({ title, lighthouse }) => {
       </div>
 
       <p className="sa-dates label">
-        Since {month(from)} {from.slice(0, 4)} · private repository · updated every 6 hours
+        Since {month(from)} {from.slice(0, 4)} · private repository · updated after every deploy
       </p>
     </figure>
   );
