@@ -19,21 +19,31 @@ const publicPages = {
   },
 };
 
-// `npm run preview` serves the build with the headers Vercel sends (vercel.json), the
-// Content-Security-Policy among them, so every page's scripts can be tried before a deploy.
-// upgrade-insecure-requests is left out: the preview runs on plain http. (The public copy has no
-// vercel.json, so no headers there.)
+// `npm run preview` serves the build with the headers Vercel sends (vercel.json), each rule on the
+// paths it matches (the Content-Security-Policy on all of them; the microphone allowed on the English
+// coach's page alone), so every page can be tried before a deploy. vercel.json's sources are regular
+// expressions as they are. upgrade-insecure-requests is left out: the preview runs on plain http. (The
+// public copy has no vercel.json, so no headers there.)
 const vercelFile = new URL("./vercel.json", import.meta.url);
-const siteHeaders = existsSync(vercelFile)
-  ? Object.fromEntries(
-      JSON.parse(readFileSync(vercelFile, "utf8"))
-        .headers.find((rule) => rule.source === "/(.*)")
-        .headers.map(({ key, value }) => [key, value.replace(/;\s*upgrade-insecure-requests/, "")])
-    )
-  : {};
+const headerRules = existsSync(vercelFile)
+  ? JSON.parse(readFileSync(vercelFile, "utf8")).headers.map((rule) => ({
+      path: new RegExp(`^${rule.source}$`),
+      headers: rule.headers.map(({ key, value }) => [key, value.replace(/;\s*upgrade-insecure-requests/, "")]),
+    }))
+  : [];
+const vercelHeaders = {
+  name: "vercel-headers",
+  configurePreviewServer(server) {
+    server.middlewares.use((req, res, next) => {
+      const path = req.url.split("?")[0];
+      for (const rule of headerRules) if (rule.path.test(path)) for (const [key, value] of rule.headers) res.setHeader(key, value);
+      next();
+    });
+  },
+};
 
 export default defineConfig({
-  plugins: [react(), publicPages],
+  plugins: [react(), publicPages, vercelHeaders],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
   envPrefix: ["VITE_", "REACT_APP_"],
   server: {
@@ -43,7 +53,6 @@ export default defineConfig({
     // can mean ::1 first.
     proxy: { "/api": "http://127.0.0.1:8080", "/health": "http://127.0.0.1:8080" },
   },
-  preview: { headers: siteHeaders },
   build: {
     outDir: "build",
     // The portfolio, and the resume builder's pages, each with its own bundle: the builder
