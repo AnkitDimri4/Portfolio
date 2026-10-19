@@ -6,6 +6,7 @@ import ContributionGraph from "../../components/ContributionGraph/ContributionGr
 import SiteActivity from "../../components/SiteActivity/SiteActivity";
 import { Reveal, useInView } from "../../lib/reveal";
 import { useApi } from "../../lib/api";
+import { webUrl } from "../../lib/webUrl";
 import { PINNED_REPOS, PROFILE, PROJECTS } from "../../data/profile";
 import "./Work.css";
 
@@ -105,8 +106,8 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
               <FiGithub size={15} /> Source <FiArrowUpRight size={15} />
             </a>
           )}
-          {repo?.homepage && (
-            <a className="btn btn-sm btn-primary" href={repo.homepage} target="_blank" rel="noreferrer">
+          {webUrl(repo?.homepage) && (
+            <a className="btn btn-sm btn-primary" href={webUrl(repo.homepage)} target="_blank" rel="noreferrer">
               Live <FiArrowUpRight size={15} />
             </a>
           )}
@@ -192,7 +193,7 @@ const ProjectTabs = ({ projects, offset, byName }) => {
 
 const RepoCard = ({ repo, i }) => (
   <Reveal delay={i % 3}>
-    <a className="repo" href={repo.url} target="_blank" rel="noreferrer">
+    <a className="repo" href={webUrl(repo.url)} target="_blank" rel="noreferrer">
     <div className="repo-top label">
       <span>{repo.language || "Repository"}</span>
       <FiArrowUpRight aria-hidden="true" />
