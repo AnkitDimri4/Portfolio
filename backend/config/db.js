@@ -21,6 +21,10 @@ const pool = new Pool({
   max: 5,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 10_000,
+  // A query stuck past these would hold one of the five connections: Postgres stops it at 15 s, and
+  // the pool gives up on the answer at 20 s, so the request fails and the connection is free again.
+  statement_timeout: 15_000,
+  query_timeout: 20_000,
 });
 
 // Neon closes idle connections; an unhandled 'error' from an idle client would crash the process.
