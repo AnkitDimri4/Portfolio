@@ -1,5 +1,8 @@
 // GitHub stats proxy. Keeps the GitHub token on the server (never in the
 // browser bundle) and caches results so visitors don't burn the rate limit.
+// Once something is cached, a visitor always gets it at once: when it's old, the request that
+// notices starts a refresh in the background, and later visitors get the new answer. After a
+// failure, GitHub isn't asked again for a minute.
 const USERNAME = "AnkitDimri4";
 // Work that happens in a private repository is listed under its public copy, with the commits made
 // in the private one (docs/runbooks/public-copy.md). Reading those takes RESUME_GITHUB_TOKEN, the
@@ -7,9 +10,11 @@ const USERNAME = "AnkitDimri4";
 const PRIVATE_SOURCES = { Portfolio: "Portfolio-app" };
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 const PARTIAL_RETRY = 5 * 60 * 1000; // retry sooner when some counts failed (e.g. rate limit)
+const FAILURE_PAUSE = 60 * 1000; // after GitHub fails, it isn't asked again for a minute
 
 let cachedData = null;
 let lastFetchTime = 0;
+let failedAt = -Infinity;
 let inFlight = null;
 // Last successful commit count per repo, used when a later request fails.
 const lastKnown = new Map();
@@ -82,24 +87,43 @@ const fetchStats = async () => {
   };
 };
 
+/** Fetches the stats again and caches them; one refresh at a time, whoever asks. */
+const refresh = () =>
+  (inFlight ||= fetchStats()
+    .then((fresh) => {
+      // Prefer an older complete result over a newer partial one.
+      if (!(fresh.partial && cachedData && !cachedData.partial)) cachedData = fresh;
+      // Partial results are retried after a few minutes instead of being kept for an hour.
+      lastFetchTime = fresh.partial ? Date.now() - CACHE_DURATION + PARTIAL_RETRY : Date.now();
+      return cachedData;
+    })
+    .catch((error) => {
+      failedAt = Date.now();
+      throw error;
+    })
+    .finally(() => {
+      inFlight = null;
+    }));
+
+const logError = (error) => console.error("GitHub API Error:", error.message);
+const pausing = () => Date.now() - failedAt < FAILURE_PAUSE;
+const unavailable = (res) => res.status(502).json({ status: "error", message: "Failed to fetch GitHub stats" });
+
 exports.getGithubStats = async (req, res) => {
+  // The cached answer at once (stale data rather than nothing if GitHub is down or rate-limited),
+  // refreshed in the background when it's old
+  if (cachedData) {
+    if (Date.now() - lastFetchTime >= CACHE_DURATION && !pausing()) refresh().catch(logError);
+    return res.json(cachedData);
+  }
+  if (pausing()) return unavailable(res);
   try {
-    if (cachedData && Date.now() - lastFetchTime < CACHE_DURATION) {
-      return res.json(cachedData);
-    }
-    inFlight = inFlight || fetchStats();
-    const fresh = await inFlight;
-    // Prefer an older complete result over a newer partial one.
-    if (!(fresh.partial && cachedData && !cachedData.partial)) cachedData = fresh;
-    // Partial results are retried after a few minutes instead of being kept for an hour.
-    lastFetchTime = fresh.partial ? Date.now() - CACHE_DURATION + PARTIAL_RETRY : Date.now();
-    res.json(cachedData);
+    res.json(await refresh());
   } catch (error) {
-    console.error("GitHub API Error:", error.message);
-    // Serve stale data rather than nothing if GitHub is down / rate-limited.
-    if (cachedData) return res.json(cachedData);
-    res.status(502).json({ status: "error", message: "Failed to fetch GitHub stats" });
-  } finally {
-    inFlight = null;
+    logError(error);
+    unavailable(res);
   }
 };
+
+/** Resolves once a background refresh, if one is running, has finished (for the tests). */
+exports.refreshed = () => (inFlight ?? Promise.resolve()).catch(() => {});

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiCode, FiGitCommit, FiTarget, FiTrendingUp, FiUsers } from "react-icons/fi";
 import { SiLeetcode } from "../../components/brandIcons";
 import SectionHead from "../../components/SectionHead";
@@ -77,8 +78,13 @@ const Words = ({ segments }) => {
 };
 
 const About = () => {
+  // The stats start from the numbers the page was built with (src/lib/api.js); the live ones replace them
   const gh = useApi("/api/v1/portfolio/github");
   const lc = useApi("/api/v1/portfolio/leetcode");
+  // "synced 5 min ago" depends on the clock, so it's left out of the pre-rendered page and shown once
+  // the page runs: the built page and the browser's first render must agree
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const ghLoading = !gh.data && !gh.error;
   const lcLoading = !lc.data && !lc.error;
   const lcData = lc.data?.status === "success" ? lc.data : null;
@@ -134,7 +140,9 @@ const About = () => {
                 <span className="label">
                   GitHub &amp; LeetCode APIs
                   {gh.data?.fetchedAt
-                    ? ` · synced ${timeAgo(gh.data.fetchedAt)}`
+                    ? mounted
+                      ? ` · synced ${timeAgo(gh.data.fetchedAt)}`
+                      : ""
                     : gh.slow || lc.slow
                       ? " · waking up the server…"
                       : ""}

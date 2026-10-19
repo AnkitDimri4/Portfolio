@@ -32,7 +32,8 @@ const TECH = [
 const LANG = { JavaScript: "#f1e05a", TypeScript: "#3178c6", Python: "#3572A5", "Jupyter Notebook": "#DA5B0B", Java: "#b07219", "C++": "#f34b7d", HTML: "#e34c26", CSS: "#563d7c" };
 const FALLBACK = ["full-stack web", "ios & android apps", "rest apis", "cloud & devops", "ci/cd pipelines", "ml-powered products", "mentoring 25,000+ devs"];
 
-const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+// In India's time wherever it runs, so the pre-rendered page and the browser show the same month
+const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 
 const Lane = ({ className, speed, direction, children }) => {
   const track = useRef(null);

@@ -1,10 +1,14 @@
-// LeetCode stats proxy with a small in-memory cache.
+// LeetCode stats proxy with a small in-memory cache. Once something is cached, a visitor always gets
+// it at once: when it's old, the request that notices starts a refresh in the background. After a
+// failure, LeetCode isn't asked again for a minute.
 const USERNAME = "user4612MW";
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const FAILURE_PAUSE = 60 * 1000;
 const TIMEOUT_MS = 10_000;
 
 let cachedData = null;
 let lastFetchTime = 0;
+let failedAt = -Infinity;
 let inFlight = null;
 
 const QUERY = `
@@ -55,19 +59,41 @@ const fetchStats = async () => {
   };
 };
 
+/** Fetches the stats again and caches them; one refresh at a time, whoever asks. */
+const refresh = () =>
+  (inFlight ||= fetchStats()
+    .then((fresh) => {
+      cachedData = fresh;
+      lastFetchTime = Date.now();
+      return fresh;
+    })
+    .catch((error) => {
+      failedAt = Date.now();
+      throw error;
+    })
+    .finally(() => {
+      inFlight = null;
+    }));
+
+const logError = (error) => console.error("LeetCode API Error:", error.message);
+const pausing = () => Date.now() - failedAt < FAILURE_PAUSE;
+const unavailable = (res) => res.status(502).json({ status: "error", message: "Failed to fetch LeetCode stats" });
+
 exports.getLeetcodeStats = async (req, res) => {
+  // The cached answer at once (stale data rather than nothing if LeetCode is slow or down),
+  // refreshed in the background when it's old
+  if (cachedData) {
+    if (Date.now() - lastFetchTime >= CACHE_DURATION && !pausing()) refresh().catch(logError);
+    return res.json(cachedData);
+  }
+  if (pausing()) return unavailable(res);
   try {
-    if (cachedData && Date.now() - lastFetchTime < CACHE_DURATION) return res.json(cachedData);
-    inFlight = inFlight || fetchStats();
-    cachedData = await inFlight;
-    lastFetchTime = Date.now();
-    res.json(cachedData);
+    res.json(await refresh());
   } catch (error) {
-    console.error("LeetCode API Error:", error.message);
-    // Serve stale data rather than nothing if LeetCode is slow or down.
-    if (cachedData) return res.json(cachedData);
-    res.status(502).json({ status: "error", message: "Failed to fetch LeetCode stats" });
-  } finally {
-    inFlight = null;
+    logError(error);
+    unavailable(res);
   }
 };
+
+/** Resolves once a background refresh, if one is running, has finished (for the tests). */
+exports.refreshed = () => (inFlight ?? Promise.resolve()).catch(() => {});

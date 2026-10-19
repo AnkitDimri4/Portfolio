@@ -58,16 +58,42 @@ export const fetchJSON = (path) => {
 /** A fresh request each time (for data that changes, like free call slots), with the same retries. */
 export const getJSON = (path) => request(path);
 
-/** { data, error, slow } — `slow` turns true while a request is still pending after a few seconds. */
+// The API's answers when the page was built (scripts/prerender.js writes them into the page, as
+// <script type="application/json" id="api-snapshot">). useApi starts from them, so the numbers show
+// at once, even while the API wakes up (Render's free plan sleeps after 15 quiet minutes and takes
+// about 20 seconds to wake), and the live answer replaces them when it comes.
+let snapshot = {};
+if (typeof document !== "undefined") {
+  try {
+    snapshot = JSON.parse(document.getElementById("api-snapshot")?.textContent || "{}") || {};
+  } catch {
+    snapshot = {};
+  }
+}
+
+/** Sets the answers useApi starts from: the pre-render, before it renders the page, and the tests. */
+export const setSnapshot = (answers = {}) => {
+  snapshot = answers;
+};
+
+/** The answers as a data block for the page: JSON, with every "<" escaped so nothing in it can end the block. */
+export const snapshotScript = (answers) =>
+  `<script type="application/json" id="api-snapshot">${JSON.stringify(answers).replace(/</g, "\\u003c")}</script>`;
+
+/**
+ * { data, error, slow }: the page's snapshot of the answer at first, if it has one, then the live
+ * answer. `slow` turns true while a request is still pending after a few seconds, with nothing to show.
+ */
 export const useApi = (path) => {
-  const [state, setState] = useState({ data: null, error: null, slow: false });
+  const [state, setState] = useState(() => ({ data: snapshot[path] ?? null, error: null, slow: false }));
   useEffect(() => {
     let live = true;
     const timer = setTimeout(() => live && setState((s) => (s.data || s.error ? s : { ...s, slow: true })), SLOW_MS);
     fetchJSON(path)
       .then(
         (data) => live && setState({ data, error: null, slow: false }),
-        (error) => live && setState({ data: null, error, slow: false })
+        // With the snapshot, it stays: older numbers rather than none
+        (error) => live && setState((s) => (s.data ? s : { data: null, error, slow: false }))
       )
       .finally(() => clearTimeout(timer));
     return () => {

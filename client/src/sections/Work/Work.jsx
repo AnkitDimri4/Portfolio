@@ -9,7 +9,8 @@ import { useApi } from "../../lib/api";
 import { PINNED_REPOS, PROFILE, PROJECTS } from "../../data/profile";
 import "./Work.css";
 
-const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+// In India's time wherever it runs, so the pre-rendered page and the browser show the same month
+const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 const prettyRepo = (name) => name.replace(/[-_]+/g, " ");
 
 /** Video is only mounted once the card nears the viewport, so demos cost nothing on first load. */

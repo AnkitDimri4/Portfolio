@@ -81,7 +81,7 @@ Lighthouse on the live site, mobile · desktop:
 
 On a phone (Lighthouse's slow 4G), the largest content shows in 2.3 seconds, nothing blocks the page for more than 10 ms, nothing shifts as it loads, and the builder loads 89 KB of JavaScript. What makes that possible:
 
-- Pages are pre-rendered at build time, so the content arrives in the first response.
+- Pages are pre-rendered at build time, so the content arrives in the first response: the live GitHub and LeetCode stats too, as the API gave them at the build, until its live answer replaces them.
 - Each page ships its own bundle, and the booking calendar loads only when someone opens it.
 - Fonts are self-hosted and preloaded.
 - Files are named by their content and cached for a year.
@@ -122,7 +122,7 @@ Lighthouse's simulated mobile First Contentful Paint reads later (0.8 s → 1.7 
 
 ## Reliability
 
-- The API can take a while to wake up. After 5 seconds the page says so; with no answer at all, a bar shows a timer and a Try now button, and whatever failed loads again once the server is back.
+- The API can take a while to wake up. The stats don't wait for it: they arrive with the page, and the live ones replace them. Elsewhere, after 5 seconds the page says so; with no answer at all, a bar shows a timer and a Try now button, and whatever failed loads again once the server is back.
 - A notice set from the admin view says what's paused. It's built into the page, so it shows even when the API is down.
 - My resume and the notice are edited in the admin view and go live through a pull request: tests, a preview, then one-click approval.
 - PDFs come from a function that downloads Chromium when it starts, which made each deployment about 90% smaller.

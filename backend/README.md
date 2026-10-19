@@ -47,14 +47,14 @@ The body is JSON: `name`, `email` and `msg`, plus a hidden field that only bots 
 My public repositories, without forks (name, description, language, stars, forks, last push), each with the commits I made on its default branch, and `totalCommits`.
 
 - Each count costs one request: the number of the last page of a one-commit-per-page list.
-- Answers are cached for an hour. When some counts fail (GitHub's rate limit, say), the last known ones are used and it tries again after 5 minutes. If a total still can't be known, `totalCommits` is `null` and `partial` is `true`, rather than a silent undercount.
+- Answers are cached for an hour. Once something is cached, it comes back at once: an old answer is refreshed in the background, and the next visitor gets the new one. After a failure, GitHub isn't asked again for a minute. When some counts fail (GitHub's rate limit, say), the last known ones are used and it tries again after 5 minutes. If a total still can't be known, `totalCommits` is `null` and `partial` is `true`, rather than a silent undercount.
 - My work in the private repository counts under its public copy, this repository.
 - With `GITHUB_TOKEN` set, GitHub allows 5,000 requests an hour instead of 60.
 - **Limit:** 60 requests a minute per visitor (`429`, with `Retry-After`, past it). The cache means GitHub itself is asked at most once an hour, whatever comes in.
 
 ### `GET /api/v1/portfolio/leetcode`: LeetCode stats
 
-From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptance rate (accepted submissions out of all submissions) and the ranking. Cached for 10 minutes; if LeetCode fails after a success, the last answer is served. Limited to 60 requests a minute per visitor.
+From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptance rate (accepted submissions out of all submissions) and the ranking. Cached for 10 minutes, the same way as GitHub's: an old answer at once, refreshed in the background; the last answer when LeetCode fails, which then isn't asked again for a minute. Limited to 60 requests a minute per visitor.
 
 ## Security
 
