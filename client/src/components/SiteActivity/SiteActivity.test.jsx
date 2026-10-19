@@ -35,6 +35,18 @@ describe("this site's activity card", () => {
     expect(screen.getByText(/· updated after every deploy$/)).toBeInTheDocument();
   });
 
+  it("puts each number's logo before it, as on the profile card, and keeps the logos from screen readers", () => {
+    render(<SiteActivity />);
+    const logos = [...document.querySelectorAll(".sa-stat dd")].map((dd) => dd.firstElementChild);
+    expect(logos.map((logo) => [...logo.classList].find((c) => c.startsWith("sa-icon-")))).toEqual(["sa-icon-lighthouse", "sa-icon-git", "sa-icon-github", "sa-icon-vercel"]);
+    for (const logo of logos) {
+      expect(logo.tagName).toBe("svg");
+      expect(logo).toHaveAttribute("aria-hidden", "true");
+    }
+    // The logos add no words: each number reads as before
+    expect(stat("commits")).toBe(num(SNAPSHOT.totals.commits));
+  });
+
   it("keeps the build's Lighthouse scores when the latest file has none, or broken ones", async () => {
     for (const lighthouse of [undefined, { mobile: "fast", desktop: 100 }, { mobile: 101, desktop: 99 }]) {
       nearAtOnce();

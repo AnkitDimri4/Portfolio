@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "../../lib/reveal";
 import SNAPSHOT from "../../data/portfolioActivity.json";
+import { SiGit, SiGithub, SiLighthouse, SiVercel } from "../brandIcons";
 import "../ContributionGraph/ContributionGraph.css";
 import "./SiteActivity.css";
 
@@ -128,24 +129,37 @@ const SiteActivity = ({ title }) => {
     <figure className="sa" ref={ref}>
       {title && <figcaption className="sa-title label">{title}</figcaption>}
 
+      {/* Each number with its maker's logo, as on the profile card */}
       <dl className="sa-stats">
         {lighthouse && (
           <div className="sa-stat">
             <dt>Lighthouse, mobile · desktop</dt>
-            <dd>{`${lighthouse.mobile} · ${lighthouse.desktop}`}</dd>
+            <dd>
+              <SiLighthouse className="sa-icon sa-icon-lighthouse" aria-hidden="true" />
+              {`${lighthouse.mobile} · ${lighthouse.desktop}`}
+            </dd>
           </div>
         )}
         <div className="sa-stat">
           <dt>commits</dt>
-          <dd>{num(totals.commits)}</dd>
+          <dd>
+            <SiGit className="sa-icon sa-icon-git" aria-hidden="true" />
+            {num(totals.commits)}
+          </dd>
         </div>
         <div className="sa-stat">
           <dt>pull requests merged</dt>
-          <dd>{num(totals.mergedPullRequests)}</dd>
+          <dd>
+            <SiGithub className="sa-icon sa-icon-github" aria-hidden="true" />
+            {num(totals.mergedPullRequests)}
+          </dd>
         </div>
         <div className="sa-stat">
           <dt>deployments, {num(totals.productionDeploys)} to production</dt>
-          <dd>{num(totals.deployments)}</dd>
+          <dd>
+            <SiVercel className="sa-icon sa-icon-vercel" aria-hidden="true" />
+            {num(totals.deployments)}
+          </dd>
         </div>
       </dl>
 

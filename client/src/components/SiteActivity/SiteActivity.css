@@ -35,6 +35,9 @@
   background: color-mix(in srgb, var(--bg) 40%, transparent);
 }
 .sa-stat dd {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--step-1);
@@ -42,6 +45,22 @@
   line-height: 1.05;
   letter-spacing: -0.03em;
   white-space: nowrap;
+}
+/* The logo before each number, in its brand's colour; GitHub's and Vercel's black follows the text,
+   so it turns light in dark mode, as on the profile card */
+.sa-icon {
+  flex: none;
+  font-size: 0.72em;
+}
+.sa-icon-lighthouse {
+  color: #f44b21;
+}
+.sa-icon-git {
+  color: #f05032;
+}
+.sa-icon-github,
+.sa-icon-vercel {
+  color: var(--text);
 }
 .sa-stat dt {
   font-size: 0.68rem;
