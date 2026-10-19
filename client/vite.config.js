@@ -48,13 +48,15 @@ export default defineConfig({
     outDir: "build",
     // The portfolio, and the resume builder's pages, each with its own bundle: the builder
     // (/resume-builder/), signing in and "My resumes" (/resume-builder/account/), and the admin view
-    // (/resume-builder/admin/). The pre-render step (`vite build --ssr`) has its own entry and ignores these.
+    // (/resume-builder/admin/); and the English coach (/english/). The pre-render step
+    // (`vite build --ssr`) has its own entry and ignores these.
     rollupOptions: {
       input: {
         main: fileURLToPath(new URL("./index.html", import.meta.url)),
         builder: fileURLToPath(new URL("./resume-builder/index.html", import.meta.url)),
         account: fileURLToPath(new URL("./resume-builder/account/index.html", import.meta.url)),
         admin: fileURLToPath(new URL("./resume-builder/admin/index.html", import.meta.url)),
+        english: fileURLToPath(new URL("./english/index.html", import.meta.url)),
       },
     },
   },
