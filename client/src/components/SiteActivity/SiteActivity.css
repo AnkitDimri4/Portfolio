@@ -141,6 +141,35 @@
   background: color-mix(in srgb, var(--text) 75%, transparent);
 }
 
+/* My work at FileSure, private, on the days and months this site has none: see-through grey, so it
+   reads apart from the site's own green (whose shades are see-through too), lighter for fewer */
+.sa-fs-l1 {
+  fill: color-mix(in srgb, var(--text) 11%, transparent);
+  background: color-mix(in srgb, var(--text) 11%, transparent);
+}
+.sa-fs-l2 {
+  fill: color-mix(in srgb, var(--text) 16%, transparent);
+  background: color-mix(in srgb, var(--text) 16%, transparent);
+}
+.sa-fs-l3 {
+  fill: color-mix(in srgb, var(--text) 22%, transparent);
+  background: color-mix(in srgb, var(--text) 22%, transparent);
+}
+.sa-fs-l4 {
+  fill: color-mix(in srgb, var(--text) 29%, transparent);
+  background: color-mix(in srgb, var(--text) 29%, transparent);
+}
+.sa-bar-fs {
+  fill: color-mix(in srgb, var(--text) 13%, transparent);
+  background: color-mix(in srgb, var(--text) 13%, transparent);
+}
+/* The bracket under FileSure's weeks, and its words */
+.sa-span path {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 0.6;
+}
+
 /* ---------- Keys and dates ---------- */
 .sa-legend {
   display: flex;

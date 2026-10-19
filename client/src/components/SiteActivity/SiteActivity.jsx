@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "../../lib/reveal";
 import SNAPSHOT from "../../data/portfolioActivity.json";
+import WORK from "../../data/workActivity.json";
 import { SiGit, SiGithub, SiLighthouse, SiVercel } from "../brandIcons";
 import "../ContributionGraph/ContributionGraph.css";
 import "./SiteActivity.css";
@@ -54,6 +55,17 @@ const WEEKDAYS = [
   [5, "Fri"],
 ];
 
+// My work at FileSure, in its private repositories (data/workActivity.json, the graph above this card):
+// on days this site has no commits it shows as faint grey squares, and its months as faint bars, so the
+// blank months say where the work went. Shaded on its own scale, by quartile of its active days.
+const WORK_ACTIVE = Object.values(WORK).filter(Boolean).sort((x, y) => x - y);
+const WORK_CUTS = [0.25, 0.5, 0.75].map((f) => WORK_ACTIVE[Math.floor(WORK_ACTIVE.length * f)]);
+const workLevel = (n) => 1 + WORK_CUTS.filter((c) => n > c).length;
+const WORK_MONTHS = {};
+for (const [date, n] of Object.entries(WORK)) WORK_MONTHS[date.slice(0, 7)] = (WORK_MONTHS[date.slice(0, 7)] || 0) + n;
+const AT_FILESURE = "at FileSure, in private repositories";
+const UNDER = 13; // room under the calendar for the line naming FileSure's weeks
+
 /**
  * The calendar's cells, with their levels: at most the last year (53 weeks), like GitHub's own graph,
  * from the Sunday on or before its first day. The totals above stay all-time.
@@ -66,8 +78,11 @@ const calendar = (a) => {
   for (let t = start; t <= end; t += DAY) {
     const iso = new Date(t).toISOString().slice(0, 10);
     const i = Math.round((t - start) / DAY);
-    cells.push({ iso, col: Math.floor(i / 7), row: i % 7, ...EMPTY, ...a.days[iso] });
+    cells.push({ iso, col: Math.floor(i / 7), row: i % 7, ...EMPTY, ...a.days[iso], work: WORK[iso] || 0 });
   }
+  // The weeks FileSure's faint squares span, for the line naming them under the calendar
+  const workCols = cells.filter((c) => !c.commits && c.work).map((c) => c.col);
+  const span = workCols.length ? [Math.min(...workCols), Math.max(...workCols)] : null;
   // Shaded by quartile of the days with commits, as on the profile card.
   const active = cells.map((c) => c.commits).filter(Boolean).sort((x, y) => x - y);
   const cuts = [0.25, 0.5, 0.75].map((f) => active[Math.floor(active.length * f)]);
@@ -79,8 +94,9 @@ const calendar = (a) => {
     cells: cells.map((c) => ({ ...c, level: level(c.commits) })),
     months: [...months],
     width: LEFT + cols * P - (P - C),
-    height: TOP + 7 * P - (P - C),
+    height: TOP + 7 * P - (P - C) + (span ? UNDER : 0),
     shownFrom: new Date(first).toISOString().slice(0, 10),
+    span,
   };
 };
 
@@ -101,7 +117,7 @@ const busiest = (a) => {
   return { day: { iso: day, ...on(day) }, month };
 };
 
-/** The last 12 months (fewer when it began later), each with its commits, merged pull requests and deployments. */
+/** The last 12 months (fewer when it began later), each with its commits, merged pull requests and deployments, and FileSure's contributions. */
 const monthly = (a) => {
   const sums = {};
   for (const [date, d] of Object.entries(a.days)) {
@@ -112,7 +128,7 @@ const monthly = (a) => {
   for (let y = Number(a.to.slice(0, 4)), m = Number(a.to.slice(5, 7)), i = 0; i < 12; i++, m === 1 ? (y--, (m = 12)) : m--) {
     const key = `${y}-${String(m).padStart(2, "0")}`;
     if (key < a.from.slice(0, 7)) break;
-    out.unshift({ key, label: MON[m - 1], ...EMPTY, ...sums[key] });
+    out.unshift({ key, label: MON[m - 1], ...EMPTY, ...sums[key], work: WORK_MONTHS[key] || 0 });
   }
   return out;
 };
@@ -144,7 +160,7 @@ const SiteActivity = ({ title }) => {
     return () => controller.abort();
   }, [near]);
 
-  const { cells, months, width, height, shownFrom } = useMemo(() => calendar(activity), [activity]);
+  const { cells, months, width, height, shownFrom, span } = useMemo(() => calendar(activity), [activity]);
   const byMonth = useMemo(() => monthly(activity), [activity]);
   const best = useMemo(() => busiest(activity), [activity]);
   const { totals, from, to } = activity;
@@ -154,10 +170,12 @@ const SiteActivity = ({ title }) => {
   const days = Number.isInteger(totals.activeDays) && totals.activeDays > 0 ? totals.activeDays : null;
   const rate = (n) => days && <dd className="sa-rate">{perActiveDay(n, days)} per active day</dd>;
   const bestMonth = best && `${MON[Number(best.month.key.slice(5)) - 1]}${best.month.key.slice(0, 4) === to.slice(0, 4) ? "" : ` ${best.month.key.slice(0, 4)}`}`;
-  const top = Math.max(1, ...byMonth.flatMap((m) => SERIES.map(([k]) => m[k])));
+  // One scale for the month's bars and FileSure's faint bar behind them, so their heights compare
+  const top = Math.max(1, ...byMonth.flatMap((m) => [...SERIES.map(([k]) => m[k]), m.work]));
   const slot = width / byMonth.length;
   const bar = Math.min(9, (slot * 0.72 - 2 * GAP) / 3);
   const inset = (slot - (3 * bar + 2 * GAP)) / 2;
+  const gridBottom = TOP + 7 * P - (P - C);
 
   return (
     <figure className="sa" ref={ref}>
@@ -208,7 +226,7 @@ const SiteActivity = ({ title }) => {
             className="sa-svg"
             viewBox={`0 0 ${width} ${height}`}
             role="img"
-            aria-label={`Commits day by day from ${dayLabel(shownFrom)} ${shownFrom.slice(0, 4)} to ${dayLabel(to)} ${to.slice(0, 4)}, with each day the site was deployed marked`}
+            aria-label={`Commits day by day from ${dayLabel(shownFrom)} ${shownFrom.slice(0, 4)} to ${dayLabel(to)} ${to.slice(0, 4)}, with each day the site was deployed marked${span ? `, and on the other days my work ${AT_FILESURE}, in faint squares` : ""}`}
           >
             {months.map(([col, label]) => (
               <text key={col} x={LEFT + col * P} y="9">
@@ -226,19 +244,28 @@ const SiteActivity = ({ title }) => {
               const x = LEFT + c.col * P;
               const y = TOP + c.row * P;
               const busy = c.commits || c.pullRequests || c.deployments;
+              const said = [
+                busy && `${plural(c.commits, "commit")} · ${plural(c.pullRequests, "pull request")} · ${plural(c.deployments, "deployment")}`,
+                c.work > 0 && `${plural(c.work, "contribution")} ${AT_FILESURE}`,
+              ].filter(Boolean);
               return (
                 <Fragment key={c.iso}>
-                  <rect className={`cg-l${c.level}`} x={x} y={y} width={C} height={C} rx="2">
-                    <title>
-                      {busy
-                        ? `${dayLabel(c.iso)}: ${plural(c.commits, "commit")} · ${plural(c.pullRequests, "pull request")} · ${plural(c.deployments, "deployment")}`
-                        : `${dayLabel(c.iso)}: no activity`}
-                    </title>
+                  <rect className={!c.commits && c.work ? `sa-fs-l${workLevel(c.work)}` : `cg-l${c.level}`} x={x} y={y} width={C} height={C} rx="2">
+                    <title>{`${dayLabel(c.iso)}: ${said.length ? said.join("; ") : "no activity"}`}</title>
                   </rect>
                   {c.deployments > 0 && <path className="sa-deploy" d={`M${x + C / 2} ${y + 1.8}L${x + C - 1.6} ${y + C - 1.8}H${x + 1.6}Z`} />}
                 </Fragment>
               );
             })}
+            {/* Under FileSure's weeks, a bracket that names them */}
+            {span && (
+              <g className="sa-span">
+                <path d={`M${LEFT + span[0] * P} ${gridBottom + 1}v3H${LEFT + span[1] * P + C}v-3`} />
+                <text x={LEFT + ((span[0] + span[1]) * P + C) / 2} y={gridBottom + UNDER - 1} textAnchor="middle">
+                  {AT_FILESURE}
+                </text>
+              </g>
+            )}
           </svg>
           <p className="sa-legend label" aria-hidden="true">
             <span className="sa-scale">
@@ -247,6 +274,11 @@ const SiteActivity = ({ title }) => {
             <span>
               <b className="sa-tri">▲</b> deployed
             </span>
+            {span && (
+              <span>
+                <i className="sa-fs-l3" /> FileSure, private
+              </span>
+            )}
           </p>
           {best && (
             <p className="sa-note">
@@ -263,12 +295,27 @@ const SiteActivity = ({ title }) => {
             viewBox={`0 0 ${width} ${BARS_H + LABELS}`}
             role="img"
             aria-label={byMonth
-              .filter((m) => m.commits || m.pullRequests || m.deployments)
-              .map((m) => `${m.label}: ${plural(m.commits, "commit")}, ${plural(m.pullRequests, "pull request")}, ${plural(m.deployments, "deployment")}`)
+              .filter((m) => m.commits || m.pullRequests || m.deployments || m.work)
+              .map(
+                (m) =>
+                  `${m.label}: ${plural(m.commits, "commit")}, ${plural(m.pullRequests, "pull request")}, ${plural(m.deployments, "deployment")}` +
+                  (m.work ? `, and ${plural(m.work, "contribution")} ${AT_FILESURE}` : "")
+              )
               .join("; ")}
           >
             {byMonth.map((m, i) => (
               <g key={m.key}>
+                {/* FileSure's month, a faint bar behind this site's three */}
+                {m.work > 0 && (
+                  <rect
+                    className="sa-bar-fs"
+                    x={i * slot + inset - 1}
+                    y={BARS_H - Math.max(1.5, (m.work / top) * BARS_H)}
+                    width={3 * bar + 2 * GAP + 2}
+                    height={Math.max(1.5, (m.work / top) * BARS_H)}
+                    rx="1.5"
+                  />
+                )}
                 {SERIES.map(([k], j) => {
                   const h = m[k] ? Math.max(1.5, (m[k] / top) * BARS_H) : 0;
                   return h ? <rect key={k} className={`sa-bar sa-bar-${k}`} x={i * slot + inset + j * (bar + GAP)} y={BARS_H - h} width={bar} height={h} rx="1.5" /> : null;
@@ -285,6 +332,11 @@ const SiteActivity = ({ title }) => {
                 <i className={`sa-bar-${k}`} /> {label}
               </span>
             ))}
+            {byMonth.some((m) => m.work) && (
+              <span>
+                <i className="sa-bar-fs" /> FileSure, private
+              </span>
+            )}
           </p>
           {best && (
             <p className="sa-note">

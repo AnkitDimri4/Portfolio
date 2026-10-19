@@ -1,6 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import SNAPSHOT from "../../data/portfolioActivity.json";
+import WORK from "../../data/workActivity.json";
 import SiteActivity, { LIVE_URL, isActivity, isLighthouse, perActiveDay } from "./SiteActivity";
 
 const num = (n) => n.toLocaleString("en-US");
@@ -81,6 +82,36 @@ describe("this site's activity card", () => {
     await waitFor(() => expect(stat("commits")).toBe("4,321"));
     const notes = [...document.querySelectorAll(".sa-note")].map((p) => p.textContent);
     expect(notes).toEqual(["Busiest day, 15 Oct: 83 commits · 34 pull requests · 59 deployments", "Busiest month, Oct: 166 commits · 35 PRs · 60 deploys"]);
+  });
+
+  it("fills the days this site has no commits with my FileSure work, in faint squares that say so", () => {
+    nearAtOnce();
+    render(<SiteActivity />);
+    const calendar = screen.getByRole("img", { name: /^Commits day by day/ });
+    expect(calendar).toHaveAttribute("aria-label", expect.stringMatching(/my work at FileSure, in private repositories, in faint squares$/));
+    const faint = [...calendar.querySelectorAll("rect")].filter((r) => /^sa-fs-l[1-4]$/.test(r.getAttribute("class")));
+    const workDays = Object.entries(WORK).filter(([date, n]) => n > 0 && date >= SNAPSHOT.from && date <= SNAPSHOT.to && !SNAPSHOT.days[date]?.commits);
+    expect(workDays.length).toBeGreaterThan(0);
+    expect(faint).toHaveLength(workDays.length);
+    for (const square of faint) expect(square.querySelector("title").textContent).toMatch(/^\d+ [A-Z][a-z]{2}: [\d,]+ contributions? at FileSure, in private repositories$/);
+    // A day with this site's commits stays green, and says both
+    const both = Object.keys(WORK).find((date) => WORK[date] > 0 && SNAPSHOT.days[date]?.commits > 0);
+    if (both) {
+      const square = [...calendar.querySelectorAll("rect")].find((r) => r.querySelector("title").textContent.startsWith(`${dayLabel(both)}:`));
+      expect(square.getAttribute("class")).toMatch(/^cg-l[1-4]$/);
+      expect(square.querySelector("title").textContent).toMatch(/commits? · .*; [\d,]+ contributions? at FileSure/);
+    }
+  });
+
+  it("names FileSure's weeks under the calendar, and shows its months as faint bars behind this site's", () => {
+    render(<SiteActivity />); // the line and the bars are there before the card comes near
+    const calendar = screen.getByRole("img", { name: /^Commits day by day/ });
+    expect(within(calendar).getByText("at FileSure, in private repositories")).toBeInTheDocument();
+    const bars = screen.getByRole("img", { name: /: \d/ });
+    const workMonths = new Set(Object.keys(WORK).filter((date) => WORK[date] > 0 && date <= SNAPSHOT.to).map((date) => date.slice(0, 7)));
+    expect(bars.querySelectorAll(".sa-bar-fs")).toHaveLength(workMonths.size);
+    expect(bars.getAttribute("aria-label")).toMatch(/Jul: 0 commits, 0 pull requests, 0 deployments, and [\d,]+ contributions at FileSure, in private repositories/);
+    expect(screen.getAllByText("FileSure, private")).toHaveLength(2); // in both keys
   });
 
   it("names Mon, Wed and Fri beside the calendar, as GitHub does", () => {
