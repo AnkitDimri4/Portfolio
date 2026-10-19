@@ -129,9 +129,10 @@ Lighthouse's simulated mobile First Contentful Paint reads later (0.8 s → 1.7 
 
 ## Engineering
 
-- 270+ tests, in Vitest and Node's test runner, with the API's SQL run on PGlite (PostgreSQL in memory).
+- 400+ tests, in Vitest and Node's test runner, with the API's SQL run on PGlite (PostgreSQL in memory).
 - Every change on a branch and a pull request, with signed commits; GitHub Actions pinned to commit hashes, and Dependabot updates.
-- Signed-in and admin routes check the session; HSTS, a Content Security Policy and other security headers on every page.
+- Signed-in and admin routes check the session; HSTS and other security headers on every page, with a Content Security Policy that runs only the site's own scripts (its inline ones by their hashes, checked at every build), Razorpay's checkout and Google's sign-in button.
+- Every API route has a rate limit per visitor (a test fails if one doesn't), under one ceiling for the whole API.
 
 ---
 
@@ -189,7 +190,7 @@ Portfolio/
 │   ├── lib/                     # the contact form's checks, email through Resend
 │   ├── middleware/rateLimit.js  # per-IP rate limiting (Cloudflare-aware on Render)
 │   ├── config/db.js             # PostgreSQL (Neon) pool, verified TLS
-│   ├── app.js, server.js        # security headers, CORS allow-list, /health, JSON errors
+│   ├── app.js, server.js        # security headers, CORS allow-list, a request ceiling, /health, JSON errors
 │   └── test/                    # contact, mail, rate-limit and stats tests (node:test)
 └── docs/                        # this README's screenshots, and the previous design's recording
 ```

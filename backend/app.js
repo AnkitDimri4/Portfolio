@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("./middleware/rateLimit");
 const portfolioRoutes = require("./routes/portfolioRoutes");
 
 const app = express();
@@ -33,6 +34,17 @@ const configured = (process.env.CORS_ORIGIN || "")
   .map((o) => o.trim())
   .filter(Boolean);
 app.use(cors({ origin: configured.length ? configured : DEFAULT_ORIGINS }));
+
+// Every request counts toward one ceiling per visitor, whatever its path (/health, an unknown one, a
+// route added later): a safety net under each route's own, lower limit (routes/portfolioRoutes.js).
+// After CORS, so a browser can read the 429; before the body is read, so a flood costs little.
+app.use(
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 600,
+    message: "Too many requests. Please try again in a minute.",
+  })
+);
 
 // Razorpay's webhook is signed over its body exactly as it was sent, so that one stays raw
 // (controllers/paymentController.js).

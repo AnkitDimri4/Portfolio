@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir build-ssr && node scripts/prerender.js && node scripts/resume-build.js",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir build-ssr && node scripts/prerender.js && node scripts/csp.js && node scripts/resume-build.js",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint . --max-warnings=0",

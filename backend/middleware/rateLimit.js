@@ -19,7 +19,7 @@ const rateLimit = ({ windowMs, max, message, key: keyOf = clientKey, skip }) => 
     for (const [key, entry] of hits) if (now > entry.resetAt) hits.delete(key);
   }, windowMs).unref();
 
-  return (req, res, next) => {
+  const limit = (req, res, next) => {
     if (skip?.(req)) return next();
     const now = Date.now();
     const key = keyOf(req);
@@ -34,6 +34,9 @@ const rateLimit = ({ windowMs, max, message, key: keyOf = clientKey, skip }) => 
     }
     next();
   };
+  // What it allows, so a test can check that every route has a limit
+  limit.limits = { windowMs, max };
+  return limit;
 };
 
 module.exports = rateLimit;

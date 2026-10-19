@@ -14,7 +14,7 @@ The public parts of the portfolio's API: **Node.js + Express** on **Render**, wi
 | Path | What it does |
 |---|---|
 | `server.js` | Loads the environment (from `.env` when run locally) and starts the server on `PORT`. |
-| `app.js` | The Express app: security headers, the CORS allow-list, JSON body limits, `/health`, the API under `/api/v1/portfolio`, and errors as JSON. |
+| `app.js` | The Express app: security headers, the CORS allow-list, a ceiling of 600 requests a minute per visitor, JSON body limits, `/health`, the API under `/api/v1/portfolio`, and errors as JSON. |
 | `controllers/portfolioController.js` | The contact form: checks the message, saves it to PostgreSQL and emails it to me. |
 | `controllers/githubController.js` | GitHub stats: my repositories and the commits I made in each, fetched on the server and cached. |
 | `controllers/leetcodeController.js` | LeetCode stats: problems solved by difficulty, acceptance rate and ranking, cached. |
@@ -50,10 +50,11 @@ My public repositories, without forks (name, description, language, stars, forks
 - Answers are cached for an hour. When some counts fail (GitHub's rate limit, say), the last known ones are used and it tries again after 5 minutes. If a total still can't be known, `totalCommits` is `null` and `partial` is `true`, rather than a silent undercount.
 - My work in the private repository counts under its public copy, this repository.
 - With `GITHUB_TOKEN` set, GitHub allows 5,000 requests an hour instead of 60.
+- **Limit:** 60 requests a minute per visitor (`429`, with `Retry-After`, past it). The cache means GitHub itself is asked at most once an hour, whatever comes in.
 
 ### `GET /api/v1/portfolio/leetcode`: LeetCode stats
 
-From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptance rate (accepted submissions out of all submissions) and the ranking. Cached for 10 minutes; if LeetCode fails after a success, the last answer is served.
+From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptance rate (accepted submissions out of all submissions) and the ranking. Cached for 10 minutes; if LeetCode fails after a success, the last answer is served. Limited to 60 requests a minute per visitor.
 
 ## Security
 
@@ -61,7 +62,7 @@ From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptanc
 - **CORS:** only the site, its Vercel previews and `localhost` can call it; `CORS_ORIGIN` replaces that list.
 - **Errors:** JSON without stack traces or file paths (`Invalid request body`, `Request too large`, `Something went wrong`).
 - **Input:** checked and length-limited; anything a visitor types is escaped before it goes into an email; SQL is parameterised.
-- **Rate limits** count each visitor by their real address: on Render, traffic comes through Cloudflare, so its `CF-Connecting-IP` header is used there, and only there.
+- **Rate limits:** every route has its own limit per visitor, and every request, whatever its path, counts toward a ceiling of 600 a minute. They count each visitor by their real address: on Render, traffic comes through Cloudflare, so its `CF-Connecting-IP` header is used there, and only there.
 - **Database:** TLS, with the certificate verified.
 - **Secrets** live only in Render's settings, never in the code.
 

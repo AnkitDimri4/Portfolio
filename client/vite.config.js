@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
@@ -19,6 +19,19 @@ const publicPages = {
   },
 };
 
+// `npm run preview` serves the build with the headers Vercel sends (vercel.json), the
+// Content-Security-Policy among them, so every page's scripts can be tried before a deploy.
+// upgrade-insecure-requests is left out: the preview runs on plain http. (The public copy has no
+// vercel.json, so no headers there.)
+const vercelFile = new URL("./vercel.json", import.meta.url);
+const siteHeaders = existsSync(vercelFile)
+  ? Object.fromEntries(
+      JSON.parse(readFileSync(vercelFile, "utf8"))
+        .headers.find((rule) => rule.source === "/(.*)")
+        .headers.map(({ key, value }) => [key, value.replace(/;\s*upgrade-insecure-requests/, "")])
+    )
+  : {};
+
 export default defineConfig({
   plugins: [react(), publicPages],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
@@ -29,6 +42,7 @@ export default defineConfig({
     // REACT_APP_BACKEND_URL is unset.
     proxy: { "/api": "http://localhost:8080", "/health": "http://localhost:8080" },
   },
+  preview: { headers: siteHeaders },
   build: {
     outDir: "build",
     // The portfolio, and the resume builder's pages, each with its own bundle: the builder
