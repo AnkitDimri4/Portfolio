@@ -190,16 +190,21 @@ const NeuralField = () => {
     resize();
     // Keep the loop off the critical path: wait for load, then an idle moment.
     const idle = (cb) => (window.requestIdleCallback ? window.requestIdleCallback(cb, { timeout: 2000 }) : setTimeout(cb, 300));
-    const kickoff = () =>
-      idle(() => {
+    const cancelIdle = (id) => (window.requestIdleCallback ? window.cancelIdleCallback(id) : clearTimeout(id));
+    let waiting = 0;
+    const kickoff = () => {
+      waiting = idle(() => {
         ready = true;
         start();
       });
+    };
     if (document.readyState === "complete") kickoff();
     else window.addEventListener("load", kickoff, { once: true });
 
     return () => {
       stop();
+      // Gone before that idle moment: without this, the loop would still start, with nothing left to stop it.
+      cancelIdle(waiting);
       ro.disconnect();
       io.disconnect();
       window.removeEventListener("pointermove", onMove);
