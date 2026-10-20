@@ -82,7 +82,7 @@
     <p class="label">Privacy</p>
     <h1>What this site does with your details</h1>
     <p class="lede">It's my personal portfolio. Here's everything it collects, why, and where it goes.</p>
-    <p class="label updated">Last updated 19 October 2026</p>
+    <p class="label updated">Last updated 20 October 2026</p>
 
     <section>
       <h2>Who I am</h2>
@@ -105,11 +105,15 @@
           Your phone number and note aren't in it: they come to me in an email. I use your phone number
           only about the call, for example if it needs to move. So the form can't be used to send
           invitations to other people, the server counts the calls booked for each address for a week,
-          under a one-way code made from it (a hash), never the address itself.
+          and from each IP address for a day, under a one-way code made from it (a hash), never the
+          address itself.
         </li>
         <li>
           <strong>The contact form.</strong> Your name, email and message are saved in my database and
-          emailed to me, so I can reply.
+          emailed to me, so I can reply. So the form can't be used to flood my inbox, the server counts
+          the messages from each email address and each IP address for a day, under a one-way code made
+          from them (a hash), never the address itself; past a few, your message is still saved and I
+          read it in my database.
         </li>
         <li id="resume-builder">
           <strong>The resume builder.</strong> What you type stays in your browser until you ask for the
@@ -181,9 +185,10 @@
       <p>
         Each one handles the details only to provide its service. As with any website, their logs may
         briefly record your IP address. The server also uses your IP address to stop repeated
-        requests: in memory only, except that for sign-in emails and ₹1 payments it keeps a count for a
-        day, and for sign-in emails a count for each address for an hour, under a one-way code made
-        from them (a hash), never the IP address or email address itself.
+        requests: in memory only, except that for sign-in emails, ₹1 payments, contact-form messages
+        and calls booked it keeps a count for a day, and for sign-in emails a count for each address
+        for an hour, under a one-way code made from them (a hash), never the IP address or email
+        address itself.
       </p>
     </section>
 

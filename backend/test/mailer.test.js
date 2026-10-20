@@ -72,12 +72,13 @@ const contact = (db) => {
   const dbPath = require.resolve("../config/db");
   require.cache[dbPath] = { id: dbPath, filename: dbPath, loaded: true, exports: { query: db } };
   delete require.cache[require.resolve("../lib/mailer")];
+  delete require.cache[require.resolve("../lib/limits")]; // the day's counts (#190) go through the same database
   return fresh("../controllers/portfolioController").sendEmailController;
 };
 const send = async (handler, body) => {
   const out = { status: 200, body: null };
   const res = { status: (s) => ((out.status = s), res), json: (b) => ((out.body = b), res) };
-  await handler({ body }, res);
+  await handler({ body, ip: "198.51.100.1", get: () => undefined }, res);
   return out;
 };
 const message = { name: "Jane Doe", email: "jane@company.com", msg: "Hiring for a mobile role" };
@@ -85,10 +86,14 @@ const message = { name: "Jane Doe", email: "jane@company.com", msg: "Hiring for 
 test("contact form: saved and emailed through Resend, subject with the sender's name", async () => {
   Object.assign(process.env, { RESEND_API_KEY: "re_test", NOTIFY_EMAIL: "me@example.com" });
   global.fetch = resend();
-  const saved = [];
-  const handler = contact(async (sql, params) => saved.push(params));
+  const queries = [];
+  const handler = contact(async (sql, params) => {
+    queries.push({ sql, params });
+    return { rows: [{ n: 1 }] }; // the day's counts: a place left in each (test/contact-caps.test.js has them full)
+  });
   const { status } = await send(handler, message);
   assert.equal(status, 200);
+  const saved = queries.filter((q) => /INSERT INTO contacts/.test(q.sql)).map((q) => q.params);
   assert.deepEqual(saved, [["Jane Doe", "jane@company.com", "Hiring for a mobile role"]]);
   const email = JSON.parse(calls[0].init.body);
   assert.equal(email.subject, "📩 New Portfolio Contact: Jane Doe");

@@ -10,13 +10,16 @@ app.set("trust proxy", 1);
 // Don't advertise the framework.
 app.disable("x-powered-by");
 
-// Basic security headers (JSON API: nothing here is meant to be framed or sniffed).
+// Basic security headers (JSON API: nothing here is meant to be framed or sniffed). HSTS: Cloudflare and
+// Render end TLS, so every request the app sees came over https, and a client that once reached it is
+// told to stay there for a year; a browser ignores the header over plain http, so local work is unchanged.
 app.use((req, res, next) => {
   res.set({
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "no-referrer",
     "Cross-Origin-Resource-Policy": "cross-origin",
+    "Strict-Transport-Security": "max-age=31536000",
   });
   next();
 });
