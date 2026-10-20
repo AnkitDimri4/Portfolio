@@ -5,8 +5,9 @@
 // failure, GitHub isn't asked again for a minute.
 const USERNAME = "AnkitDimri4";
 // Work that happens in a private repository is listed under its public copy, with the commits made
-// in the private one (docs/runbooks/public-copy.md). Reading those takes RESUME_GITHUB_TOKEN, the
-// token My resume uses, which reaches that repository; without it, the copy's own commits count.
+// in the private one (docs/runbooks/public-copy.md). Reading those takes STATS_GITHUB_TOKEN, a token of
+// the stats' own that can only read that repository (never the admin view's); without it, the copy's
+// own commits count.
 const PRIVATE_SOURCES = { Portfolio: "Portfolio-app" };
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 const PARTIAL_RETRY = 5 * 60 * 1000; // retry sooner when some counts failed (e.g. rate limit)
@@ -50,7 +51,7 @@ const countCommits = async (repo, token) => {
 // A listed repository's commits: from its private source when there's a token to read it.
 const countFor = (name) => {
   const source = PRIVATE_SOURCES[name];
-  const token = process.env.RESUME_GITHUB_TOKEN;
+  const token = process.env.STATS_GITHUB_TOKEN;
   return source && token ? countCommits(source, token) : countCommits(name);
 };
 

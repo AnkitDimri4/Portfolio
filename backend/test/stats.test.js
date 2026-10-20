@@ -151,7 +151,7 @@ const withEnv = async (vars, fn) => {
 // The public copy "Portfolio", whose work happens in the private "Portfolio-app"
 const copyState = () => ({ repos: ["Portfolio", "B"], counts: { "Portfolio-app": 326, Portfolio: 1, B: 20 }, failing: new Set() });
 
-test("github: the public copy shows the private repository's commits, read with My resume's token", async () => {
+test("github: the public copy shows the private repository's commits, read with the stats' own token, never the admin view's", async () => {
   const tokens = {};
   const fake = githubFetch(copyState());
   global.fetch = async (url, options) => {
@@ -159,19 +159,20 @@ test("github: the public copy shows the private repository's commits, read with 
     if (repo) tokens[repo] = options?.headers?.Authorization;
     return fake(url);
   };
-  await withEnv({ RESUME_GITHUB_TOKEN: "resume-token", GITHUB_TOKEN: "stats-token" }, async () => {
+  await withEnv({ STATS_GITHUB_TOKEN: "private-read-token", RESUME_GITHUB_TOKEN: "admin-token", GITHUB_TOKEN: "stats-token" }, async () => {
     const { body } = await call(fresh("../controllers/githubController").getGithubStats);
     assert.equal(body.repos.find((r) => r.name === "Portfolio").commits, 326);
     assert.equal(body.totalCommits, 346);
-    assert.equal(tokens["Portfolio-app"], "Bearer resume-token");
+    assert.equal(tokens["Portfolio-app"], "Bearer private-read-token");
     assert.equal(tokens.B, "Bearer stats-token");
+    assert.ok(!Object.values(tokens).includes("Bearer admin-token"));
     assert.ok(!("Portfolio" in tokens), "the copy's own commits aren't counted as well");
   });
 });
 
-test("github: without My resume's token, the public copy's own commits count", async () => {
+test("github: without the stats' own token, the public copy's own commits count, even with the admin view's there", async () => {
   global.fetch = githubFetch(copyState());
-  await withEnv({ RESUME_GITHUB_TOKEN: undefined }, async () => {
+  await withEnv({ STATS_GITHUB_TOKEN: undefined, RESUME_GITHUB_TOKEN: "admin-token" }, async () => {
     const { body } = await call(fresh("../controllers/githubController").getGithubStats);
     assert.equal(body.totalCommits, 21);
   });
@@ -180,7 +181,7 @@ test("github: without My resume's token, the public copy's own commits count", a
 test("github: the private count falls back to the last known one, like any other", async () => {
   const state = copyState();
   global.fetch = githubFetch(state);
-  await withEnv({ RESUME_GITHUB_TOKEN: "resume-token" }, async () => {
+  await withEnv({ STATS_GITHUB_TOKEN: "private-read-token" }, async () => {
     const ctrl = fresh("../controllers/githubController");
     await call(ctrl.getGithubStats);
     now += 61 * 60_000; // cache expired; the token stopped working

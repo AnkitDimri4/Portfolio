@@ -75,7 +75,7 @@ From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptanc
 | `RESEND_API_KEY`, `NOTIFY_EMAIL` | Emailing contact messages to me, through Resend |
 | `MAIL_FROM` | Optional: the sender, once a domain is verified with Resend |
 | `GITHUB_TOKEN` | Optional: a token with no scopes, for GitHub's higher rate limit |
-| `RESUME_GITHUB_TOKEN` | Optional: lets the GitHub stats count the commits in the private repository |
+| `STATS_GITHUB_TOKEN` | Optional: a read-only token that lets the GitHub stats count the commits in the private repository |
 | `CORS_ORIGIN` | Optional: comma-separated origins, replacing the default allow-list |
 | `TRUST_CF_CONNECTING_IP` | Optional: `true` to trust Cloudflare's visitor address outside Render |
 
