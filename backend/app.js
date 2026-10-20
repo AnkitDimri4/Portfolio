@@ -51,6 +51,8 @@ app.use(
 app.use("/api/v1/portfolio/payments/razorpay", express.raw({ type: "*/*", limit: "100kb" }));
 // A resume or a draft from the builder can be longer than a contact message (lib/resumes.js caps each field).
 app.use(["/api/v1/portfolio/resumes", "/api/v1/portfolio/me/drafts", "/api/v1/portfolio/admin/site-resume"], express.json({ limit: "100kb" }));
+// The English coach online: a Talk conversation can pass 20 KB (the coach's own limit is 64).
+app.use("/api/v1/portfolio/english", express.json({ limit: "64kb" }));
 app.use(express.json({ limit: "20kb" }));
 
 // Routes
