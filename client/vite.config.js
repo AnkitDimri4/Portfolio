@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -42,8 +42,34 @@ const vercelHeaders = {
   },
 };
 
+// The resume builder's three pages and the English coach carry their CSS inside the page, as a <style>,
+// rather than as <link>s the browser must fetch before it can paint anything: one round trip less on a
+// first visit (Lighthouse's render-blocking requests; `npm run measure`, docs/runbooks/activity.md).
+// None of them loads more CSS later. The home page does (the call scheduler and the stack grid each
+// bring a <link> to the shared CSS they need, which would then come twice, after the page's own), so it
+// keeps its links.
+const INLINE_CSS = ["resume-builder/index.html", "resume-builder/account/index.html", "resume-builder/admin/index.html", "english/index.html"];
+const clientRoot = fileURLToPath(new URL(".", import.meta.url));
+const inlineCss = {
+  name: "inline-css",
+  apply: "build",
+  transformIndexHtml: {
+    order: "post",
+    handler(html, { filename, bundle }) {
+      const page = relative(clientRoot, filename).replaceAll("\\", "/");
+      if (!bundle || !INLINE_CSS.includes(page)) return html;
+      return html.replace(/<link rel="stylesheet" crossorigin href="\/(assets\/[^"]+\.css)">/g, (_, file) => {
+        const source = bundle[file]?.source;
+        const css = typeof source === "string" ? source : source && new TextDecoder().decode(source);
+        if (!css || css.includes("</style")) throw new Error(`${file} can't be written into ${page}`);
+        return `<style>${css}</style>`;
+      });
+    },
+  },
+};
+
 export default defineConfig({
-  plugins: [react(), publicPages, vercelHeaders],
+  plugins: [react(), publicPages, vercelHeaders, inlineCss],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
   envPrefix: ["VITE_", "REACT_APP_"],
   server: {

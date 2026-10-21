@@ -22,6 +22,7 @@
     "start": "vite",
     "build": "vite build && vite build --ssr src/entry-server.jsx --outDir build-ssr && node scripts/prerender.js && node scripts/csp.js && node scripts/resume-build.js",
     "preview": "vite preview",
+    "measure": "node scripts/measure.js",
     "test": "vitest run",
     "lint": "eslint . --max-warnings=0",
     "resume": "node scripts/resume.js",
@@ -37,6 +38,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
     "jsdom": "^29.1.1",
+    "lighthouse": "13.5.0",
     "vite": "^8.3.3",
     "vitest": "^5.0.3"
   }
