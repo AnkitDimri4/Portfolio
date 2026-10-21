@@ -4,6 +4,10 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+// The commit Vercel built, for the admin view's Site health to say when the site has been deployed since
+// its report was measured (VERCEL_GIT_COMMIT_SHA is Vercel's; a local build has none)
+process.env.VITE_DEPLOY_SHA ??= process.env.VERCEL_GIT_COMMIT_SHA ?? "";
+
 // `npm start` serves public/'s own pages (the download page, privacy, terms, the brain map) at their
 // folder's URL, as Vercel does, instead of falling back to the portfolio.
 const publicPages = {

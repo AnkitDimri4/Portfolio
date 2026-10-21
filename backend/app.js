@@ -37,6 +37,7 @@ const configured = (process.env.CORS_ORIGIN || "")
   .map((o) => o.trim())
   .filter(Boolean);
 app.use(cors({ origin: configured.length ? configured : DEFAULT_ORIGINS }));
+app.set("cors origins", configured.length ? configured : DEFAULT_ORIGINS); // for Site health's check of them (lib/siteHealth.js)
 
 // Every request counts toward one ceiling per visitor, whatever its path (/health, an unknown one, a
 // route added later): a safety net under each route's own, lower limit (routes/portfolioRoutes.js).
@@ -58,6 +59,8 @@ app.use(["/api/v1/portfolio/resumes", "/api/v1/portfolio/me/drafts", "/api/v1/po
 // laptop's whole history of My progress, brought in once, can run to megabytes (the coach's limit is 16 MB).
 app.use("/api/v1/portfolio/english/progress/import", express.json({ limit: "16mb" }));
 app.use("/api/v1/portfolio/english", express.json({ limit: "64kb" }));
+// The site's health report from the Site health workflow: every page's scores and the checks, about 80 kB
+app.use("/api/v1/portfolio/site-health", express.json({ limit: "2mb" }));
 app.use(express.json({ limit: "20kb" }));
 
 // Routes
