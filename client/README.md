@@ -15,12 +15,12 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 |---|---|
 | `index.html` | The page shell: meta tags, Open Graph and Twitter cards, JSON-LD, preloaded fonts, and a small script that sets the theme before the first paint. The pre-rendered app is written into it at build time. |
 | `src/main.jsx` | Starts the app: **hydrates** the pre-rendered HTML, or renders from scratch when there is none. |
-| `src/App.jsx` | The page: the nav, the sections in order, and the footer. |
+| `src/App.jsx` | The page: the nav, the sections in order, and the footer; everything below the first screen in `<Suspense>` boundaries, so React takes it over after the hero. |
 | `src/entry-server.jsx` | The entry the pre-render step uses, with React's `renderToString`. |
 | `src/sections/` | **Hero, About, Work, Journey, Stack, Certificates, Contact**: a folder each, with its styles. |
 | `src/components/` | Shared pieces: `Nav`, `Footer` (with the map dialog), `CodeCard`, `ContributionGraph`, `Marquee`, `NeuralField` (the hero's canvas network), `ScrambleText`, `CountUp`, `LocalTime`, `LiveSignal`, `SectionHead`, `ServerBar` and `Notice`. |
 | `src/data/` | The site's content, as data: `profile.js` (profile, navigation, projects, journey, certificates), `resume-data.js` with `resume.js` (experience and the resume), and `notice.json` (the line shown when something's down or paused). |
-| `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light) and `reveal.js` (scroll reveals). |
+| `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light), `reveal.js` (scroll reveals) and `idle.js` (work that waits until the page has painted). |
 | `src/styles/` | The design tokens (colour, type, spacing) and the scroll animations. |
 | `src/assets/` | Images (WebP) and certificates. |
 | `public/` | Files served as they are: fonts, icons, the Open Graph images, `sitemap.xml`, `robots.txt`, `manifest.json`, and three static pages: the **brain map** (`brain-map/`), **privacy** and **terms**. |
@@ -32,7 +32,7 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 
 ### Pre-rendering and hydration
 
-`npm run build` runs `vite build`, then a server build of `src/entry-server.jsx`, then `scripts/prerender.js`, which writes the rendered page into the HTML. Visitors, search engines and link previews get the whole page in the first response, before any JavaScript runs. In the browser, React **hydrates** that markup instead of rendering it again.
+`npm run build` runs `vite build`, then a server build of `src/entry-server.jsx`, then `scripts/prerender.js`, which writes the rendered page into the HTML. Visitors, search engines and link previews get the whole page in the first response, before any JavaScript runs. In the browser, React **hydrates** that markup instead of rendering it again: the nav and the hero at once, and what's below the first screen afterwards, inside `<Suspense>` boundaries, in short slices between frames, so a slow phone never waits on one long task. The live stats show the numbers the page was built with, and the browser asks for the live ones once the page has painted.
 
 ### Content as data
 
@@ -81,7 +81,8 @@ A canonical URL, `robots` meta, Open Graph and Twitter cards with a 1200×630 im
 Vitest with Testing Library, in jsdom. In this folder:
 
 - `App.test.jsx`: the page renders my name as its heading, and every section.
-- `hydration.test.jsx`: the pre-rendered HTML holds the page's content, and hydrates without mismatches, even for a visitor with a saved light theme and reduced motion.
+- `hydration.test.jsx`: the pre-rendered HTML holds the page's content, and hydrates without mismatches, even for a visitor with a saved light theme and reduced motion; the hero is outside any boundary and every part below it inside one.
+- `lib/idle.test.js`: work after the load waits for the first frame and an idle moment, and never runs once cancelled.
 - `components/ServerBar/ServerBar.test.jsx`: the bar stays away while the API answers; counts a gateway's error or a minute without an answer; says what's paused and when it tries again; tries again on **Try now**; notices when the browser itself is offline.
 - `lib/notice.test.js`: the notice shows only where it's meant to, from its start until its end.
 

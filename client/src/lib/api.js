@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { afterLoad } from "./idle";
 import { API_BASE as BASE, STUCK_MS, serverOk, serverTrouble } from "./serverStatus";
 
 const cache = new Map();
@@ -82,23 +83,31 @@ export const snapshotScript = (answers) =>
 
 /**
  * { data, error, slow }: the page's snapshot of the answer at first, if it has one, then the live
- * answer. `slow` turns true while a request is still pending after a few seconds, with nothing to show.
+ * answer (asked for once the page has painted, when the snapshot is showing; at once without one).
+ * `slow` turns true while a request is still pending after a few seconds, with nothing to show.
  */
 export const useApi = (path) => {
   const [state, setState] = useState(() => ({ data: snapshot[path] ?? null, error: null, slow: false }));
   useEffect(() => {
     let live = true;
     const timer = setTimeout(() => live && setState((s) => (s.data || s.error ? s : { ...s, slow: true })), SLOW_MS);
-    fetchJSON(path)
-      .then(
-        (data) => live && setState({ data, error: null, slow: false }),
-        // With the snapshot, it stays: older numbers rather than none
-        (error) => live && setState((s) => (s.data ? s : { data: null, error, slow: false }))
-      )
-      .finally(() => clearTimeout(timer));
+    const ask = () =>
+      fetchJSON(path)
+        .then(
+          (data) => live && setState({ data, error: null, slow: false }),
+          // With the snapshot, it stays: older numbers rather than none
+          (error) => live && setState((s) => (s.data ? s : { data: null, error, slow: false }))
+        )
+        .finally(() => clearTimeout(timer));
+    // With the snapshot showing, the live answer can wait until the page has painted and settled: on a
+    // slow phone it then never competes with the first screen (Lighthouse counted it in the largest paint)
+    let cancel = () => {};
+    if (snapshot[path]) cancel = afterLoad(ask);
+    else ask();
     return () => {
       live = false;
       clearTimeout(timer);
+      cancel();
     };
   }, [path]);
   return state;

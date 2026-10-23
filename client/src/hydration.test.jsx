@@ -35,6 +35,19 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
+// React marks each <Suspense> boundary's part of the pre-rendered HTML with <!--$--> and <!--/$-->. The
+// hero (and the nav) are outside any: React takes them over at once, as the page loads; the parts below
+// the first screen are inside one, taken over after it in short slices, so no long task holds the page.
+test("the hero is taken over at once, and every part below it later, in pieces", () => {
+  const html = renderToString(app);
+  const inBoundary = (at) => html.lastIndexOf("<!--$-->", at) > html.lastIndexOf("<!--/$-->", at);
+  for (const part of ['id="home"', 'id="hero-name"', 'class="nav']) expect(inBoundary(html.indexOf(part)), part).toBe(false);
+  for (const part of ['class="ribbons"', 'id="about"', 'id="work"', 'id="journey"', 'id="stack"', 'id="certificates"', 'id="contact"', 'class="footer"']) {
+    expect(html.indexOf(part), part).toBeGreaterThan(0);
+    expect(inBoundary(html.indexOf(part)), part).toBe(true);
+  }
+});
+
 test("pre-rendered HTML contains the page content", () => {
   const html = renderToString(app);
   for (const text of ["Full-Stack Software", "RN-Wallet", "QuickCart", "Technical Mentor", "MERN Stack Development", "Send message"]) {
