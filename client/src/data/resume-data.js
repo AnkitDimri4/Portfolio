@@ -3,7 +3,7 @@
 export default {
   "CONTACT": {
     "name": "Ankit Dimri",
-    "headline": "Software Engineer",
+    "headline": "Software Engineerr",
     "phone": "+91 9760763472",
     "email": "dimri.ankitdimri@gmail.com",
     "location": "Dehradun, India",
