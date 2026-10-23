@@ -80,11 +80,7 @@
   line-height: 1.35;
   letter-spacing: 0;
   white-space: normal;
-  color: var(--accent-2);
-}
-/* The light theme's green is too pale for small text: a darker one, for contrast */
-[data-theme="light"] .sa-stat .sa-rate {
-  color: color-mix(in srgb, var(--accent-2) 72%, #000);
+  color: var(--accent-2-ink);
 }
 
 /* Busiest day and month, under each graph's key, as on the profile card */

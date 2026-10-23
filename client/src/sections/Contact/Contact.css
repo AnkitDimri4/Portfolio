@@ -130,7 +130,7 @@
   word-break: break-all;
 }
 .contact-email a:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
   background-size: 100% 1px;
 }
 
@@ -164,7 +164,7 @@
 }
 .channels a:hover {
   padding-left: 0.9rem;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .channels a:hover .channel-arrow {
   transform: translate(3px, -3px);
@@ -235,7 +235,7 @@
   font-size: 0.95rem;
 }
 .form-status.is-sent {
-  color: var(--accent-2);
+  color: var(--accent-2-ink);
 }
 .form-status.is-error {
   color: var(--accent-ink);

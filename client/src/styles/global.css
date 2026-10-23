@@ -26,7 +26,10 @@
 
 /* ---------- Themes ---------- */
 /* Two faint greys: --faint for edges, dots and icons, where 3:1 is enough, and --faint-ink for words,
-   which need 4.5:1 (WCAG AA): it reads that on all three backgrounds */
+   which need 4.5:1 (WCAG AA): it reads that on all three backgrounds. The accents the same way:
+   --accent and --accent-2 for fills, rings, borders, icons and big titles, and --accent-ink and
+   --accent-2-ink for smaller words, which read 4.5:1 on all three backgrounds and on a badge's tint
+   of their accent (in the dark theme, the teal reads that itself) */
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
@@ -42,6 +45,7 @@
   --accent: #ff6b35;
   --accent-ink: #ff8a5c;
   --accent-2: #3ee6c6;
+  --accent-2-ink: #3ee6c6;
   --on-accent: #0a0a0c;
   --glow: rgba(255, 107, 53, 0.16);
   --field-ink: 242, 239, 232;
@@ -64,6 +68,7 @@
   --accent: #cf4a12;
   --accent-ink: #a83a0c;
   --accent-2: #0b8a76;
+  --accent-2-ink: #0a6a5c;
   --on-accent: #ffffff;
   --glow: rgba(207, 74, 18, 0.12);
   --field-ink: 20, 19, 16;
@@ -360,7 +365,7 @@ button {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent-2);
+  color: var(--accent-2-ink);
 }
 .live-bars {
   display: inline-flex;

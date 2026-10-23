@@ -297,7 +297,7 @@
   animation: nudge 1.8s var(--ease) infinite;
 }
 .scroll-cue:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 @keyframes nudge {
   50% {

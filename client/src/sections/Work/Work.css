@@ -340,7 +340,7 @@ button.chip:hover {
   color: var(--faint-ink);
 }
 .ptab[aria-selected="true"] .ptab-num {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .ptab-name {
   font-family: var(--font-display);
