@@ -36,6 +36,7 @@ const Hero = () => (
       <div className="hero-grid">
         <div className="hero-main">
           <p className="hero-status">
+            <span className="hero-beam" aria-hidden="true" />
             <span className="radar" aria-hidden="true" /> Open to full-time roles &amp; freelance
           </p>
 

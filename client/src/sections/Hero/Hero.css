@@ -78,36 +78,37 @@
   animation: hero-fade 0.9s var(--ease-out) 0.05s backwards;
 }
 
-/* A streak of light that keeps travelling around the pill's border */
-@property --beam {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-.hero-status::before {
-  content: "";
+/* A streak of light that keeps travelling around the pill's border: a conic gradient turning behind
+   a 1px ring. It turns by a transform, which the browser animates without the page's main thread
+   (animating the gradient's angle itself repainted the pill on every frame). */
+.hero-beam {
   position: absolute;
   inset: -1px;
   z-index: -1;
   padding: 1px;
   border-radius: inherit;
-  background: conic-gradient(
-    from var(--beam),
-    transparent 0 68%,
-    var(--accent) 80%,
-    var(--accent-2) 88%,
-    transparent 95%
-  );
+  pointer-events: none;
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
+}
+/* A square on the pill's centre, wide enough to cover the ring at any angle */
+.hero-beam::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  background: conic-gradient(transparent 0 68%, var(--accent) 80%, var(--accent-2) 88%, transparent 95%);
+  transform: translate(-50%, -50%);
   animation: beam 4.5s linear infinite;
 }
 @keyframes beam {
   to {
-    --beam: 360deg;
+    transform: translate(-50%, -50%) rotate(1turn);
   }
 }
 
