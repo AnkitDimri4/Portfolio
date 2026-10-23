@@ -53,15 +53,22 @@ app.use(
 // Razorpay's webhook is signed over its body exactly as it was sent, so that one stays raw
 // (controllers/paymentController.js).
 app.use("/api/v1/portfolio/payments/razorpay", express.raw({ type: "*/*", limit: "100kb" }));
-// Two bodies can run to megabytes: the laptop's whole history of My progress, brought in once (the
-// coach's own limit is 16 MB), and the Site health workflow's report (about 80 kB). Their routes read
-// them, only once the request has shown it's mine (routes/portfolioRoutes.js), so these pass them by:
-// read before that, a few sent at once by anyone could run the API out of memory (one 15 MB body took
-// it from 60 MB to 450 MB, and Render's free instance has 512 MB).
+// Bodies that can run to megabytes: the laptop's whole history of My progress, brought in once (the
+// coach's own limit is 16 MB), the Site health workflow's report (about 80 kB), and the English coach's
+// History (a save can pass 64 kB, a long chat with its cards; a browser's own history, moved online once,
+// megabytes; every path under it, as an item's id is part of the path). Their routes read them, only once
+// the request has shown it's mine (routes/portfolioRoutes.js), so these pass them by: read before that, a
+// few sent at once by anyone could run the API out of memory (one 15 MB body took it from 60 MB to
+// 450 MB, and Render's free instance has 512 MB).
 const READ_BY_ROUTE = ["/api/v1/portfolio/english/progress/import", "/api/v1/portfolio/site-health"];
+const READ_BY_ROUTE_UNDER = ["/api/v1/portfolio/english/history/"];
+const readByRoute = (req) => {
+  const path = req.originalUrl.split("?")[0];
+  return READ_BY_ROUTE.includes(path) || READ_BY_ROUTE_UNDER.some((under) => path.startsWith(under));
+};
 const json = (limit) => {
   const read = express.json({ limit });
-  return (req, res, next) => (READ_BY_ROUTE.includes(req.originalUrl.split("?")[0]) ? next() : read(req, res, next));
+  return (req, res, next) => (readByRoute(req) ? next() : read(req, res, next));
 };
 // A resume or a draft from the builder can be longer than a contact message (lib/resumes.js caps each field).
 app.use(["/api/v1/portfolio/resumes", "/api/v1/portfolio/me/drafts", "/api/v1/portfolio/admin/site-resume"], json("100kb"));
