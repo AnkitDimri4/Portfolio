@@ -92,7 +92,7 @@
 .jitem-role .label {
   font-size: 0.66rem;
   font-weight: 400;
-  color: var(--faint);
+  color: var(--faint-ink);
 }
 .jitem-roles .jitem-points {
   margin-top: 0.85rem;

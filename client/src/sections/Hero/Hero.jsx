@@ -88,7 +88,7 @@ const Hero = () => (
             <span className="hero-socials">
               {PROFILE.socials.map(({ label, href, icon: Icon }) => (
                 <a key={label} className="icon-btn" href={href} target="_blank" rel="noreferrer" aria-label={label} title={label}>
-                  <Icon size={17} />
+                  <Icon size={17} aria-hidden="true" />
                 </a>
               ))}
             </span>

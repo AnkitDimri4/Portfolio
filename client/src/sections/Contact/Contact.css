@@ -211,7 +211,7 @@
 }
 .field input::placeholder,
 .field textarea::placeholder {
-  color: var(--faint);
+  color: var(--faint-ink);
 }
 .field input:focus,
 .field textarea:focus {

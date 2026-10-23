@@ -10,3 +10,13 @@ test("renders the name as the page heading and every section", () => {
     expect(document.getElementById(id)).toBeInTheDocument();
   }
 });
+
+test("names every picture a screen reader meets: an icon in a named link is hidden from it", () => {
+  render(<App />);
+  const pictures = [...document.querySelectorAll('[role="img"]')];
+  expect(pictures.length).toBeGreaterThan(0);
+  for (const picture of pictures) {
+    const named = picture.getAttribute("aria-label") || picture.getAttribute("aria-labelledby") || picture.querySelector("title");
+    expect(named || picture.closest('[aria-hidden="true"]'), picture.parentElement.outerHTML.slice(0, 120)).toBeTruthy();
+  }
+});

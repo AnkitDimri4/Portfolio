@@ -110,7 +110,7 @@
 }
 .sa-graph-title {
   font-size: 0.62rem;
-  color: var(--faint);
+  color: var(--faint-ink);
 }
 .sa-svg {
   display: block;
@@ -121,7 +121,7 @@
 .sa-svg text {
   font-family: var(--font-mono);
   font-size: 7px;
-  fill: var(--faint);
+  fill: var(--faint-ink);
 }
 /* A day the site was deployed: a small triangle over its square */
 .sa-deploy {
@@ -197,5 +197,5 @@
 }
 .sa-dates {
   font-size: 0.62rem;
-  color: var(--faint);
+  color: var(--faint-ink);
 }

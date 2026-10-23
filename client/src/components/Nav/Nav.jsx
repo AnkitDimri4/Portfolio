@@ -131,7 +131,7 @@ const Nav = () => {
             <div className="mm-socials">
               {PROFILE.socials.map(({ label, href, icon: Icon }) => (
                 <a key={label} href={href} target="_blank" rel="noreferrer" className="icon-btn" aria-label={label}>
-                  <Icon />
+                  <Icon aria-hidden="true" />
                 </a>
               ))}
             </div>

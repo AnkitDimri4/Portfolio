@@ -15,7 +15,7 @@
 .cgraph-svg text {
   font-family: var(--font-mono);
   font-size: 7px;
-  fill: var(--faint);
+  fill: var(--faint-ink);
 }
 /* Shades of the second accent, from an empty square to full colour */
 .cg-l0 {
@@ -62,5 +62,5 @@
 }
 .cgraph-dates {
   font-size: 0.62rem;
-  color: var(--faint);
+  color: var(--faint-ink);
 }
