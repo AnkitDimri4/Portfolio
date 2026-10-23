@@ -72,8 +72,33 @@ const inlineCss = {
   },
 };
 
+// The English coach's page fetches the coach itself only once the admin is in (english/English.jsx's
+// lazy `import()`), and the home page has lazy imports of its own (the stack grid, the call scheduler).
+// Vite sends every lazy import through one helper (`__vitePreload`), which would then come out as a file
+// of its own that both pages fetch before they draw: on a phone in `npm run measure` it cost the home
+// page's largest paint 0.08 s. So the coach's page gets a helper of its own, built into its script (as
+// `Rail.jsx?english` gives it its own rail, #209), and the home page keeps Vite's in its own, as before.
+// It only imports: the coach needs no script the page hasn't loaded already but its own file, and the page
+// carries its CSS inside it, where Vite's helper, which looks for <link>s, would add the shared CSS a
+// second time, after the page's own. The coach brings no CSS of its own: what its parts need is imported
+// from the page's main.jsx, so it stays in the page, in order (English.test.jsx checks it; CSS imported
+// only from the coach's own files doesn't come out of the build at all).
+const PRELOAD_HELPER = "\0vite/preload-helper.js";
+const COACH_HELPER = "\0english-preload-helper.js";
+const coachPreloadHelper = {
+  name: "coach-preload-helper",
+  apply: "build",
+  enforce: "pre",
+  resolveId(source, importer) {
+    return source === PRELOAD_HELPER && importer?.replaceAll("\\", "/").includes("/src/english/") ? COACH_HELPER : null;
+  },
+  load(id) {
+    return id === COACH_HELPER ? "export const __vitePreload = (load) => load();" : null;
+  },
+};
+
 export default defineConfig({
-  plugins: [react(), publicPages, vercelHeaders, inlineCss],
+  plugins: [react(), publicPages, vercelHeaders, inlineCss, coachPreloadHelper],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
   envPrefix: ["VITE_", "REACT_APP_"],
   server: {
