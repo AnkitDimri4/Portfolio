@@ -17,6 +17,8 @@ export default [
       ...js.configs.recommended.rules,
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      // The browser's own alert(), confirm() and prompt() boxes: the site asks in its own dialog (src/builder/Ask.jsx)
+      "no-alert": "error",
     },
   },
   {
