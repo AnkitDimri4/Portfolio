@@ -1,6 +1,6 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { escapeHtml, validateContact } = require("../lib/contact");
+const { EMAIL_RE, escapeHtml, validateContact } = require("../lib/contact");
 
 test("escapeHtml neutralises HTML special characters", () => {
   assert.equal(escapeHtml(`<img src=x onerror="alert('x')">&`), "&lt;img src=x onerror=&quot;alert(&#39;x&#39;)&quot;&gt;&amp;");
@@ -21,6 +21,15 @@ test("invalid or over-long emails are rejected", () => {
   assert.match(validateContact({ name: "a", email: "not-an-email", msg: "b" }).message, /valid email/);
   const long = `${"a".repeat(140)}@example.com`; // 152 chars > VARCHAR(150)
   assert.equal(validateContact({ name: "a", email: long, msg: "b" }).ok, false);
+});
+
+test("an over-long email is refused by its length, before the pattern, which is slow on a long made-up one", (t) => {
+  const pattern = t.mock.method(EMAIL_RE, "test");
+  const made = `a@${"a.".repeat(9000)}@`; // 18 kB: about 0.1 s in the pattern
+  assert.match(validateContact({ name: "a", email: made, msg: "b" }).message, /valid email/);
+  assert.equal(pattern.mock.callCount(), 0);
+  assert.equal(validateContact({ name: "a", email: "a@b.co", msg: "b" }).ok, true);
+  assert.equal(pattern.mock.callCount(), 1, "a short one is still checked");
 });
 
 test("over-long name or message is rejected", () => {

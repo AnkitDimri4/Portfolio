@@ -23,7 +23,8 @@ const validateContact = (body = {}) => {
   const msg = String(body.msg ?? "").trim();
 
   if (!name || !email || !msg) return { ok: false, message: "Name, email, and message are required" };
-  if (!EMAIL_RE.test(email) || email.length > LIMITS.email) return { ok: false, message: "Please enter a valid email address" };
+  // The length first: on a long made-up address, the pattern takes time that grows with its square
+  if (email.length > LIMITS.email || !EMAIL_RE.test(email)) return { ok: false, message: "Please enter a valid email address" };
   if (name.length > LIMITS.name || msg.length > LIMITS.msg) return { ok: false, message: "Name or message is too long" };
 
   return { ok: true, data: { name, email, msg } };
