@@ -1,9 +1,11 @@
 import { lazy, Suspense, useRef } from "react";
+import PartFailed from "../../components/PartFailed/PartFailed";
 import SectionHead from "../../components/SectionHead";
 import { useInView } from "../../lib/reveal";
 import "./Stack.css";
 
-// The grid carries ~40 brand icons; fetch it only as the section approaches.
+// The grid carries ~40 brand icons; fetch it only as the section approaches. In a tab opened before a
+// deploy, its file is gone: a note says so, with a reload (not by itself, while someone's reading).
 const StackGrid = lazy(() => import("./StackGrid"));
 
 const Stack = () => {
@@ -28,9 +30,11 @@ const Stack = () => {
 
         <div ref={ref} className="stack-slot">
           {near && (
-            <Suspense fallback={null}>
-              <StackGrid />
-            </Suspense>
+            <PartFailed what="The stack didn't load." hash="#stack">
+              <Suspense fallback={null}>
+                <StackGrid />
+              </Suspense>
+            </PartFailed>
           )}
         </div>
       </div>

@@ -18,9 +18,9 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 | `src/App.jsx` | The page: the nav, the sections in order, and the footer; everything below the first screen in `<Suspense>` boundaries, so React takes it over after the hero. |
 | `src/entry-server.jsx` | The entry the pre-render step uses, with React's `renderToString`. |
 | `src/sections/` | **Hero, About, Work, Journey, Stack, Certificates, Contact**: a folder each, with its styles. |
-| `src/components/` | Shared pieces: `Nav`, `Footer` (with the map dialog), `CodeCard`, `ContributionGraph`, `Marquee`, `NeuralField` (the hero's canvas network), `ScrambleText`, `CountUp`, `LocalTime`, `LiveSignal`, `SectionHead`, `ServerBar` and `Notice`. |
+| `src/components/` | Shared pieces: `Nav`, `Footer` (with the map dialog), `CodeCard`, `ContributionGraph`, `Marquee`, `NeuralField` (the hero's canvas network), `ScrambleText`, `CountUp`, `LocalTime`, `LiveSignal`, `SectionHead`, `ServerBar`, `Notice` and `PartFailed` (what shows in place of a part that didn't load, so the page never goes blank). |
 | `src/data/` | The site's content, as data: `profile.js` (profile, navigation, projects, journey, certificates), `resume-data.js` with `resume.js` (experience and the resume), and `notice.json` (the line shown when something's down or paused). |
-| `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light), `reveal.js` (scroll reveals) and `idle.js` (work that waits until the page has painted). |
+| `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light), `reveal.js` (scroll reveals), `idle.js` (work that waits until the page has painted) and `reload.js` (loading the page again when a part's file is gone after a deploy). |
 | `src/styles/` | The design tokens (colour, type, spacing) and the scroll animations. |
 | `src/assets/` | Images (WebP) and certificates. |
 | `public/` | Files served as they are: fonts, icons, the Open Graph images, `sitemap.xml`, `robots.txt`, `manifest.json`, and three static pages: the **brain map** (`brain-map/`), **privacy** and **terms**. |
@@ -85,6 +85,8 @@ Vitest with Testing Library, in jsdom. In this folder:
 - `lib/idle.test.js`: work after the load waits for the first frame and an idle moment, and never runs once cancelled.
 - `components/ServerBar/ServerBar.test.jsx`: the bar stays away while the API answers; counts a gateway's error or a minute without an answer; says what's paused and when it tries again; tries again on **Try now**; notices when the browser itself is offline.
 - `lib/notice.test.js`: the notice shows only where it's meant to, from its start until its end.
+- `lib/reload.test.js`: a part whose file is gone after a deploy loads the page again, once a minute at most, and never offline or where the browser keeps no session storage.
+- `sections/Stack/Stack.test.jsx`: if the stack's grid doesn't load, the section says so, with a button that loads the page again, and keeps its heading.
 
 ## Built with
 

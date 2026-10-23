@@ -1,0 +1,31 @@
+/* What shows instead of a part that didn't arrive (PartFailed.jsx): what happened, and a reload. */
+.part-failed {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  max-width: 40rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  color: var(--text);
+  line-height: 1.55;
+}
+.part-failed p {
+  margin: 0;
+}
+.part-failed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Over the page, at the foot of the screen: for a part with no place in it (the scheduler) */
+.part-failed.is-floating {
+  position: fixed;
+  z-index: 60; /* over the nav */
+  inset: auto var(--gutter) var(--gutter);
+  margin-inline: auto;
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow);
+}
