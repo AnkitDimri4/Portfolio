@@ -24,6 +24,7 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 | `src/styles/` | The design tokens (colour, type, spacing) and the scroll animations. |
 | `src/assets/` | Images (WebP) and certificates. |
 | `public/` | Files served as they are: fonts, icons, the Open Graph images, `sitemap.xml`, `robots.txt`, `manifest.json`, and three static pages: the **brain map** (`brain-map/`), **privacy** and **terms**. |
+| `scripts/activity.js` | Runs first: fetches the latest activity file for the Work section's card, so the page is built with the numbers the browser would otherwise swap in. |
 | `scripts/prerender.js` | Runs after `vite build`: renders the app into the built `index.html`. |
 | `vite.config.js` | The build: one entry, and bundle, per page; the output folder; a dev proxy to a local API. |
 | `eslint.config.js` | The lint rules: any warning fails. |
@@ -32,7 +33,7 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 
 ### Pre-rendering and hydration
 
-`npm run build` runs `vite build`, then a server build of `src/entry-server.jsx`, then `scripts/prerender.js`, which writes the rendered page into the HTML. Visitors, search engines and link previews get the whole page in the first response, before any JavaScript runs. In the browser, React **hydrates** that markup instead of rendering it again: the nav and the hero at once, and what's below the first screen afterwards, inside `<Suspense>` boundaries, in short slices between frames, so a slow phone never waits on one long task. The live stats show the numbers the page was built with, and the browser asks for the live ones once the page has painted.
+`npm run build` fetches the latest activity file for the Work section's card (`scripts/activity.js`), then runs `vite build`, then a server build of `src/entry-server.jsx`, then `scripts/prerender.js`, which writes the rendered page into the HTML. Visitors, search engines and link previews get the whole page in the first response, before any JavaScript runs. In the browser, React **hydrates** that markup instead of rendering it again: the nav and the hero at once, and what's below the first screen afterwards, inside `<Suspense>` boundaries, in short slices between frames, so a slow phone never waits on one long task. The live stats show the numbers the page was built with, and the browser asks for the live ones once the page has painted.
 
 ### Content as data
 

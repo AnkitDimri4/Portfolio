@@ -2,7 +2,8 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import SNAPSHOT from "../../data/portfolioActivity.json";
 import WORK from "../../data/workActivity.json";
-import SiteActivity, { LIVE_URL, isActivity, isLighthouse, perActiveDay } from "./SiteActivity";
+import SiteActivity, { perActiveDay } from "./SiteActivity";
+import { LIVE_URL, isActivity, isLighthouse } from "./activityFile";
 
 const num = (n) => n.toLocaleString("en-US");
 const stat = (label) => within(document.querySelector(".sa-stats")).getByText(label).closest(".sa-stat").querySelector("dd").textContent;
@@ -179,6 +180,37 @@ describe("this site's activity card", () => {
     expect(stat("pull requests merged")).toBe("765");
     expect(screen.getByText("deployments, 567 to production")).toBeInTheDocument();
     expect(screen.getByText(`${dayLabel(NEXT_DAY)}: 12 commits · 3 pull requests · 4 deployments`)).toBeInTheDocument();
+  });
+
+  // What sets the card's height at its width: each graph's svg fills the width, so its height is the
+  // width times its viewBox's height over its width; and the lines of words around them
+  const shapes = () =>
+    [...document.querySelectorAll(".sa-svg")].map((svg) => {
+      const [, , w, h] = svg.getAttribute("viewBox").split(" ").map(Number);
+      return h / w;
+    });
+  const lines = () => document.querySelectorAll(".sa figcaption, .sa dt, .sa dd, .sa p").length;
+
+  it("keeps its height when it swaps in the latest file of the same weeks, as the build now draws it", async () => {
+    const weekday = new Date(`${SNAPSHOT.to}T00:00:00Z`).getUTCDay();
+    const SATURDAY = iso(Date.parse(`${SNAPSHOT.to}T00:00:00Z`) + (6 - weekday) * DAY);
+    for (const latest of [
+      // Counted again after the deploy, the same day: new numbers, new scores, a busier day
+      { ...NEWER, to: SNAPSHOT.to, days: { ...SNAPSHOT.days, [SNAPSHOT.to]: { commits: 90, pullRequests: 30, deployments: 60 } } },
+      // Counted again every 6 hours to the end of that week
+      { ...NEWER, to: SATURDAY },
+    ]) {
+      nearAtOnce();
+      answer(latest);
+      const { unmount } = render(<SiteActivity />);
+      const [before, parts] = [shapes(), lines()];
+      expect(before).toHaveLength(2);
+      await waitFor(() => expect(stat("commits")).toBe("4,321"));
+      expect(shapes()).toEqual(before);
+      expect(lines()).toBe(parts);
+      unmount();
+      vi.unstubAllGlobals();
+    }
   });
 
   it("draws at most the last year of days and the last 12 months, while the totals stay all-time", async () => {

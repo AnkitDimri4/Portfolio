@@ -176,6 +176,7 @@ Portfolio/
 │   ├── public/                  # fonts, icons, og-image, sitemap, robots, and:
 │   │   ├── brain-map/           # the live brain map (one static page)
 │   │   └── privacy/, terms/     # the privacy page and the terms
+│   ├── scripts/activity.js      # the build's first step: the Work section's activity card from GitHub's latest file
 │   ├── scripts/prerender.js     # renders the app to static HTML after `vite build`
 │   ├── src/
 │   │   ├── sections/            # Hero, About, Work, Journey, Stack, Certificates, Contact

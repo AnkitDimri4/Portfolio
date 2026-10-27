@@ -3,6 +3,7 @@ import { useInView } from "../../lib/reveal";
 import SNAPSHOT from "../../data/portfolioActivity.json";
 import WORK from "../../data/workActivity.json";
 import { SiGit, SiGithub, SiLighthouse, SiVercel } from "../brandIcons";
+import { DATE, LIVE_URL, isActivity, isLighthouse } from "./activityFile";
 import "../ContributionGraph/ContributionGraph.css";
 import "./SiteActivity.css";
 
@@ -10,24 +11,12 @@ import "./SiteActivity.css";
 // commits, its merged pull requests and its deployments (Vercel's builds, as GitHub records them), day by
 // day and month by month. The profile repository's "Portfolio card" workflow counts them in the private
 // Portfolio-app after each deploy (the Public copy workflow asks it to, after each merge that changes the
-// site or the API), measures Lighthouse, and publishes the file below. The build keeps a copy
-// (data/portfolioActivity.json), so the pre-rendered page has the numbers; when the card comes near, the
-// browser swaps in the latest file.
-export const LIVE_URL = "https://raw.githubusercontent.com/AnkitDimri4/AnkitDimri4/main/assets/cards/portfolio-activity.json";
-
-const DATE = /^\d{4}-\d{2}-\d{2}$/;
-/** True when `a` has the shape this card draws, so a broken download can't break the page. */
-export const isActivity = (a) =>
-  Boolean(a) &&
-  DATE.test(a.from) &&
-  DATE.test(a.to) &&
-  a.from <= a.to &&
-  ["commits", "mergedPullRequests", "deployments", "productionDeploys"].every((k) => Number.isFinite(a.totals?.[k])) &&
-  typeof a.days === "object" &&
-  a.days !== null;
-
-/** True when `l` has the two Lighthouse scores, 0 to 100, mobile and desktop. */
-export const isLighthouse = (l) => Boolean(l) && [l.mobile, l.desktop].every((n) => Number.isInteger(n) && n >= 0 && n <= 100);
+// site or the API), measures Lighthouse, and publishes the file at LIVE_URL. The build draws that file as
+// it is then (scripts/activity.js; the repository's copy, data/portfolioActivity.json, when GitHub can't
+// be reached), so the pre-rendered page has the numbers; when the card comes near, the browser swaps in
+// the latest file. Its calendar fills the card's width with a column a week, so a file with more weeks
+// makes every square smaller and the card shorter: drawn from the same weeks, the card keeps its height,
+// and the nav's links to the sections below it land where they should.
 
 const DAY = 864e5;
 const EMPTY = { commits: 0, pullRequests: 0, deployments: 0 };

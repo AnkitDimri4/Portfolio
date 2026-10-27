@@ -3,6 +3,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { LATEST as LATEST_ACTIVITY } from "./scripts/activity.js";
 
 // The commit Vercel built, for the admin view's Site health to say when the site has been deployed since
 // its report was measured (VERCEL_GIT_COMMIT_SHA is Vercel's; a local build has none)
@@ -97,8 +98,22 @@ const coachPreloadHelper = {
   },
 };
 
+// The Work section's activity card is drawn from GitHub's latest activity file, as the build's first step
+// (scripts/activity.js) fetched it, in place of the repository's copy (src/data/portfolioActivity.json):
+// both passes, the browser's and the pre-render's, read the same file, so they agree, and the card keeps
+// its height when the browser swaps in the latest file. Without one (GitHub couldn't be reached), the
+// copy stays. `npm start` and the tests always draw the copy.
+const latestActivity = {
+  name: "latest-activity",
+  apply: "build",
+  load(id) {
+    if (!id.replaceAll("\\", "/").endsWith("/src/data/portfolioActivity.json") || !existsSync(LATEST_ACTIVITY)) return null;
+    return readFileSync(LATEST_ACTIVITY, "utf8");
+  },
+};
+
 export default defineConfig({
-  plugins: [react(), publicPages, vercelHeaders, inlineCss, coachPreloadHelper],
+  plugins: [react(), publicPages, vercelHeaders, inlineCss, coachPreloadHelper, latestActivity],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
   envPrefix: ["VITE_", "REACT_APP_"],
   server: {
