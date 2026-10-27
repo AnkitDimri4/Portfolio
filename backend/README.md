@@ -36,11 +36,15 @@ A liveness check for monitors and for Render: `{ "status": "ok", "uptime": <seco
 
 The body is JSON: `name`, `email` and `msg`, plus a hidden field that only bots fill in.
 
-- **Checks:** all three are required, the email must look like one, and the name, email and message are limited to 100, 150 and 5,000 characters. The whole body is limited to 20 kB.
+- **Checks:** all three are required, the email must look like one, and the name, email and message are limited to 100, 150 and 5,000 characters. The name is kept to one line. The whole body is limited to 20 kB.
 - **Bots:** when the hidden field is filled in, the answer says it worked, and nothing is stored or sent.
 - **What happens:** the message is saved in the `contacts` table and emailed to me, with **Reply** going straight to the sender. Both happen independently: if one fails, the message still arrives through the other, and the visitor isn't asked to send it again.
-- **Limit:** 5 messages per visitor every 15 minutes.
-- **Answers:** `200` when it's saved or sent; `400` with what to fix; `429`, with `Retry-After`, over the limit; `500` only if saving and sending both failed.
+- **Limits:**
+  - 5 messages per visitor every 15 minutes.
+  - **Saved:** 20 a day from one visitor, and 200 a day from everyone. Past either, the message is refused, so nobody can fill the database.
+  - **Emailed:** 10 a day from one visitor, 3 a day from one email address, and 40 a day from everyone. That keeps the form to part of Resend's 100 emails a day, which the API's other emails need too. Past any of them, the message is still saved, just not emailed.
+  - The daily counts are kept in the database, so a restart doesn't reset them.
+- **Answers:** `200` when it's saved or sent; `400` with what to fix; `429` past the 15-minute limit (with `Retry-After`) or a daily save limit (with a note to try again tomorrow); `500` only if it was neither saved nor sent.
 
 ### `GET /api/v1/portfolio/github`: GitHub stats
 
@@ -74,6 +78,8 @@ From LeetCode's GraphQL API: problems solved (easy, medium, hard), the acceptanc
 | `DATABASE_URL` | PostgreSQL (Neon) |
 | `RESEND_API_KEY`, `NOTIFY_EMAIL` | Emailing contact messages to me, through Resend |
 | `MAIL_FROM` | Optional: the sender, once a domain is verified with Resend |
+| `CONTACT_SAVE_LIMIT` | Optional: contact messages saved a day, from everyone (200 if unset) |
+| `CONTACT_DAILY_LIMIT` | Optional: contact messages emailed a day, from everyone (40 if unset) |
 | `GITHUB_TOKEN` | Optional: a token with no scopes, for GitHub's higher rate limit |
 | `STATS_GITHUB_TOKEN` | Optional: a read-only token that lets the GitHub stats count the commits in the private repository |
 | `CORS_ORIGIN` | Optional: comma-separated origins, replacing the default allow-list |
