@@ -63,7 +63,7 @@ export const PROJECTS = [
     short: "Portfolio",
     kind: "Full Stack · My site",
     summary:
-      "The site you're on. Pre-rendered React with a hand-built design system, on a Node/Express API with Neon PostgreSQL. It has a one-page resume builder (three templates, an ATS check, the PDF by email, and Google sign-in with drafts on any device), cached live GitHub & LeetCode stats, and Google Meet calls booked straight into Google Calendar.",
+      "The site you're on. Pre-rendered React with a hand-built design system, on a Node/Express API with Neon PostgreSQL. It has a one-page resume builder (five templates, an ATS check, the PDF by email, and Google sign-in with drafts on any device), cached live GitHub & LeetCode stats, and Google Meet calls booked straight into Google Calendar.",
     tech: ["React", "Vite", "Node.js", "Express", "PostgreSQL", "Google Calendar API", "Gmail API", "Puppeteer", "Resend", "Canvas"],
     github: "https://github.com/AnkitDimri4/Portfolio",
   },

@@ -31,7 +31,7 @@
 - **Hero** — the name decodes from binary (hover it to see the initials *A D* as `01000001 01000100`), a 3D code-editor card with parallax layers, and a node network that reacts to the cursor.
 - **Live data** — GitHub commits/repos and LeetCode stats fetched server-side, cached, and shown with a "synced X min ago" indicator.
 - **Scroll storytelling** — cards unfold into place, headlines flip up and the tech ribbons react to scroll speed — all compositor-only CSS, with a full reduced-motion fallback.
-- **Resume builder** — [`/resume-builder/`](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): three templates, a live preview that keeps the resume to one page, an ATS check (a score with tips, and which keywords of a job posting it has), and the PDF by email. Signing in with Google or an email link keeps drafts on any device.
+- **Resume builder** — [`/resume-builder/`](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): five templates, a live preview that keeps the resume to one page, an ATS check (a score with tips, and which keywords of a job posting it has), and the PDF by email. Signing in with Google or an email link keeps drafts on any device.
 - **Schedule a call** — the site's own scheduler: a month calendar, open times in the visitor's time zone (12h or 24h), and a booking straight into Google Calendar with a Google Meet link.
 - **Email notifications** — every contact message and booking reaches my Gmail as a designed HTML email; contact messages are saved in PostgreSQL too, so none is lost if email fails.
 - **Live brain map** — [`/brain-map/`](https://portfolio-nine-orcin-33.vercel.app/brain-map/): my work, projects and skills on one page, with a guided tour and a Light | Dark switch.
