@@ -116,4 +116,4 @@ const sendEmailController = async (req, res) => {
   return res.status(200).json({ success: true, message: "Message sent and saved successfully" });
 };
 
-module.exports = { sendEmailController, DAILY_EMAILS };
+module.exports = { sendEmailController, DAILY_EMAILS, DAILY_SAVES };
