@@ -13,6 +13,12 @@ const { clientKey } = require("../middleware/rateLimit");
 const DAILY_EMAILS = Number(process.env.CONTACT_DAILY_LIMIT) || 40;
 const PER_VISITOR_DAILY = 10;
 const PER_ADDRESS_DAILY = 3;
+// What's saved is counted too, a day from one visitor and a day across everyone (the 27 October check):
+// the shares above only hold back the email, so a script could otherwise save messages until Neon's
+// 0.5 GB was full, and then every write on the site would fail. Past either, the message is refused.
+const DAILY_SAVES = Number(process.env.CONTACT_SAVE_LIMIT) || 200;
+const SAVES_PER_VISITOR = 20;
+const TOO_MANY = "Too many messages today. Please try again tomorrow, or email me directly.";
 
 const receivedAt = () =>
   new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "medium", timeStyle: "short" }) + " IST";
@@ -23,14 +29,19 @@ const counts = (req, email) => [
   [limits.nameFor("contact-by", limits.emailKey(email)), PER_ADDRESS_DAILY],
   ["contacts", DAILY_EMAILS],
 ];
+/** The day's counts a save takes a place in: the visitor's and everyone's. */
+const saves = (req) => [
+  [limits.nameFor("contact-saved-from", clientKey(req)), SAVES_PER_VISITOR],
+  ["contacts-saved", DAILY_SAVES],
+];
 const giveBack = (names) =>
   Promise.all(names.map((name) => limits.giveBack(name, limits.DAY))).catch((err) => console.error("Contact count give-back failed:", err.message));
 
-/** A place for one more email today, in each of its counts: false when the day's share, the visitor's or the inbox's is used. */
-const emailAllowed = async (req, email) => {
+/** A place today in each of `places` ([name, limit]), or none: false when one is used up. */
+const takeAll = async (places) => {
   const taken = [];
   try {
-    for (const [name, max] of counts(req, email)) {
+    for (const [name, max] of places) {
       if (!(await limits.take(name, max, limits.DAY))) {
         await giveBack(taken);
         return false;
@@ -43,6 +54,8 @@ const emailAllowed = async (req, email) => {
     throw err;
   }
 };
+/** A place for one more email today, in each of its counts: false when the day's share, the visitor's or the inbox's is used. */
+const emailAllowed = (req, email) => takeAll(counts(req, email));
 
 const sendEmailController = async (req, res) => {
   const result = validateContact(req.body);
@@ -52,6 +65,15 @@ const sendEmailController = async (req, res) => {
   if (result.spam) return res.status(200).json({ success: true, message: "Message sent and saved successfully" });
 
   const { name, email, msg } = result.data;
+
+  // Saved at most so many a day. A database that can't count can't save either: the email still goes.
+  let saveCounted = true;
+  const saveable = await takeAll(saves(req)).catch((err) => {
+    console.error("Contact save count failed:", err.message);
+    saveCounted = false;
+    return true;
+  });
+  if (!saveable) return res.status(429).json({ success: false, message: TOO_MANY });
 
   // Counted first. A database that can't count is down: the save fails then too, so the email goes.
   let counted = true;
@@ -75,7 +97,10 @@ const sendEmailController = async (req, res) => {
       : Promise.resolve(null),
   ]);
 
-  if (saved.status === "rejected") console.error("Contact save failed:", saved.reason?.message || saved.reason);
+  if (saved.status === "rejected") {
+    console.error("Contact save failed:", saved.reason?.message || saved.reason);
+    if (saveCounted) await giveBack(saves(req).map(([name]) => name)); // it wasn't saved: its places are free again
+  }
   if (emailed.status === "rejected") {
     console.error("Contact email failed:", emailed.reason?.message || emailed.reason);
     if (allowed && counted) await giveBack(counts(req, email).map(([name]) => name)); // it didn't go: its places are free again

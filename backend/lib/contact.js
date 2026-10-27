@@ -18,7 +18,11 @@ const validateContact = (body = {}) => {
   // Honeypot: the "company" field is visually hidden; people never fill it in.
   if (String(body.company ?? "").trim()) return { ok: true, spam: true };
 
-  const name = String(body.name ?? "").trim();
+  // The name goes into my email's subject: one line, without control characters (as the booking's, lib/schedule.js)
+  const name = String(body.name ?? "")
+    .replace(/\p{Cc}+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   const email = String(body.email ?? "").trim();
   const msg = String(body.msg ?? "").trim();
 

@@ -11,6 +11,11 @@ test("valid input is accepted and trimmed", () => {
   assert.deepEqual(r, { ok: true, data: { name: "Jane", email: "jane@example.com", msg: "Hello" } });
 });
 
+test("the name is one line, without control characters: it goes into my email's subject", () => {
+  const r = validateContact({ name: "Jane\r\nBcc: someone@example.com\u0000\t Doe", email: "jane@example.com", msg: "Line one\nLine two" });
+  assert.deepEqual(r.data, { name: "Jane Bcc: someone@example.com Doe", email: "jane@example.com", msg: "Line one\nLine two" });
+});
+
 test("missing fields are rejected", () => {
   assert.equal(validateContact({ name: "Jane", email: "", msg: "Hi" }).ok, false);
   assert.equal(validateContact({}).ok, false);
