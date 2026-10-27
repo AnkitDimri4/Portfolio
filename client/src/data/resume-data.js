@@ -210,10 +210,10 @@ export default {
           "href": "https://portfolio-nine-orcin-33.vercel.app/brain-map/"
         }
       ],
-      "summary": "Pre-rendered React site and Node.js API, with live GitHub and LeetCode stats.",
+      "summary": "Pre-rendered React site and Node.js API, plus an AI English coach (llama.cpp or Groq).",
       "points": [
-        "[Resume builder](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): 5 templates, ATS check, PDF by email and Google sign-in.",
-        "Scheduler books Google Meet calls into Google Calendar; 200+ tests run in CI."
+        "Built a [resume builder](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): 5 templates, ATS check, PDF by email and Google sign-in.",
+        "Built a scheduler booking Google Meet calls into Google Calendar; 1,200+ CI tests."
       ],
       "tech": "React, Vite, Node.js, Express, PostgreSQL (Neon), Google Calendar & Gmail APIs, GitHub Actions"
     },

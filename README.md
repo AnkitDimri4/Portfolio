@@ -21,7 +21,7 @@
 
 </div>
 
-> **This is the public part of my portfolio's code**, copied here from my private repository after every change. The resume builder, the call scheduler, sign-in and the admin view stay private, so this copy is for reading: it doesn't build on its own, and all rights are reserved ([LICENSE](LICENSE)).
+> **This is the public part of my portfolio's code**, copied here from my private repository after every change. The resume builder, the call scheduler, sign-in, the admin view and the English coach stay private, so this copy is for reading: it doesn't build on its own, and all rights are reserved ([LICENSE](LICENSE)).
 
 ---
 
@@ -31,7 +31,8 @@
 - **Hero** — the name decodes from binary (hover it to see the initials *A D* as `01000001 01000100`), a 3D code-editor card with parallax layers, and a node network that reacts to the cursor.
 - **Live data** — GitHub commits/repos and LeetCode stats fetched server-side, cached, and shown with a "synced X min ago" indicator.
 - **Scroll storytelling** — cards unfold into place, headlines flip up and the tech ribbons react to scroll speed — all compositor-only CSS, with a full reduced-motion fallback.
-- **Resume builder** — [`/resume-builder/`](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): five templates, a live preview that keeps the resume to one page, an ATS check (a score with tips, and which keywords of a job posting it has), and the PDF by email. Signing in with Google or an email link keeps drafts on any device.
+- **Resume builder** — [`/resume-builder/`](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): five templates, a live preview that keeps the resume to one page, an ATS check (a score from 17 checks, the points to change, and which keywords of a job posting it has), and the PDF by email, from ₹1. Signing in with Google or an email link keeps drafts on any device.
+- **English coach** — my own spoken and written English practice, private to me: LanguageTool's grammar rules and a model that corrects each sentence, online (Groq) or on my laptop's GPU (llama.cpp), conversations read aloud, and my progress kept across devices.
 - **Schedule a call** — the site's own scheduler: a month calendar, open times in the visitor's time zone (12h or 24h), and a booking straight into Google Calendar with a Google Meet link.
 - **Email notifications** — every contact message and booking reaches my Gmail as a designed HTML email; contact messages are saved in PostgreSQL too, so none is lost if email fails.
 - **Live brain map** — [`/brain-map/`](https://portfolio-nine-orcin-33.vercel.app/brain-map/): my work, projects and skills on one page, with a guided tour and a Light | Dark switch.
@@ -197,7 +198,7 @@ Portfolio/
 
 More on each part: [client/README.md](client/README.md) and [backend/README.md](backend/README.md).
 
-**Private, not in this copy:** the resume builder (with sign-in, My resumes and the admin view), its templates and PDF function, Schedule a call, the API's routes, and the docs.
+**Private, not in this copy:** the resume builder (with sign-in, My resumes and the admin view), its templates and PDF function, Schedule a call, the English coach and its engine, the API's routes, and the docs.
 
 ---
 
