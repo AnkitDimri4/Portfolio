@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { FiArrowUpRight, FiMoon, FiSun } from "react-icons/fi";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { FiArrowUpRight, FiLogIn, FiMoon, FiSun, FiUserCheck } from "react-icons/fi";
 import { LuBrainCircuit } from "react-icons/lu";
 import { NAV, PROFILE } from "../../data/profile";
 import { useTheme } from "../../lib/theme";
@@ -23,6 +23,33 @@ const useActiveSection = (ids) => {
 
 const SECTION_IDS = ["home", ...NAV.map((n) => n.id)];
 
+// The account icon, left of the brain map's: where this browser's sign-in takes you. It's the resume
+// builder's sign-in (builder/session.js keeps it as "resume-builder:session"), read here rather than
+// through session.js so the home page loads none of the builder's code. Signed out, Sign in (Google or an
+// email link); signed in, My resumes, or the admin view for the site's owner, with a ticked person (About's
+// is a plain one). The pre-rendered page says Sign in, and hydration moves it to the visitor's own, as the
+// theme does (useSyncExternalStore); signing in or out in another tab changes it too (the storage event).
+const SESSION_KEY = "resume-builder:session";
+const signedInAs = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+    if (!saved?.token || !(Date.parse(saved.expiresAt) > Date.now())) return "";
+    return saved.admin ? "admin" : "user";
+  } catch {
+    return ""; // storage unavailable (private mode), or not JSON
+  }
+};
+const onStorage = (changed) => {
+  window.addEventListener("storage", changed);
+  return () => window.removeEventListener("storage", changed);
+};
+const ACCOUNT = {
+  "": { href: "/resume-builder/account/", label: "Sign in", Icon: FiLogIn },
+  user: { href: "/resume-builder/account/", label: "My resumes", Icon: FiUserCheck },
+  admin: { href: "/resume-builder/admin/", label: "Admin view", Icon: FiUserCheck },
+};
+const useAccount = () => ACCOUNT[useSyncExternalStore(onStorage, signedInAs, () => "")];
+
 export const ThemeToggle = () => {
   const [theme, setTheme] = useTheme();
   const next = theme === "dark" ? "light" : "dark";
@@ -37,6 +64,7 @@ const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useActiveSection(SECTION_IDS);
+  const account = useAccount();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -74,6 +102,9 @@ const Nav = () => {
           </nav>
 
           <div className="nav-actions">
+            <a className="icon-btn nav-account" href={account.href} aria-label={account.label} title={account.label}>
+              <account.Icon size={17} />
+            </a>
             <a className="icon-btn" href="/brain-map/" aria-label="Brain map: my work, mapped" title="Brain map">
               <LuBrainCircuit size={18} />
             </a>
@@ -117,6 +148,13 @@ const Nav = () => {
               <LuBrainCircuit />
             </span>
             <span className="mm-label">Brain map</span>
+            <FiArrowUpRight className="mm-arrow" aria-hidden="true" />
+          </a>
+          <a href={account.href} style={{ "--i": NAV.length + 1 }}>
+            <span className="mm-icon" aria-hidden="true">
+              <account.Icon />
+            </span>
+            <span className="mm-label">{account.label}</span>
             <FiArrowUpRight className="mm-arrow" aria-hidden="true" />
           </a>
         </nav>

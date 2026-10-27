@@ -33,6 +33,7 @@ afterEach(() => {
   vi.useRealTimers();
   document.documentElement.removeAttribute("data-theme");
   document.body.innerHTML = "";
+  localStorage.clear();
 });
 
 // React marks each <Suspense> boundary's part of the pre-rendered HTML with <!--$--> and <!--/$-->. The
@@ -55,17 +56,19 @@ test("pre-rendered HTML contains the page content", () => {
   }
 });
 
-test("hydrates without mismatches for a visitor with a saved light theme, reduced motion and a later date", async () => {
+test("hydrates without mismatches for a visitor with a saved light theme, reduced motion, a later date and the admin's sign-in", async () => {
   const { errors, restore } = captureErrors();
   const matchMedia = window.matchMedia;
   try {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-01-01T08:00:00Z"));
     const html = renderToString(app);
+    expect(html).toContain('aria-label="Sign in"'); // the account icon, as the build can't know who'll visit
 
     vi.setSystemTime(new Date("2027-03-04T15:42:00Z"));
     document.documentElement.setAttribute("data-theme", "light"); // set by the inline script in index.html
     window.matchMedia = (query) => ({ matches: query.includes("reduce"), media: query, addEventListener() {}, removeEventListener() {} });
+    localStorage.setItem("resume-builder:session", JSON.stringify({ token: "S".repeat(43), email: "me@example.com", admin: true, expiresAt: "2027-03-04T20:00:00.000Z" }));
 
     const container = document.createElement("div");
     container.innerHTML = html;
@@ -79,6 +82,8 @@ test("hydrates without mismatches for a visitor with a saved light theme, reduce
     expect(container.querySelector(".theme-toggle")).toHaveAccessibleName("Switch to dark theme");
     expect(container.querySelector(".footer-bottom")).toHaveTextContent("© 2027");
     expect(container.querySelector(".code-body")).toHaveTextContent('name: "Ankit Dimri"'); // reduced motion: no typing
+    expect(container.querySelector(".nav-account")).toHaveAccessibleName("Admin view");
+    expect(container.querySelector(".nav-account")).toHaveAttribute("href", "/resume-builder/admin/");
   } finally {
     restore();
     window.matchMedia = matchMedia;

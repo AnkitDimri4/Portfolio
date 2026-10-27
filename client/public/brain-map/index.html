@@ -56,14 +56,26 @@
     box-shadow: 0 1px 2px rgba(31, 35, 40, .1);
   }
   .theme-switch button[aria-pressed="true"] svg { color: var(--accent); }
-  /* Phones: the name and the theme switch on the first row, then the links. The "Portfolio" link
-     hides there: the name already links to the portfolio. */
-  @media (max-width: 640px) {
+  /* The account icon, left of the switch and as tall: Sign in, or, signed in, My resumes or the admin view
+     (the script below) */
+  .corner { display: inline-flex; align-items: center; gap: 8px; }
+  #account {
+    display: inline-grid; place-items: center; width: 37px; height: 37px; flex: none; color: var(--text);
+    border: 1px solid var(--border); border-radius: 999px; background: var(--card); transition: color .2s, border-color .2s;
+  }
+  #account:hover { color: var(--title); border-color: var(--accent); }
+  #account svg { width: 16px; height: 16px; }
+  #account .i-user, #account.is-in .i-in { display: none; }
+  #account.is-in .i-user { display: block; }
+  /* Phones and narrow tablets, under 860 px, where the links, the account icon and the switch no longer fit
+     on one row beside the name: the name, the account icon and the theme switch on the first row, then the
+     links. The "Portfolio" link hides there: the name already links to the portfolio. */
+  @media (max-width: 859px) {
     header { position: relative; flex-wrap: wrap; row-gap: 20px; padding: 16px 16px 0; }
     nav { width: 100%; flex-wrap: wrap; row-gap: 10px; gap: 12px; font-size: 13.5px; }
     nav > a[href="/"] { display: none; }
     #book { padding: 7px 12px; font-size: 13px; }
-    .theme-switch { position: absolute; top: 10px; right: 16px; }
+    .corner { position: absolute; top: 10px; right: 16px; }
     .theme-switch .tl { display: none; }
     .theme-switch button { padding: 6px 8px; }
   }
@@ -354,9 +366,12 @@
       <a href="/resume-builder/">Resume builder</a>
       <button id="howto-show" type="button">How to use</button>
       <a id="book" hidden><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>Schedule a call</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg><span class="tl">Light</span></button>
-        <button type="button" data-theme-set="dark" aria-pressed="false" aria-label="Dark"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><span class="tl">Dark</span></button>
+      <div class="corner">
+        <a id="account" href="/resume-builder/account/" aria-label="Sign in" title="Sign in"><svg class="i-in" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg><svg class="i-user" stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></a>
+        <div class="theme-switch" role="group" aria-label="Theme">
+          <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg><span class="tl">Light</span></button>
+          <button type="button" data-theme-set="dark" aria-pressed="false" aria-label="Dark"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><span class="tl">Dark</span></button>
+        </div>
       </div>
     </nav>
   </header>
@@ -580,6 +595,20 @@
   });
 
   label();
+
+  // The account icon: where this browser's sign-in takes you, as the portfolio's nav does (Nav.jsx). It's
+  // the resume builder's sign-in, kept as "resume-builder:session": signed out, Sign in (Google or an email
+  // link); signed in, My resumes, or the admin view for the site's owner.
+  (function () {
+    var account = document.getElementById("account"), saved = null;
+    try { saved = JSON.parse(localStorage.getItem("resume-builder:session")); } catch (e) {}
+    if (!saved || !saved.token || !(Date.parse(saved.expiresAt) > Date.now())) return;
+    var name = saved.admin ? "Admin view" : "My resumes";
+    if (saved.admin) account.href = "/resume-builder/admin/";
+    account.setAttribute("aria-label", name);
+    account.title = name;
+    account.classList.add("is-in");
+  })();
   // Details: each card's sub-cards. Only what is public: the numbers already on the cards,
   // the apps' features, how the work was done, and links.
   var A = function (l, h) { return { l: l, h: h }; };

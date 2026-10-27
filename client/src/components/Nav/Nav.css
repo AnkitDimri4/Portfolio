@@ -291,6 +291,23 @@
   }
 }
 
+/* A phone under 375 px: the round buttons a little smaller and closer, so the name keeps to one row beside
+   them; under 353 px even that doesn't fit, and the account icon waits in the menu, after the brain map */
+@media (max-width: 374px) {
+  .nav-actions {
+    gap: 0.4rem;
+  }
+  .nav-actions .icon-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+@media (max-width: 352px) {
+  .nav-account {
+    display: none;
+  }
+}
+
 @media (min-width: 961px) {
   .mobile-menu {
     display: none !important;

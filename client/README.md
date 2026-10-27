@@ -18,12 +18,12 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 | `src/App.jsx` | The page: the nav, the sections in order, and the footer; everything below the first screen in `<Suspense>` boundaries, so React takes it over after the hero. |
 | `src/entry-server.jsx` | The entry the pre-render step uses, with React's `renderToString`. |
 | `src/sections/` | **Hero, About, Work, Journey, Stack, Certificates, Contact**: a folder each, with its styles. |
-| `src/components/` | Shared pieces: `Nav`, `Footer` (with the map dialog), `CodeCard`, `ContributionGraph`, `Marquee`, `NeuralField` (the hero's canvas network), `ScrambleText`, `CountUp`, `LocalTime`, `LiveSignal`, `SectionHead`, `ServerBar`, `Notice` and `PartFailed` (what shows in place of a part that didn't load, so the page never goes blank). |
+| `src/components/` | Shared pieces: `Nav` (its round account icon says Sign in, or opens what the visitor signed in to: the resume builder's My resumes, or the admin view for me), `Footer` (with the map dialog), `CodeCard`, `ContributionGraph`, `Marquee`, `NeuralField` (the hero's canvas network), `ScrambleText`, `CountUp`, `LocalTime`, `LiveSignal`, `SectionHead`, `ServerBar`, `Notice` and `PartFailed` (what shows in place of a part that didn't load, so the page never goes blank). |
 | `src/data/` | The site's content, as data: `profile.js` (profile, navigation, projects, journey, certificates), `resume-data.js` with `resume.js` (experience and the resume), and `notice.json` (the line shown when something's down or paused). |
 | `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light), `reveal.js` (scroll reveals), `idle.js` (work that waits until the page has painted) and `reload.js` (loading the page again when a part's file is gone after a deploy). |
 | `src/styles/` | The design tokens (colour, type, spacing) and the scroll animations. |
 | `src/assets/` | Images (WebP) and certificates. |
-| `public/` | Files served as they are: fonts, icons, the Open Graph images, `sitemap.xml`, `robots.txt`, `manifest.json`, and three static pages: the **brain map** (`brain-map/`), **privacy** and **terms**. |
+| `public/` | Files served as they are: fonts, icons, the Open Graph images, `sitemap.xml`, `robots.txt`, `manifest.json`, and three static pages: the **brain map** (`brain-map/`, with the same account icon as the nav), **privacy** and **terms**. |
 | `scripts/activity.js` | Runs first: fetches the latest activity file for the Work section's card, so the page is built with the numbers the browser would otherwise swap in. |
 | `scripts/prerender.js` | Runs after `vite build`: renders the app into the built `index.html`. |
 | `vite.config.js` | The build: one entry, and bundle, per page; the output folder; a dev proxy to a local API. |
