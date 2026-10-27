@@ -1,5 +1,5 @@
 // After a deploy, Vercel serves only the new deployment's files. A page opened before it still names the
-// old ones, so a part it loads on demand (the scheduler, the stack's grid) is asked for by a name that's
+// old ones, so a part it loads on demand (the scheduler, the stack's logos) is asked for by a name that's
 // gone: 404. Loading the page again brings the new names.
 const KEY = "reloaded-for-new-files";
 const WITHIN_MS = 60_000;

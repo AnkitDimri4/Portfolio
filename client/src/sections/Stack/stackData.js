@@ -1,66 +1,38 @@
-// Loaded lazily with the Stack section so ~40 brand icons stay out of the main bundle.
-import {
-  SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiTailwindcss, SiMui, SiBootstrap,
-  SiHtml5, SiCss3, SiExpo, SiAndroidstudio, SiFirebase, SiNodedotjs, SiExpress, SiFastapi,
-  SiDjango, SiFlask, SiClerk, SiPostgresql, SiMongodb, SiMysql, SiRedis, SiPython,
-  SiScikitlearn, SiTensorflow, SiNumpy, SiPandas, SiJupyter, SiCplusplus, SiGit, SiGithub,
-  SiPostman, SiPycharm, SiRender, SiVercel, SiRedux, SiPlotly, SiJenkins, SiKubernetes,
-  SiCloudflare, SiAmazonwebservices, SiGooglecloud, SiGooglecloudstorage, SiXcode, SiIos, SiAndroid,
-  SiAppstore, SiGoogleplay, SiClickhouse, SiDocker, SiSentry, SiMixpanel, SiClaude,
-} from "react-icons/si";
-import { TbBrandVscode, TbApi, TbChartDots, TbPointerFilled, TbShieldLock } from "react-icons/tb";
-
+// The Stack section's groups and tools, in the page from the start. Each tool's logo is in stackIcons.js,
+// by its name here, loaded only as the section approaches so ~60 brand icons stay out of the main bundle.
 export const STACK = [
   {
     group: "Frontend",
-    items: [
-      ["React", SiReact], ["Next.js", SiNextdotjs], ["TypeScript", SiTypescript], ["JavaScript", SiJavascript],
-      ["Redux", SiRedux], ["Tailwind CSS", SiTailwindcss], ["Material UI", SiMui], ["Bootstrap", SiBootstrap],
-      ["HTML5", SiHtml5], ["CSS / SCSS", SiCss3],
-    ],
+    items: ["React", "Next.js", "TypeScript", "JavaScript", "Redux", "Tailwind CSS", "Material UI", "Bootstrap", "HTML5", "CSS / SCSS"],
   },
   {
     group: "Mobile",
     items: [
-      ["React Native", SiReact], ["Expo & Expo Router", SiExpo], ["iOS apps", SiIos], ["Android apps", SiAndroid],
-      ["App Store releases", SiAppstore], ["Google Play releases", SiGoogleplay], ["OTA updates (EAS)", SiExpo],
-      ["Xcode", SiXcode], ["Android Studio", SiAndroidstudio], ["Firebase", SiFirebase], ["RN Chart Kit & SVG", TbChartDots],
+      "React Native", "Expo & Expo Router", "iOS apps", "Android apps", "App Store releases", "Google Play releases",
+      "OTA updates (EAS)", "Xcode", "Android Studio", "Firebase", "RN Chart Kit & SVG",
     ],
   },
   {
     group: "Backend",
-    items: [
-      ["Node.js", SiNodedotjs], ["Express", SiExpress], ["FastAPI", SiFastapi], ["Django", SiDjango],
-      ["Flask", SiFlask], ["REST APIs", TbApi], ["Clerk Auth", SiClerk],
-    ],
+    items: ["Node.js", "Express", "FastAPI", "Django", "Flask", "REST APIs", "Clerk Auth"],
   },
   {
     group: "Databases",
-    items: [
-      ["MongoDB", SiMongodb], ["PostgreSQL · Neon", SiPostgresql], ["ClickHouse", SiClickhouse], ["MySQL", SiMysql],
-      ["Redis · Upstash", SiRedis],
-    ],
+    items: ["MongoDB", "PostgreSQL · Neon", "ClickHouse", "MySQL", "Redis · Upstash"],
   },
   {
     group: "AI / ML & Data",
-    items: [
-      ["Python", SiPython], ["scikit-learn", SiScikitlearn], ["TensorFlow · Keras", SiTensorflow], ["NumPy", SiNumpy],
-      ["Pandas", SiPandas], ["Matplotlib · Seaborn", SiPlotly], ["Jupyter", SiJupyter],
-    ],
+    items: ["Python", "scikit-learn", "TensorFlow · Keras", "NumPy", "Pandas", "Matplotlib · Seaborn", "Jupyter"],
   },
   {
     group: "Languages & Tools",
-    items: [
-      ["C++", SiCplusplus], ["Git", SiGit], ["GitHub", SiGithub], ["Postman", SiPostman], ["VS Code", TbBrandVscode],
-      ["Cursor", TbPointerFilled], ["Claude Code", SiClaude], ["PyCharm", SiPycharm],
-    ],
+    items: ["C++", "Git", "GitHub", "Postman", "VS Code", "Cursor", "Claude Code", "PyCharm"],
   },
   {
     group: "Cloud, DevOps & Monitoring",
     items: [
-      ["Google Cloud (GCP)", SiGooglecloud], ["AWS", SiAmazonwebservices], ["Cloud Storage (GCS)", SiGooglecloudstorage],
-      ["Cloudflare", SiCloudflare], ["Docker", SiDocker], ["Kubernetes (K8s)", SiKubernetes], ["Jenkins CI/CD", SiJenkins],
-      ["NetBird", TbShieldLock], ["Sentry", SiSentry], ["Mixpanel", SiMixpanel], ["Render", SiRender], ["Vercel", SiVercel],
+      "Google Cloud (GCP)", "AWS", "Cloud Storage (GCS)", "Cloudflare", "Docker", "Kubernetes (K8s)", "Jenkins CI/CD",
+      "NetBird", "Sentry", "Mixpanel", "Render", "Vercel",
     ],
   },
 ];

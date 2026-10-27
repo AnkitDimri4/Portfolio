@@ -1,16 +1,22 @@
-import { lazy, Suspense, useRef } from "react";
-import PartFailed from "../../components/PartFailed/PartFailed";
+import { useEffect, useRef, useState } from "react";
 import SectionHead from "../../components/SectionHead";
 import { useInView } from "../../lib/reveal";
+import StackGrid from "./StackGrid";
 import "./Stack.css";
 
-// The grid carries ~40 brand icons; fetch it only as the section approaches. In a tab opened before a
-// deploy, its file is gone: a note says so, with a reload (not by itself, while someone's reading).
-const StackGrid = lazy(() => import("./StackGrid"));
-
+// The grid is in the page from the start, at its full size; only its logos (one file, ~37 kB compressed)
+// come later, as the section approaches. When the whole grid came then, the section grew by ~2,200 px on
+// a phone, and a long scroll past it (the nav's links to Certificates and Contact) ended short.
 const Stack = () => {
   const ref = useRef(null);
   const near = useInView(ref, "1200px 0px");
+  const [icons, setIcons] = useState(null);
+
+  useEffect(() => {
+    if (!near) return;
+    // In a tab opened before a deploy their file is gone: the grid stays as it is, without logos
+    import("./stackIcons").then(({ ICONS }) => setIcons(ICONS), () => {});
+  }, [near]);
 
   return (
     <section className="section stack" id="stack" aria-labelledby="stack-title">
@@ -28,14 +34,8 @@ const Stack = () => {
           Languages, frameworks, databases, mobile, ML, cloud, DevOps and monitoring — the toolkit behind everything above.
         </SectionHead>
 
-        <div ref={ref} className="stack-slot">
-          {near && (
-            <PartFailed what="The stack didn't load." hash="#stack">
-              <Suspense fallback={null}>
-                <StackGrid />
-              </Suspense>
-            </PartFailed>
-          )}
+        <div ref={ref}>
+          <StackGrid icons={icons} />
         </div>
       </div>
     </section>

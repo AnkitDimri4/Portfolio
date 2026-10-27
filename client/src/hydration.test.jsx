@@ -50,7 +50,7 @@ test("the hero is taken over at once, and every part below it later, in pieces",
 
 test("pre-rendered HTML contains the page content", () => {
   const html = renderToString(app);
-  for (const text of ["Full-Stack Software", "RN-Wallet", "QuickCart", "Technical Mentor", "MERN Stack Development", "Send message"]) {
+  for (const text of ["Full-Stack Software", "RN-Wallet", "QuickCart", "Technical Mentor", "Kubernetes (K8s)", "MERN Stack Development", "Send message"]) {
     expect(html).toContain(text);
   }
 });

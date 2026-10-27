@@ -43,9 +43,10 @@ export default function HireMe({ onClose }) {
     const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
     form.scrollIntoView({ behavior, block: "start" });
     form.focus({ preventScroll: true });
-    // A section on the way can grow as it comes into view (Stack fills in its logos), which leaves a long
-    // scroll short of the form: once the scroll stops, it goes the rest of the way (within a few seconds,
-    // so a visitor who has scrolled off since isn't pulled back).
+    // A part on the way that grows as it comes into view leaves a long scroll short of the form (Stack did,
+    // filling in its grid, until #250 drew it at its full size from the start): once the scroll stops, it
+    // goes the rest of the way (within a few seconds, so a visitor who has scrolled off since isn't pulled
+    // back). Nothing grows that much now, so this is only a safety net.
     const started = Date.now();
     const settle = () => {
       if (Date.now() - started > 4000) return;

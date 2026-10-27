@@ -86,7 +86,8 @@ Vitest with Testing Library, in jsdom. In this folder:
 - `components/ServerBar/ServerBar.test.jsx`: the bar stays away while the API answers; counts a gateway's error or a minute without an answer; says what's paused and when it tries again; tries again on **Try now**; notices when the browser itself is offline.
 - `lib/notice.test.js`: the notice shows only where it's meant to, from its start until its end.
 - `lib/reload.test.js`: a part whose file is gone after a deploy loads the page again, once a minute at most, and never offline or where the browser keeps no session storage.
-- `sections/Stack/Stack.test.jsx`: if the stack's grid doesn't load, the section says so, with a button that loads the page again, and keeps its heading.
+- `sections/Stack/Stack.test.jsx`: the section is at its full size from the start, every group and tool in the pre-rendered page with each logo's place kept; the logos come only as it nears, each into its place, and nothing else changes; every tool has a logo.
+- `sections/Stack/StackOldTab.test.jsx`: in a tab opened before a deploy, when the logos' file is gone, the grid stays as it is, without logos, with no note and no reload.
 
 ## Built with
 
