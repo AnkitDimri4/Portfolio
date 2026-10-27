@@ -10,6 +10,8 @@ export const PROFILE = {
   location: "Dehradun, India",
   timezone: "Asia/Kolkata",
   email: "dimri.ankitdimri@gmail.com",
+  // Gmail's compose window, addressed to the email above: for those who'd rather write from Gmail
+  gmail: "https://mail.google.com/mail/?view=cm&fs=1&to=dimri.ankitdimri%40gmail.com",
   whatsapp: "https://wa.me/919760763472",
   // Built by `npm run resume` into public/, so the address never changes (also served at /resume).
   resume: "/AnkitDimri_Resume.pdf",

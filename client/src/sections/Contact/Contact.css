@@ -120,6 +120,10 @@
   font-size: 1.5rem;
   color: var(--accent);
 }
+.contact-email-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+}
 .contact-email a {
   font-family: var(--font-display);
   font-size: clamp(1.25rem, 0.8rem + 1.5vw, 2.1rem);
@@ -174,7 +178,12 @@
 }
 
 /* ---------- Form ---------- */
+/* "Hire me" focuses the card itself, so Tab carries on into its first field: no ring around it */
+.contact-form:focus {
+  outline: none;
+}
 .contact-form {
+  scroll-margin-top: 1.25rem; /* where Hire me lands: a little room under the nav */
   grid-column: 7 / span 6;
   display: grid;
   gap: 1.25rem;

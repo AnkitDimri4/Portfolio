@@ -1,0 +1,133 @@
+/* ---------- "Hire me": every way to reach me, in a card over the page ---------- */
+.hire {
+  margin: auto;
+  width: min(460px, calc(100vw - 2rem));
+  max-width: none;
+  max-height: calc(100dvh - 2rem);
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  color: var(--text);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: var(--shadow);
+}
+.hire::backdrop {
+  background: rgba(5, 5, 7, 0.72);
+  backdrop-filter: blur(10px);
+}
+.hire[open] {
+  animation: hire-in 0.35s var(--ease-out);
+}
+@keyframes hire-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+}
+
+.hire-inner {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.6rem 1.5rem 1.5rem;
+}
+.hire-inner:focus {
+  outline: none;
+}
+.hire h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.hire-lede {
+  color: var(--muted);
+}
+.hire-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+}
+
+/* The ways: tiles like Contact's "Schedule a call" */
+.hire-ways {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  list-style: none;
+}
+.hire-way,
+.hire-email {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+.hire-way {
+  cursor: pointer;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.hire-way:hover,
+.hire-way:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+.hire-way > svg:first-child,
+.hire-email > svg:first-child {
+  flex: none;
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+.hire-way-text {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.hire-way-text strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.hire-way-text .label {
+  font-size: 0.66rem;
+}
+.hire-arrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--muted);
+  transition: transform 0.4s var(--ease);
+}
+.hire-way:hover .hire-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* Email: the address (the email app), and Gmail or a copy beside it */
+.hire-email {
+  flex-wrap: wrap;
+  row-gap: 0.6rem;
+}
+.hire-email .hire-way-text a {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+.hire-email .hire-way-text a:hover {
+  color: var(--accent-ink);
+}
+.hire-email-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}

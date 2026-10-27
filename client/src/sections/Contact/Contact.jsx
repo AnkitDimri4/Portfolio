@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiCalendar, FiCheck, FiCopy, FiMail, FiSend } from "react-icons/fi";
-import { SiWhatsapp } from "../../components/brandIcons";
+import { SiGmail, SiWhatsapp } from "../../components/brandIcons";
+import { FORM_ID } from "../../components/HireMe/HireMe";
 import { Reveal } from "../../lib/reveal";
 import { postJSON } from "../../lib/api";
 import { BOOKING, PROFILE } from "../../data/profile";
@@ -89,9 +90,15 @@ const Contact = () => {
             <div className="contact-email">
               <FiMail className="contact-email-icon" aria-hidden="true" />
               <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
-              <button className="icon-btn" onClick={copyEmail} aria-label={copied ? "Email copied" : "Copy email address"}>
-                {copied ? <FiCheck /> : <FiCopy />}
-              </button>
+              {/* Gmail and the copy, together, so a narrow screen wraps them as a pair */}
+              <span className="contact-email-actions">
+                <a className="icon-btn" href={PROFILE.gmail} target="_blank" rel="noreferrer" aria-label="Write to me in Gmail" title="Write in Gmail">
+                  <SiGmail aria-hidden="true" />
+                </a>
+                <button className="icon-btn" onClick={copyEmail} aria-label={copied ? "Email copied" : "Copy email address"}>
+                  {copied ? <FiCheck /> : <FiCopy />}
+                </button>
+              </span>
               <span className="sr-only" aria-live="polite">
                 {copied ? "Email address copied to clipboard" : ""}
               </span>
@@ -114,8 +121,9 @@ const Contact = () => {
             </ul>
           </Reveal>
 
-          {/* method="post": if it were ever submitted before React loads, nothing ends up in the URL */}
-          <Reveal as="form" className="contact-form" delay={2} onSubmit={submit} method="post">
+          {/* method="post": if it were ever submitted before React loads, nothing ends up in the URL.
+              Its id is where the hero's "Hire me" lands (and its card's "Send a message"): tabIndex -1 takes the focus. */}
+          <Reveal as="form" className="contact-form" id={FORM_ID} tabIndex={-1} delay={2} onSubmit={submit} method="post">
             <div className="field">
               <label htmlFor="cf-name">Your name</label>
               <input id="cf-name" name="name" autoComplete="name" required maxLength={100} value={form.name} onChange={update} placeholder="Jane Doe" />
