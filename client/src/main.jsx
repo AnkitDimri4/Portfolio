@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import "./styles/global.css";
 import App from "./App";
+import { reportVitals } from "./lib/vitals.js?home"; // its own copy in the page's bundle: no file of its own before the first paint
 
 const container = document.getElementById("root");
 const app = (
@@ -14,3 +15,4 @@ const app = (
 // markup; the dev server serves an empty root and renders from scratch.
 if (container.firstElementChild) hydrateRoot(container, app);
 else createRoot(container).render(app);
+reportVitals("home"); // real visits' timings, for Site health (lib/vitals.js)

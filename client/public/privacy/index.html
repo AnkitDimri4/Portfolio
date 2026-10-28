@@ -87,7 +87,7 @@
     <p class="label">Privacy</p>
     <h1>What this site does with your details</h1>
     <p class="lede">It's my personal portfolio. Here's everything it collects, why, and where it goes.</p>
-    <p class="label updated">Last updated 21 October 2026</p>
+    <p class="label updated">Last updated 28 October 2026</p>
 
     <section>
       <h2>Who I am</h2>
@@ -153,6 +153,15 @@
           another device. It's deleted with its drafts 30 days after you last used it if you have no
           saved resume, or at once with “Delete my data”. There are no passwords.
         </li>
+        <li id="page-timings">
+          <strong>How fast the pages are.</strong> When you leave the home page, the resume builder or
+          its sign-in page, your browser sends my server how fast that page showed and answered you: five
+          timings (how long its first and its largest parts took to appear, how much it shifted, how fast
+          it answered a tap, and how long the first byte took), which page it was, and whether the screen
+          was phone-sized. Nothing about you: no cookie, no name, no address, nothing that tells one visit
+          from another, and your IP address isn't kept with them. They're kept for 28 days, so I can see
+          what visitors really get, then deleted.
+        </li>
       </ul>
       <p>
         That's all. There are no newsletters, and nothing is sold, shared for advertising or used for
@@ -182,7 +191,7 @@
       <ul>
         <li><strong>Vercel</strong> hosts this site, and makes the resume builder's PDFs.</li>
         <li><strong>Render</strong> runs its server (the API), behind Cloudflare.</li>
-        <li><strong>Neon</strong> is the database where contact messages, resumes (for 30 days), accounts with their drafts, and the counts that stop repeated requests (below) are saved.</li>
+        <li><strong>Neon</strong> is the database where contact messages, resumes (for 30 days), accounts with their drafts, the page timings (for 28 days), and the counts that stop repeated requests (below) are saved.</li>
         <li><strong>Google</strong> holds the calendar events and the Meet calls, sends the resume builder's emails from my Gmail, and signs you in if you continue with Google.</li>
         <li><strong>Resend</strong> sends the emails that tell me about messages and bookings.</li>
         <li><strong>Razorpay</strong> takes the payments for PDFs and plans.</li>
@@ -200,7 +209,8 @@
     <section>
       <h2>In your browser</h2>
       <p>
-        No cookies, no analytics, no tracking. Your browser keeps a few things in its local storage:
+        No cookies, no analytics service, no tracking: the page timings above are about the pages, never
+        about you. Your browser keeps a few things in its local storage:
         light or dark theme, the 12- or 24-hour clock for the scheduler, the brain map's settings, and the
         resume builder's draft and any job posting you paste into its ATS check, and, if you sign in,
         your session (for 30 days, or until you sign out), a random code that makes an email's sign-in link
@@ -220,7 +230,8 @@
         <li>Payment records, refunded ones too, are kept for my accounts. Orders that were never paid are deleted after 7 days, payments that failed after 30, and a plan's end date when it ends.</li>
         <li>An account, with its drafts, is deleted 30 days after you last used it when it has no saved resume, or at once with “Delete my data”.</li>
         <li>The counts that stop repeated requests are deleted within 8 days.</li>
-        <li>An encrypted backup of the database is kept on GitHub for up to a week, then replaced by the next one, so what's deleted is gone from it within a week too. It holds no sign-ins and none of those counts.</li>
+        <li>The page timings are deleted after 28 days.</li>
+        <li>An encrypted backup of the database is kept on GitHub for up to a week, then replaced by the next one, so what's deleted is gone from it within a week too. It holds no sign-ins, none of those counts and none of the page timings.</li>
         <li>Email me to see, correct or delete what you've sent, and I'll do it.</li>
         <li>You can decline or remove the calendar invitation at any time.</li>
       </ul>

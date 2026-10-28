@@ -20,7 +20,7 @@ The portfolio's front end: **React 18 + Vite**, pre-rendered to static HTML at b
 | `src/sections/` | **Hero, About, Work, Journey, Stack, Certificates, Contact**: a folder each, with its styles. |
 | `src/components/` | Shared pieces: `Nav` (its round account icon says Sign in, or opens what the visitor signed in to: the resume builder's My resumes, or the admin view for me), `Footer` (with the map dialog), `CodeCard`, `ContributionGraph`, `Marquee`, `NeuralField` (the hero's canvas network), `ScrambleText`, `CountUp`, `LocalTime`, `LiveSignal`, `SectionHead`, `ServerBar`, `Notice` and `PartFailed` (what shows in place of a part that didn't load, so the page never goes blank). |
 | `src/data/` | The site's content, as data: `profile.js` (profile, navigation, projects, journey, certificates), `resume-data.js` with `resume.js` (experience and the resume), and `notice.json` (the line shown when something's down or paused). |
-| `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light), `reveal.js` (scroll reveals), `idle.js` (work that waits until the page has painted) and `reload.js` (loading the page again when a part's file is gone after a deploy). |
+| `src/lib/` | `api.js` (every request to the API: a shared cache and retries), `serverStatus.js` (whether the API can be reached), `notice.js` (when and where the notice shows), `theme.js` (dark and light), `reveal.js` (scroll reveals), `idle.js` (work that waits until the page has painted), `reload.js` (loading the page again when a part's file is gone after a deploy) and `vitals.js` (how fast the page was for a real visitor, sent as they leave it). |
 | `src/styles/` | The design tokens (colour, type, spacing) and the scroll animations. |
 | `src/assets/` | Images (WebP) and certificates. |
 | `public/` | Files served as they are: fonts, icons, the Open Graph images, `sitemap.xml`, `robots.txt`, `manifest.json`, and three static pages: the **brain map** (`brain-map/`, with the same account icon as the nav), **privacy** and **terms**. |
@@ -41,11 +41,17 @@ The sections read everything from `src/data/`. A new project, job or certificate
 
 ### Talking to the API
 
-`src/lib/api.js` is the only place that calls the API:
+`src/lib/api.js` is the only place that asks the API for anything (`vitals.js`, below, only sends it a page's timings):
 
 - `useApi(path)` is a React hook for data the page shows, such as the GitHub and LeetCode stats. Every component asking for the same path shares one request and its cached answer.
 - Network errors and 5xx answers get up to 3 attempts, with a short backoff between them.
 - A gateway's error (502–504 from the host, 520–527 from Cloudflare) or a request still waiting after a minute tells `serverStatus.js` the API can't be reached. A bar then says so, with how long it's been down, a countdown to the next check and a **Try now** button. When the API answers again, what failed loads again by itself.
+
+### Real visits' timings
+
+Lighthouse measures the site in a lab; `src/lib/vitals.js` measures it for the people who visit. Once the page has painted, it fetches Google's [web-vitals](https://github.com/GoogleChrome/web-vitals) library, which watches the page's Core Web Vitals (its largest paint, how fast it answers a tap, how much it shifts) and two more timings (its first paint and its first byte). When the visitor leaves the page or hides its tab, one beacon sends those five numbers, the page, and phone or desktop to the API. Nothing about the visitor goes with them: no cookie and no id. Lighthouse, headless browsers and search engines' renderers send nothing.
+
+Each page imports its own copy (`vitals.js?home`), and the library comes as a file of its own after the first paint, so no page fetches anything more before it draws. The [privacy page](https://portfolio-nine-orcin-33.vercel.app/privacy/#page-timings) says what's kept.
 
 ### Theme
 
@@ -86,6 +92,7 @@ Vitest with Testing Library, in jsdom. In this folder:
 - `lib/idle.test.js`: work after the load waits for the first frame and an idle moment, and never runs once cancelled.
 - `components/ServerBar/ServerBar.test.jsx`: the bar stays away while the API answers; counts a gateway's error or a minute without an answer; says what's paused and when it tries again; tries again on **Try now**; notices when the browser itself is offline.
 - `lib/notice.test.js`: the notice shows only where it's meant to, from its start until its end.
+- `lib/vitals.test.js`: one beacon as the visitor leaves, with the page, the device and each timing rounded, once a visit; nothing from Lighthouse, a headless or automated browser, or a browser without beacons; an old tab whose library file is gone sends nothing and breaks nothing.
 - `lib/reload.test.js`: a part whose file is gone after a deploy loads the page again, once a minute at most, and never offline or where the browser keeps no session storage.
 - `sections/Stack/Stack.test.jsx`: the section is at its full size from the start, every group and tool in the pre-rendered page with each logo's place kept; the logos come only as it nears, each into its place, and nothing else changes; every tool has a logo.
 - `sections/Stack/StackOldTab.test.jsx`: in a tab opened before a deploy, when the logos' file is gone, the grid stays as it is, without logos, with no note and no reload.

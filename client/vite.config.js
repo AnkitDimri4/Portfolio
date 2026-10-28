@@ -84,17 +84,27 @@ const inlineCss = {
 // second time, after the page's own. The coach brings no CSS of its own: what its parts need is imported
 // from the page's main.jsx, so it stays in the page, in order (English.test.jsx checks it; CSS imported
 // only from the coach's own files doesn't come out of the build at all).
+// Real visits' timings (lib/vitals.js) fetch web-vitals the same way, once the page has painted, on the
+// home page, the builder and the sign-in page, each importing its own copy (`vitals.js?home`): each copy
+// gets a helper of its own too (web-vitals' file needs nothing loaded before it), or the three pages would
+// share Vite's as a file fetched before they draw (#262).
 const PRELOAD_HELPER = "\0vite/preload-helper.js";
 const COACH_HELPER = "\0english-preload-helper.js";
+const VITALS_COPY = /\/src\/lib\/vitals\.js\?(\w+)$/;
+const VITALS_HELPER = "\0vitals-preload-helper-";
 const coachPreloadHelper = {
   name: "coach-preload-helper",
   apply: "build",
   enforce: "pre",
   resolveId(source, importer) {
-    return source === PRELOAD_HELPER && importer?.replaceAll("\\", "/").includes("/src/english/") ? COACH_HELPER : null;
+    if (source !== PRELOAD_HELPER || !importer) return null;
+    const from = importer.replaceAll("\\", "/");
+    if (from.includes("/src/english/")) return COACH_HELPER;
+    const page = VITALS_COPY.exec(from)?.[1];
+    return page ? `${VITALS_HELPER}${page}.js` : null;
   },
   load(id) {
-    return id === COACH_HELPER ? "export const __vitePreload = (load) => load();" : null;
+    return id === COACH_HELPER || id.startsWith(VITALS_HELPER) ? "export const __vitePreload = (load) => load();" : null;
   },
 };
 
