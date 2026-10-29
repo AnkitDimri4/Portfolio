@@ -37,7 +37,7 @@
 - **Email notifications** — every contact message and booking reaches my Gmail as a designed HTML email; contact messages are saved in PostgreSQL too, so none is lost if email fails.
 - **Live brain map** — [`/brain-map/`](https://portfolio-nine-orcin-33.vercel.app/brain-map/): my work, projects and skills on one page, with a guided tour and a Light | Dark switch.
 - **Resume from the same data** — every build prints the site's resume data into the one-page PDF at [`/resume`](https://portfolio-nine-orcin-33.vercel.app/resume), so the site and the resume never disagree.
-- **Useful details** — certificate cover-flow with drag + lightbox, in-page interactive map of Dehradun, 12-hour IST clock, a Hire me card with every way to reach me (a call, the contact form, WhatsApp, email in the mail app or Gmail), one-click email copy, accessible contact form.
+- **Useful details** — certificate cover-flow with drag + lightbox, in-page interactive map of Dehradun, 12-hour IST clock, a Hire me card with every way to reach me (a call, the contact form, WhatsApp, email in the mail app or Gmail), one-click email copy, accessible contact form, a still on each demo video until it plays, and a Journey that folds a role's other parts under a line naming them (every line kept).
 - **Fast, accessible, SEO-ready** — Lighthouse 96 on mobile and 100 on desktop; Open Graph cards, JSON-LD, and a sitemap in Google Search Console.
 
 ---

@@ -1,5 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { PROJECTS } from "../../data/profile";
 import Work from "./Work";
 
 const rowOf = (title) => screen.getAllByRole("heading", { level: 3, name: title })[0].closest("article");
@@ -25,5 +26,43 @@ describe("the Work section", () => {
     expect(tabs.map((t) => t.querySelector(".ptab-name").textContent)).toEqual(["RN-Wallet", "Todo", "QuickCart"]);
     expect(tabs.map((t) => t.querySelector(".ptab-num").textContent)).toEqual(["03", "04", "05"]);
     expect(screen.getByText("3 projects · pick one")).toBeInTheDocument();
+  });
+
+  describe("the demo videos", () => {
+    const Observer = globalThis.IntersectionObserver;
+    afterEach(() => {
+      globalThis.IntersectionObserver = Observer;
+      vi.resetModules();
+    });
+
+    it("each has a still of its own, shown until it plays (an iPhone draws nothing before that)", () => {
+      const videos = PROJECTS.flatMap((p) => p.videos ?? []);
+      expect(videos.length).toBeGreaterThan(0);
+      for (const v of videos) expect(v.poster).toMatch(/assets\/img\/projects\/[a-z0-9-]+\.webp/);
+      expect(new Set(videos.map((v) => v.poster)).size).toBe(videos.length);
+    });
+
+    it("puts the chosen demo's still on its video", async () => {
+      // The video mounts once its card nears the window: an observer that says so at once, and a fresh
+      // copy of the page so the one the other tests made (which never says) isn't reused
+      globalThis.IntersectionObserver = class {
+        constructor(callback) {
+          this.callback = callback;
+        }
+        observe(target) {
+          this.callback([{ isIntersecting: true, target }]);
+        }
+        unobserve() {}
+        disconnect() {}
+      };
+      vi.resetModules();
+      const { default: FreshWork } = await import("./Work");
+      const { container } = render(<FreshWork />);
+      const wallet = PROJECTS.find((p) => p.title === "RN-Wallet");
+      const media = container.querySelector("video").closest(".project-media");
+      expect(media.querySelector("video")).toHaveAttribute("poster", wallet.videos[0].poster);
+      fireEvent.click(within(media).getByRole("tab", { name: /Transactions/ }));
+      expect(media.querySelector("video")).toHaveAttribute("poster", wallet.videos[1].poster);
+    });
   });
 });

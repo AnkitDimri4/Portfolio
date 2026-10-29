@@ -149,9 +149,12 @@
   color: var(--text);
   font-weight: 500;
 }
+/* The chips float over the card's edges only where there's no text: the icons under its bottom-left
+   corner (over the terminal, they hid "$ npm run ship"), the commits beside the code's two short first
+   lines. */
 .code-chip--stack {
   left: -7%;
-  bottom: 17%;
+  bottom: -2.6rem;
   gap: 0.7rem;
   animation: chip-bob-a 6s ease-in-out infinite, chip-in 0.9s var(--ease-out) 1.1s backwards;
 }
@@ -362,6 +365,21 @@
   color: var(--accent-ink);
 }
 
+/* The hero's two columns below 1280 px: the card is too narrow for the commits chip beside the code
+   (at 1024 px it hid "Ankit Dimri"), so it hangs under the card's other corner, clear of the icons. */
+@media (min-width: 961px) and (max-width: 1279px) {
+  .code-chip--commits {
+    top: auto;
+    bottom: -2.6rem;
+  }
+}
+/* One column, from 960 px down: the card starts at the page's edge, so the icons stay on screen */
+@media (max-width: 960px) {
+  .code-chip--stack {
+    left: 3%;
+  }
+}
+
 @media (max-width: 640px) {
   .code-ln {
     width: 2.1rem;
@@ -378,13 +396,18 @@
     right: 2%;
     width: 70%;
   }
+  /* A phone's card has no free corner left for the icons (the commits chip takes the bottom one,
+     and the band of tech logos below shows them anyway) */
   .code-chip--stack {
-    left: 3%;
-    bottom: 12%;
+    display: none;
   }
   .code-chip--commits {
     right: 3%;
     top: auto;
     bottom: -4%;
+  }
+  /* room under the card for the commits chip, before the row with the time on a short screen */
+  .code-card-stage {
+    padding-bottom: 1.25rem;
   }
 }

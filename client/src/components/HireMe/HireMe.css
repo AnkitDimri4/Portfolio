@@ -100,7 +100,7 @@
   letter-spacing: -0.01em;
 }
 .hire-way-text .label {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
 }
 .hire-arrow {
   flex: none;

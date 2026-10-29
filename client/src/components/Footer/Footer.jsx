@@ -68,7 +68,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        <div className="footer-col">
+        <div className="footer-col footer-col--time">
           <p className="label">Local time</p>
           <p className="footer-time">
             <FiClock aria-hidden="true" /> <LocalTime />

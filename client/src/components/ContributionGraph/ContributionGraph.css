@@ -44,7 +44,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem 1rem;
-  font-size: 0.66rem;
+  font-size: var(--text-small);
 }
 .cgraph-foot b {
   color: var(--text);
@@ -61,6 +61,6 @@
   border-radius: 2px;
 }
 .cgraph-dates {
-  font-size: 0.62rem;
+  font-size: var(--text-small);
   color: var(--faint-ink);
 }

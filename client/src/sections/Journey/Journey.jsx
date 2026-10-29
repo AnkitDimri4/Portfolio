@@ -1,8 +1,45 @@
-import { FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight, FiChevronDown } from "react-icons/fi";
 import SectionHead from "../../components/SectionHead";
 import { Reveal } from "../../lib/reveal";
 import { JOURNEY } from "../../data/profile";
 import "./Journey.css";
+
+// One part of a role: its heading, then its own points.
+const Group = ([area, points]) => (
+  <li key={area} className="jitem-group">
+    <strong>{area}</strong>
+    <ul className="jitem-subpoints">
+      {points.map((p) => (
+        <li key={p}>{p}</li>
+      ))}
+    </ul>
+  </li>
+);
+
+// "A", "A and B", "A, B and C"
+const andList = (names) => (names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`);
+
+/**
+ * A role's parts: the first shows, the rest fold under "Show N more", named, so the page stays short
+ * and every line is still there (in the page for search engines, and opened by the browser's find).
+ */
+const Highlights = ({ groups }) => (
+  <>
+    <ul className="jitem-points">{groups.slice(0, 1).map(Group)}</ul>
+    {groups.length > 1 && (
+      <details className="jitem-more">
+        <summary>
+          <span className="jitem-more-closed">
+            <b>Show {groups.length - 1} more</b>: {andList(groups.slice(1).map(([area]) => area))}
+          </span>
+          <b className="jitem-more-open">Show less</b>
+          <FiChevronDown aria-hidden="true" />
+        </summary>
+        <ul className="jitem-points">{groups.slice(1).map(Group)}</ul>
+      </details>
+    )}
+  </>
+);
 
 const Journey = () => (
   <section className="section journey" id="journey" aria-labelledby="journey-title">
@@ -44,20 +81,15 @@ const Journey = () => (
                         <span className="label">{r.period}</span>
                       </p>
                       {r.summary && <p className="jitem-role-summary">{r.summary}</p>}
-                      <ul className="jitem-points">
-                        {r.highlights
-                          ? r.highlights.map(([area, points]) => (
-                              <li key={area} className="jitem-group">
-                                <strong>{area}</strong>
-                                <ul className="jitem-subpoints">
-                                  {points.map((p) => (
-                                    <li key={p}>{p}</li>
-                                  ))}
-                                </ul>
-                              </li>
-                            ))
-                          : r.points.map((p) => <li key={p}>{p}</li>)}
-                      </ul>
+                      {r.highlights ? (
+                        <Highlights groups={r.highlights} />
+                      ) : (
+                        <ul className="jitem-points">
+                          {r.points.map((p) => (
+                            <li key={p}>{p}</li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   ))}
                 </ol>

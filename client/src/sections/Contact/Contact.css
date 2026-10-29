@@ -106,7 +106,8 @@
   letter-spacing: -0.02em;
 }
 .contact-book-text .label {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
+  letter-spacing: 0.08em; /* two lines on a phone, as before it grew, not a third for "you" */
   color: var(--muted);
 }
 

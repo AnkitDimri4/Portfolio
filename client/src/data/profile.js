@@ -43,6 +43,16 @@ export const NAV = [
 const GH = "https://github.com/user-attachments/assets/";
 const FILESURE = EXPERIENCE.find((job) => job.short === "FileSure");
 
+// A still from each demo video, shown until it plays: the video loads only its length beforehand
+// (preload="metadata"), so without one the box is black, and an iPhone draws no frame at all.
+const POSTERS = import.meta.glob("../assets/img/projects/*.webp", { eager: true, import: "default" });
+
+const poster = (file) => {
+  const url = POSTERS[`../assets/img/projects/${file}.webp`];
+  if (!url) throw new Error(`Missing video poster: assets/img/projects/${file}.webp`);
+  return url;
+};
+
 export const PROJECTS = [
   {
     // A job, not a personal repo: its links replace Source/Live, and my contribution graph
@@ -78,9 +88,9 @@ export const PROJECTS = [
       "A production-ready expense tracker. React Native + Expo on the front, a Node/Express API on Neon PostgreSQL behind Clerk auth and Upstash Redis rate limiting — plus a FastAPI microservice that auto-categorises every transaction with machine learning.",
     tech: ["React Native", "Expo", "Node.js", "Express", "PostgreSQL", "Redis", "Clerk", "FastAPI", "scikit-learn", "Chart Kit"],
     videos: [
-      { src: `${GH}62a3e6ea-94c2-4926-b9bd-27649c6360b8`, label: "Dashboard" },
-      { src: `${GH}a498f09c-a84a-4cfe-af4f-e101835fdd42`, label: "Transactions" },
-      { src: `${GH}5fa62d59-626b-4da3-b589-7df8360c5937`, label: "ML categories" },
+      { src: `${GH}62a3e6ea-94c2-4926-b9bd-27649c6360b8`, label: "Dashboard", poster: poster("rn-wallet-dashboard") },
+      { src: `${GH}a498f09c-a84a-4cfe-af4f-e101835fdd42`, label: "Transactions", poster: poster("rn-wallet-transactions") },
+      { src: `${GH}5fa62d59-626b-4da3-b589-7df8360c5937`, label: "ML categories", poster: poster("rn-wallet-ml-categories") },
     ],
     github: "https://github.com/AnkitDimri4/RN-WALLET",
   },
@@ -92,7 +102,7 @@ export const PROJECTS = [
     summary:
       "A real-time task app built with Expo Router and TypeScript on a Convex backend — edits sync instantly across devices, with themed UI and persistent local state.",
     tech: ["React Native", "Expo Router", "TypeScript", "Convex", "Async Storage"],
-    videos: [{ src: `${GH}3065c555-f74a-4c38-8546-bacc5c37c95a`, label: "Demo" }],
+    videos: [{ src: `${GH}3065c555-f74a-4c38-8546-bacc5c37c95a`, label: "Demo", poster: poster("todo-demo") }],
     github: "https://github.com/AnkitDimri4/TODO-RN",
   },
   {

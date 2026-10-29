@@ -64,7 +64,7 @@
 }
 .sa-stat dt {
   order: 2;
-  font-size: 0.68rem;
+  font-size: var(--text-small);
   line-height: 1.35;
   color: var(--muted);
 }
@@ -105,7 +105,7 @@
   min-width: 0;
 }
 .sa-graph-title {
-  font-size: 0.62rem;
+  font-size: var(--text-small);
   color: var(--faint-ink);
 }
 .sa-svg {
@@ -172,7 +172,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem 0.9rem;
-  font-size: 0.62rem;
+  font-size: var(--text-small);
   color: var(--muted);
 }
 .sa-legend span,
@@ -192,6 +192,6 @@
   color: var(--text);
 }
 .sa-dates {
-  font-size: 0.62rem;
+  font-size: var(--text-small);
   color: var(--faint-ink);
 }

@@ -22,6 +22,9 @@
   --step-2: clamp(1.4rem, 1rem + 1.4vw, 2.25rem);
   --step-3: clamp(1.9rem, 1.2rem + 2.6vw, 3.6rem);
   --step-4: clamp(2.6rem, 1rem + 5.6vw, 7rem);
+  /* the smallest words that carry information (11.5 px): a caption, a key, a date. Decoration (the
+     code card's editor bar, the menu's numbers) may go smaller. */
+  --text-small: 0.72rem;
 }
 
 /* ---------- Themes ---------- */

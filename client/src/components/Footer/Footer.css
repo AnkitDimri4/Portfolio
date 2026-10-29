@@ -242,7 +242,7 @@
   text-overflow: ellipsis;
 }
 .map-dialog-title .label {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
 }
 .map-dialog-actions {
   display: flex;
@@ -303,14 +303,14 @@
   left: 0.55rem;
   top: 0.55rem;
   padding: 0.2rem 0.45rem;
-  font-size: 0.66rem;
+  font-size: var(--text-small);
   color: var(--text);
 }
 .map-credit {
   right: 0.4rem;
   bottom: 0.4rem;
   padding: 0.1rem 0.35rem;
-  font-size: 0.58rem;
+  font-size: var(--text-small);
   color: var(--muted);
 }
 .footer-muted svg {
@@ -356,6 +356,13 @@
   }
   .footer-top-link {
     justify-self: start;
+  }
+}
+/* A phone: the local time and its map across the width, so the map's coordinates aren't cut off by
+   its expand button (in half the width the map was 155 px wide at 375 px) */
+@media (max-width: 480px) {
+  .footer-col--time {
+    grid-column: 1 / -1;
   }
 }
 

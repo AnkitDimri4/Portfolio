@@ -90,7 +90,7 @@
   font-weight: 500;
 }
 .jitem-role .label {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
   font-weight: 400;
   color: var(--faint-ink);
 }
@@ -123,6 +123,41 @@
   height: 0.3rem;
   border-radius: 50%;
   background: var(--faint);
+}
+/* A role's other parts, folded under "Show N more" and named (Journey.jsx) */
+.jitem-more {
+  margin-top: 0.85rem;
+}
+.jitem-more > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  list-style: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.jitem-more > summary::-webkit-details-marker {
+  display: none;
+}
+.jitem-more > summary b {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.jitem-more > summary svg {
+  flex: none;
+  color: var(--accent-ink);
+  transition: transform 0.3s var(--ease);
+}
+.jitem-more > summary:hover b {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.jitem-more[open] > summary svg {
+  transform: rotate(180deg);
+}
+.jitem-more[open] .jitem-more-closed,
+.jitem-more:not([open]) .jitem-more-open {
+  display: none;
 }
 .jitem-skills {
   display: grid;

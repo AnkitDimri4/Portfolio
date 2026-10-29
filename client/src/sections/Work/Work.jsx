@@ -27,7 +27,15 @@ const ProjectMedia = ({ project }) => {
         {project.image ? (
           <img src={project.image} alt={`${project.title} screenshot`} loading="lazy" decoding="async" />
         ) : inView ? (
-          <video key={videos[active].src} src={videos[active].src} controls playsInline preload="metadata" aria-label={`${project.title} demo: ${videos[active].label}`} />
+          <video
+            key={videos[active].src}
+            src={videos[active].src}
+            poster={videos[active].poster}
+            controls
+            playsInline
+            preload="metadata"
+            aria-label={`${project.title} demo: ${videos[active].label}`}
+          />
         ) : null}
       </div>
       {videos.length > 1 && (

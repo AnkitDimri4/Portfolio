@@ -8,8 +8,8 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   timeZone: PROFILE.timezone,
 });
 
-// e.g. "02:19 pm"
-const format = () => formatter.format(new Date()).replace(/\s?(AM|PM)$/i, (m) => m.toLowerCase());
+// e.g. "02:19 PM": AM and PM in capitals, as the hero's label and Schedule a call's times show them
+const format = () => formatter.format(new Date());
 
 /** Live clock in Ankit's timezone (IST), 12-hour format. */
 const LocalTime = () => {

@@ -100,7 +100,7 @@
   background: var(--bg-2);
 }
 .stats-head .label {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
 }
 .stats {
   display: grid;
@@ -177,7 +177,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.2rem 0.8rem;
-  font-size: 0.62rem;
+  font-size: var(--text-small);
   letter-spacing: 0.08em;
 }
 .split-legend > span {

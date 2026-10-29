@@ -147,7 +147,7 @@ button.chip:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem 1rem;
-  font-size: 0.68rem;
+  font-size: var(--text-small);
 }
 .project-stats span,
 .repo-foot span {
@@ -239,7 +239,7 @@ button.chip:hover {
 .repo-foot {
   display: flex;
   gap: 1rem;
-  font-size: 0.68rem;
+  font-size: var(--text-small);
 }
 .repo-skeleton {
   border: 0;
@@ -300,7 +300,7 @@ button.chip:hover {
   letter-spacing: -0.03em;
 }
 .ptabs-hint {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
 }
 /* One tab per project: a line on top that turns accent when picked */
 .ptabs-list {
@@ -336,7 +336,7 @@ button.chip:hover {
   border-radius: 4px;
 }
 .ptab-num {
-  font-size: 0.66rem;
+  font-size: var(--text-small);
   color: var(--faint-ink);
 }
 .ptab[aria-selected="true"] .ptab-num {
@@ -349,7 +349,7 @@ button.chip:hover {
   letter-spacing: -0.02em;
 }
 .ptab-kind {
-  font-size: 0.62rem;
+  font-size: var(--text-small);
   color: inherit;
   opacity: 0.85;
 }
