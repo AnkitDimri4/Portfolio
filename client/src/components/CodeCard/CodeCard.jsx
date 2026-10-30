@@ -13,6 +13,7 @@ const SOURCE = `const engineer = {
   role: "Software Engineer",
   experience: "${EXPERIENCE_YEARS.years}+ years",
   based: "Dehradun, India (IST)",
+  remote: ["US", "Europe", "worldwide"],
   mobile: ["iOS", "Android"],
   web: ["Next.js", "Node.js"],
   cloud: ["GCP", "AWS", "Jenkins"],
