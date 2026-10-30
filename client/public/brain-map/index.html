@@ -338,6 +338,71 @@
     .map, .map > .card, .map > .core { transition: none; }
     .card, body { transition: none; }
   }
+  /* Depth, light and calm motion on GitHub's palette: the dots fade toward the edges, cards get a lit top
+     edge and a soft shadow (a halo in the accent when traced), the core a slow light round its edge. The
+     capture view (the profile's picture) keeps all of it still, and drops the edge fade. */
+  :root, :root[data-theme="light"] {
+    --ease: cubic-bezier(.2, .7, .2, 1); --hi: rgba(255, 255, 255, .95);
+    --lift: 0 1px 2px rgba(31, 35, 40, .06), 0 10px 28px -14px rgba(31, 35, 40, .22);
+    --halo: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  :root[data-theme="dark"] {
+    --hi: rgba(255, 255, 255, .045);
+    --lift: inset 0 1px 0 rgba(255, 255, 255, .04), 0 14px 36px -18px rgba(0, 0, 0, .8);
+    --halo: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 80% 70% at 50% 35%, transparent 55%, var(--bg) 100%);
+  }
+  header, .intro, .howto, .map, footer { position: relative; z-index: 1; }
+  :root[data-capture] body::after { display: none; }
+  .intro h1 {
+    font-size: clamp(30px, 4.2vw, 46px); letter-spacing: -.035em; line-height: 1.05;
+    background: linear-gradient(110deg, var(--title) 35%, var(--accent) 110%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .intro p { font-size: 15px; }
+  .card, .howto-box { background: linear-gradient(180deg, var(--hi), transparent 55%), var(--card); border-radius: 14px; box-shadow: var(--lift); }
+  .map > .card {
+    transition: translate .35s var(--ease), box-shadow .35s var(--ease), border-color .2s;
+    animation: bm-rise .7s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  .map > .card:hover, .map > .card.on {
+    translate: 0 -3px; transform: none; border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
+    box-shadow: var(--lift), 0 0 0 1px var(--halo), 0 20px 44px -20px var(--halo);
+  }
+  @keyframes bm-rise { from { opacity: 0; translate: 0 14px; } }
+  .card h2 svg {
+    width: 30px; height: 30px; padding: 6px; border-radius: 9px;
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .card li::before { width: 5px; height: 5px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
+  .core {
+    background: radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--accent) 14%, var(--bg)), var(--bg) 72%);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 7%, transparent), 0 0 0 24px color-mix(in srgb, var(--accent) 4%, transparent),
+      0 0 70px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .core::after {
+    content: ""; position: absolute; inset: -2px; border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0 72%, var(--accent) 88%, transparent);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    animation: bm-spin 7s linear infinite;
+  }
+  @keyframes bm-spin { to { rotate: 360deg; } }
+  #wires .base { stroke-linecap: round; }
+  #wires .flow { stroke-linecap: round; stroke-dasharray: 2 16; filter: drop-shadow(0 0 3px var(--accent)); }
+  #wires .on .base { filter: drop-shadow(0 0 4px var(--halo)); }
+  .map::before { width: 860px; height: 640px; animation: bm-breathe 6s ease-in-out infinite; }
+  @keyframes bm-breathe { 50% { opacity: .6; } }
+  #book { box-shadow: 0 6px 18px -8px var(--halo); transition: translate .2s var(--ease), box-shadow .2s; }
+  #book:hover { translate: 0 -1px; box-shadow: 0 10px 24px -8px var(--halo); }
+  @media (prefers-reduced-motion: reduce) {
+    .map > .card, .core::after, .map::before { animation: none; }
+    .map > .card:hover, .map > .card.on, #book:hover { translate: none; }
+  }
 </style>
 <script>
   // Pick the theme before first paint: saved choice, else the device setting.
