@@ -24,6 +24,7 @@
     "build": "node scripts/activity.js && vite build && vite build --ssr src/entry-server.jsx --outDir build-ssr && node scripts/prerender.js && node scripts/csp.js && node scripts/resume-build.js",
     "preview": "vite preview",
     "measure": "node scripts/measure.js",
+    "browser": "node scripts/browser.js",
     "test": "vitest run",
     "lint": "eslint . --max-warnings=0",
     "resume": "node scripts/resume.js",
