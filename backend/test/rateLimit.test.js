@@ -53,7 +53,29 @@ test("on Render, CF-Connecting-IP counts only on a request from Cloudflare, or f
   const { clientKey } = load({ RENDER: "true" });
   const header = { "cf-connecting-ip": "203.0.113.7" };
   for (const hop of ["172.68.0.1", "::ffff:172.68.0.1", "2606:4700::6810:84e5", "10.12.0.4"]) assert.equal(clientKey(fakeReq(hop, header)), "203.0.113.7", hop);
-  for (const elsewhere of ["198.51.100.20", "2001:db8::1", "::ffff:198.51.100.20", "not an address"]) {
+  for (const elsewhere of ["198.51.100.20", "::ffff:198.51.100.20", "not an address"]) {
     assert.equal(clientKey(fakeReq(elsewhere, header)), elsewhere, `${elsewhere}: the header could be made up`);
   }
+  assert.equal(clientKey(fakeReq("2001:db8::1", header)), "2001:db8:0:0::/64", "an IPv6 address from elsewhere: its own, by its /64");
+});
+
+test("an IPv6 visitor counts by their /64, so taking a new address from it for each request doesn't reset their limits", () => {
+  const { clientKey } = load({ RENDER: "true" });
+  const viaCf = (visitor) => clientKey(fakeReq("2606:4700::6810:84e5", { "cf-connecting-ip": visitor }));
+  const home = viaCf("2001:db8:1:2::1");
+  assert.equal(home, "2001:db8:1:2::/64");
+  for (const same of ["2001:db8:1:2::ffff", "2001:0db8:0001:0002:abcd:ef01:2345:6789", "2001:DB8:1:2:0:0:0:7", "2001:db8:1:2::1.2.3.4"]) assert.equal(viaCf(same), home, same);
+  for (const other of ["2001:db8:1:3::1", "2001:db8::1", "::1"]) assert.notEqual(viaCf(other), home, other);
+  assert.equal(viaCf("203.0.113.7"), "203.0.113.7", "IPv4 unchanged");
+  assert.equal(load().clientKey(fakeReq("2001:db8:1:2::99")), "2001:db8:1:2::/64", "off Render too, from req.ip");
+  assert.equal(load().clientKey(fakeReq("::ffff:203.0.113.7")), "::ffff:203.0.113.7", "IPv4 written as IPv6, unchanged");
+
+  // Through a limiter: a second request from another address in the same /64 is the same visitor's
+  const limiter = load({ RENDER: "true" })({ windowMs: 60_000, max: 1, message: "x" });
+  let passed = 0;
+  const res = fakeRes();
+  limiter(fakeReq("2606:4700::6810:84e5", { "cf-connecting-ip": "2001:db8:1:2::1" }), fakeRes(), () => passed++);
+  limiter(fakeReq("2606:4700::6810:84e5", { "cf-connecting-ip": "2001:db8:1:2::2" }), res, () => passed++);
+  assert.equal(passed, 1);
+  assert.equal(res.statusCode, 429);
 });

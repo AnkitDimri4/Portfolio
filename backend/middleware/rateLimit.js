@@ -25,7 +25,24 @@ const viaCloudflare = (ip = "") => {
   return version !== 0 && VIA_CLOUDFLARE.check(address, version === 6 ? "ipv6" : "ipv4");
 };
 
-const clientKey = (req) => (BEHIND_CLOUDFLARE && viaCloudflare(req.ip) && req.get("cf-connecting-ip")) || req.ip;
+// An IPv6 address counts by its /64, the smallest block a provider gives one home or phone: otherwise anyone
+// with one could take a new address from it for every request, 2^64 of them, and every limit per visitor
+// (here and in the database's counts, lib/limits.js) would start again each time. An IPv4 address, or one
+// written as IPv6 (::ffff:1.2.3.4), counts as itself.
+const visitorOf = (ip = "") => {
+  const address = String(ip).split("%")[0]; // without a zone (fe80::1%eth0)
+  if (isIP(address) !== 6 || isIP(address.replace(/^::ffff:/i, "")) === 4) return ip;
+  const [head, tail] = address.split("::");
+  const front = head ? head.split(":") : [];
+  const back = tail === undefined ? [] : tail ? tail.split(":") : [];
+  const groups = [...front, ...Array(Math.max(0, 8 - front.length - back.length)).fill("0"), ...back];
+  return `${groups
+    .slice(0, 4)
+    .map((g) => parseInt(g, 16).toString(16))
+    .join(":")}::/64`;
+};
+
+const clientKey = (req) => visitorOf((BEHIND_CLOUDFLARE && viaCloudflare(req.ip) && req.get("cf-connecting-ip")) || req.ip);
 
 /**
  * At most `max` requests per `windowMs`, per visitor, or per whatever `key(req)` returns (e.g. a
