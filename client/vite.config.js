@@ -87,9 +87,11 @@ const inlineCss = {
 // Real visits' timings (lib/vitals.js) fetch web-vitals the same way, once the page has painted, on the
 // home page, the builder and the sign-in page, each importing its own copy (`vitals.js?home`): each copy
 // gets a helper of its own too (web-vitals' file needs nothing loaded before it), or the three pages would
-// share Vite's as a file fetched before they draw (#262).
+// share Vite's as a file fetched before they draw (#262). The builder's cover letter (Builder.jsx's lazy
+// CoverLetter.jsx) gets its own as well: it needs no CSS or script the page hasn't loaded already.
 const PRELOAD_HELPER = "\0vite/preload-helper.js";
 const COACH_HELPER = "\0english-preload-helper.js";
+const BUILDER_HELPER = "\0builder-preload-helper.js";
 const VITALS_COPY = /\/src\/lib\/vitals\.js\?(\w+)$/;
 const VITALS_HELPER = "\0vitals-preload-helper-";
 const coachPreloadHelper = {
@@ -100,11 +102,28 @@ const coachPreloadHelper = {
     if (source !== PRELOAD_HELPER || !importer) return null;
     const from = importer.replaceAll("\\", "/");
     if (from.includes("/src/english/")) return COACH_HELPER;
+    if (from.endsWith("/src/builder/Builder.jsx")) return BUILDER_HELPER;
     const page = VITALS_COPY.exec(from)?.[1];
     return page ? `${VITALS_HELPER}${page}.js` : null;
   },
   load(id) {
-    return id === COACH_HELPER || id.startsWith(VITALS_HELPER) ? "export const __vitePreload = (load) => load();" : null;
+    return id === COACH_HELPER || id === BUILDER_HELPER || id.startsWith(VITALS_HELPER) ? "export const __vitePreload = (load) => load();" : null;
+  },
+};
+
+// The builder's own copies of what the home page shares with it (`PartFailed.jsx?builder`, around the cover
+// letter: Builder.jsx): what a copy imports from the site's files is the builder's own copy too
+// (`reload.js?builder`, `PartFailed.css?builder`), so none of it becomes a file both pages fetch before they
+// draw (#237's lesson). A copy's CSS comes in the builder's own, written into its page.
+const BUILDER_COPY = /\?builder$/;
+const builderCopies = {
+  name: "builder-copies",
+  apply: "build",
+  enforce: "pre",
+  async resolveId(source, importer, options) {
+    if (!importer || !BUILDER_COPY.test(importer) || !source.startsWith(".") || source.includes("?")) return null;
+    const resolved = await this.resolve(source, importer.replace(BUILDER_COPY, ""), { ...options, skipSelf: true });
+    return resolved && !resolved.external && !resolved.id.includes("node_modules") ? `${resolved.id}?builder` : null;
   },
 };
 
@@ -123,7 +142,7 @@ const latestActivity = {
 };
 
 export default defineConfig({
-  plugins: [react(), publicPages, vercelHeaders, inlineCss, coachPreloadHelper, latestActivity],
+  plugins: [react(), publicPages, vercelHeaders, inlineCss, coachPreloadHelper, builderCopies, latestActivity],
   // Keep the REACT_APP_* names already used in .env files and on Vercel.
   envPrefix: ["VITE_", "REACT_APP_"],
   server: {
