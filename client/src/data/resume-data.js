@@ -39,7 +39,7 @@ export default {
     "enabled": true,
     "minutes": 30
   },
-  "SUMMARY": "Software Engineer who builds and runs production systems end to end: iOS and Android apps (React Native), web (Next.js, React), APIs (Node.js, MongoDB), CI/CD (Jenkins) and cloud (GCP, AWS, Cloudflare). 3+ years across the MERN stack, React Native, Python and ML; mentor to 25,000+ learners.",
+  "SUMMARY": "Software Engineer who builds and runs production systems end to end: iOS and Android apps (React Native), web (Next.js, React), APIs (Node.js, MongoDB), LLM apps (LangGraph, Groq, llama.cpp), CI/CD (Jenkins) and cloud (GCP, AWS, Cloudflare). 3+ years across the MERN stack, React Native, Python and ML; mentor to 25,000+ learners.",
   "EXPERIENCE": [
     {
       "org": "FileSure India Pvt. Ltd.",
@@ -168,7 +168,7 @@ export default {
             ]
           ],
           "points": [
-            "Built FileSure's iOS and Android app from scratch in React Native (Expo), writing 92 of its first 100 commits: sign-in, payments, push; on Google Play from 13 Jul 2026.",
+            "Built FileSure's iOS and Android apps from scratch in React Native (Expo), writing 92 of the first 100 commits: sign-in, payments, push; on Google Play from 13 Jul 2026.",
             "Led the backend's move from AWS to GCP (Kubernetes) behind a gated Jenkins pipeline, and indexed 3.67M companies and 8.7M directors with 0 failures.",
             "Built the name → CIN/DIN lookup API with OpenAPI docs and sandbox tests; resolved support tickets end to end and wrote 15 docs and runbooks.",
             "Promoted to full-time Software Engineer after 3 months of a 6-month internship."
@@ -210,12 +210,19 @@ export default {
           "href": "https://portfolio-nine-orcin-33.vercel.app/brain-map/"
         }
       ],
-      "summary": "Pre-rendered React site and Node.js API, plus an AI English coach (llama.cpp or Groq).",
+      "summary": "Pre-rendered React site and Node.js API, which also host the AI English coach.",
       "points": [
         "Built a [resume builder](https://portfolio-nine-orcin-33.vercel.app/resume-builder/): 5 templates, ATS check, PDF by email and Google sign-in.",
         "Built a scheduler booking Google Meet calls into Google Calendar; 1,200+ CI tests."
       ],
       "tech": "React, Vite, Node.js, Express, PostgreSQL (Neon), Google Calendar & Gmail APIs, GitHub Actions"
+    },
+    {
+      "title": "AI English coach — llama.cpp + Groq",
+      "summary": "Corrects written and spoken English: Qwen3-4B on a laptop, or gpt-oss-120b online.",
+      "points": [
+        "61-sentence benchmark: Qwen3-4B 0.98 F0.5 at 4.2 s, gpt-oss-120b 0.94 at 0.9 s."
+      ]
     },
     {
       "title": "AI-first HCP CRM — LangGraph + FastAPI",
@@ -270,17 +277,6 @@ export default {
       "tech": "React, Redux, Material UI, Node.js, Express, MongoDB, Stripe, Cloudinary, Chart.js"
     },
     {
-      "title": "Real-time Todo — Expo × Convex",
-      "links": [
-        {
-          "label": "GitHub",
-          "href": "https://github.com/AnkitDimri4/TODO-RN"
-        }
-      ],
-      "summary": "Edits sync instantly across devices, with progress tracking and dark mode.",
-      "tech": "React Native (Expo Router), TypeScript, Convex"
-    },
-    {
       "title": "Neural network from scratch",
       "links": [
         {
@@ -328,6 +324,10 @@ export default {
     [
       "Programming",
       "Python, JavaScript, TypeScript, C++"
+    ],
+    [
+      "AI & LLMs",
+      "LangGraph, tool calling, JSON output, Groq, llama.cpp, Whisper, evals"
     ],
     [
       "Machine Learning",
