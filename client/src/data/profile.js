@@ -80,6 +80,19 @@ export const PROJECTS = [
     github: "https://github.com/AnkitDimri4/Portfolio",
   },
   {
+    // Its code is private and its page is for me alone, so no Source or Live: the demo video is on
+    // Google Drive, where it can't play in the page, so the box opens it instead (`demo`).
+    repo: "english-coach",
+    title: "AI English Coach",
+    short: "English Coach",
+    kind: "AI · LLMs · Speech",
+    summary:
+      "Corrects the English I write and speak, sentence by sentence. On my Mac it runs Qwen3-4B through llama.cpp, with a small draft model for speed and LanguageTool's grammar rules beside it, so nothing leaves the machine. Online it uses gpt-oss-120b and Whisper through Groq. On a 61-sentence benchmark Qwen3-4B scores 0.98 F0.5 at 4.2 s a sentence, and gpt-oss-120b 0.94 at 0.9 s.",
+    tech: ["Node.js", "llama.cpp", "Qwen3-4B", "Groq", "gpt-oss-120b", "Whisper", "LanguageTool", "React", "Metal", "CUDA"],
+    demo: { href: "https://drive.google.com/file/d/10MZJRrcRF5zHe988B0g7wJ0bffHyZ8-N/view", length: "2 min" },
+    links: [{ label: "Demo video", href: "https://drive.google.com/file/d/10MZJRrcRF5zHe988B0g7wJ0bffHyZ8-N/view" }],
+  },
+  {
     repo: "RN-WALLET",
     title: "RN-Wallet",
     short: "RN-Wallet",

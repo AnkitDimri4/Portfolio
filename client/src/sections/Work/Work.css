@@ -62,6 +62,56 @@
   border-color: var(--line-strong);
   transform: translateY(-4px);
 }
+/* A demo that opens elsewhere: a big play button on the box's glow, in the site's accent */
+.project-screen--demo {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  color: var(--text);
+  text-decoration: none;
+  text-align: center;
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.project-play {
+  display: grid;
+  place-items: center;
+  width: clamp(3.5rem, 9vw, 5rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  box-shadow: 0 0 0 0.6rem color-mix(in srgb, var(--accent) 18%, transparent);
+  transition: transform 0.3s var(--ease);
+}
+.project-play svg {
+  margin-left: 0.15em; /* the triangle's weight sits left of its box: nudge it to look centred */
+}
+.project-screen--demo:hover .project-play {
+  transform: scale(1.06);
+}
+.project-screen--demo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.project-play-text {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+.project-play-text .label {
+  color: var(--muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-play {
+    transition: none;
+  }
+  .project-screen--demo:hover .project-play {
+    transform: none;
+  }
+}
+
 .project-screen video,
 .project-screen img {
   width: 100%;

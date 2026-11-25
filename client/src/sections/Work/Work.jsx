@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FiArrowUpRight, FiGitCommit, FiGithub, FiStar } from "react-icons/fi";
+import { FiArrowUpRight, FiGitCommit, FiGithub, FiPlay, FiStar } from "react-icons/fi";
 import SectionHead from "../../components/SectionHead";
 import LiveSignal from "../../components/LiveSignal";
 import ContributionGraph from "../../components/ContributionGraph/ContributionGraph";
@@ -20,6 +20,22 @@ const ProjectMedia = ({ project }) => {
   const inView = useInView(ref);
   const [active, setActive] = useState(0);
   const videos = project.videos || [];
+
+  // A demo hosted elsewhere (Google Drive) can't play in the page: the box is a link that opens it.
+  if (project.demo) {
+    return (
+      <div className="project-media">
+        <a className="project-screen project-screen--demo" href={project.demo.href} target="_blank" rel="noreferrer">
+          <span className="project-play" aria-hidden="true">
+            <FiPlay />
+          </span>
+          <span className="project-play-text">
+            Watch the demo <span className="label">{project.demo.length} · opens Google Drive</span>
+          </span>
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="project-media" ref={ref}>

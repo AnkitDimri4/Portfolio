@@ -23,9 +23,19 @@ describe("the Work section", () => {
   it("keeps this site out of my own projects, which are numbered after it", () => {
     render(<Work />);
     const tabs = within(screen.getByRole("tablist", { name: "My own projects" })).getAllByRole("tab");
-    expect(tabs.map((t) => t.querySelector(".ptab-name").textContent)).toEqual(["RN-Wallet", "Todo", "QuickCart"]);
-    expect(tabs.map((t) => t.querySelector(".ptab-num").textContent)).toEqual(["03", "04", "05"]);
-    expect(screen.getByText("3 projects · pick one")).toBeInTheDocument();
+    expect(tabs.map((t) => t.querySelector(".ptab-name").textContent)).toEqual(["English Coach", "RN-Wallet", "Todo", "QuickCart"]);
+    expect(tabs.map((t) => t.querySelector(".ptab-num").textContent)).toEqual(["03", "04", "05", "06"]);
+    expect(screen.getByText("4 projects · pick one")).toBeInTheDocument();
+  });
+
+  it("opens the English coach's demo on Google Drive, as it can't play in the page", () => {
+    render(<Work />);
+    const panel = screen.getAllByRole("tabpanel", { hidden: true }).find((p) => p.id === "ppanel-english-coach");
+    const demo = within(panel).getByRole("link", { name: /Watch the demo/ });
+    expect(demo).toHaveAttribute("href", expect.stringMatching(/^https:\/\/drive\.google\.com\/file\/d\//));
+    expect(demo).toHaveAttribute("target", "_blank");
+    expect(demo).toHaveAttribute("rel", "noreferrer");
+    expect(panel.querySelector("video")).toBeNull();
   });
 
   describe("the demo videos", () => {
