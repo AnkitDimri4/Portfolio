@@ -219,6 +219,13 @@ export default {
     },
     {
       "title": "AI English coach — llama.cpp + Groq",
+      "links": [
+        {
+          "label": "Demo",
+          "icon": "video",
+          "href": "https://drive.google.com/file/d/10MZJRrcRF5zHe988B0g7wJ0bffHyZ8-N/view"
+        }
+      ],
       "summary": "Corrects written and spoken English: Qwen3-4B on a laptop, or gpt-oss-120b online.",
       "points": [
         "61-sentence benchmark: Qwen3-4B 0.98 F0.5 at 4.2 s, gpt-oss-120b 0.94 at 0.9 s."
