@@ -21,11 +21,14 @@ const ProjectMedia = ({ project }) => {
   const [active, setActive] = useState(0);
   const videos = project.videos || [];
 
-  // A demo hosted elsewhere (Google Drive) can't play in the page: the box is a link that opens it.
+  // A demo hosted elsewhere (Google Drive) can't play in the page: the box is a link that opens it, over
+  // a still of the project when there is one. The still says nothing the link doesn't, so its alt is empty.
   if (project.demo) {
+    const still = project.demo.poster;
     return (
       <div className="project-media">
-        <a className="project-screen project-screen--demo" href={project.demo.href} target="_blank" rel="noreferrer">
+        <a className={`project-screen project-screen--demo${still ? " has-poster" : ""}`} href={project.demo.href} target="_blank" rel="noreferrer">
+          {still && <img src={still} alt="" loading="lazy" decoding="async" />}
           <span className="project-play" aria-hidden="true">
             <FiPlay />
           </span>

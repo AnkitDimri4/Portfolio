@@ -36,6 +36,11 @@ describe("the Work section", () => {
     expect(demo).toHaveAttribute("target", "_blank");
     expect(demo).toHaveAttribute("rel", "noreferrer");
     expect(panel.querySelector("video")).toBeNull();
+    // A still of the coach's page behind the play button: only a picture, as the link already says what it does
+    const still = demo.querySelector("img");
+    expect(still.getAttribute("src")).toMatch(/assets\/img\/projects\/english-coach\.webp/);
+    expect(still).toHaveAttribute("alt", "");
+    expect(demo).toHaveAccessibleName("Watch the demo 2 min · opens Google Drive");
   });
 
   describe("the demo videos", () => {

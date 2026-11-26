@@ -103,11 +103,55 @@
 .project-play-text .label {
   color: var(--muted);
 }
+/* Over a still: the still fills the box under a light shade, so the picture shows, and the words sit on a
+   dark frosted card of their own, so they read on any picture. White, as on a video, in both themes. */
+.project-screen--demo.has-poster {
+  color: #fff;
+}
+.project-screen--demo > img {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s var(--ease);
+}
+.project-screen--demo.has-poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(35% 50% at 50% 50%, rgb(0 0 0 / 0.35), transparent),
+    rgb(0 0 0 / 0.25);
+  transition: opacity 0.3s var(--ease);
+}
+.project-screen--demo.has-poster .project-play,
+.project-screen--demo.has-poster .project-play-text {
+  position: relative;
+  z-index: 1;
+}
+.project-screen--demo.has-poster .project-play-text {
+  padding: 0.5rem 1rem 0.55rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 0.9rem;
+  background: rgb(12 12 14 / 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.project-screen--demo.has-poster .project-play-text .label {
+  color: rgb(255 255 255 / 0.75);
+}
+.project-screen--demo.has-poster:hover > img {
+  transform: scale(1.03);
+}
+.project-screen--demo.has-poster:hover::after {
+  opacity: 0.6;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .project-play {
+  .project-play,
+  .project-screen--demo > img {
     transition: none;
   }
-  .project-screen--demo:hover .project-play {
+  .project-screen--demo:hover .project-play,
+  .project-screen--demo.has-poster:hover > img {
     transform: none;
   }
 }
