@@ -1,0 +1,298 @@
+/* A video with the site's own controls (VideoPlayer.jsx). Dark in both themes, as a video is, so its
+   words are white; the accent marks what's played and the focus. */
+.vp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #000;
+  color: #fff;
+}
+.vp:focus {
+  outline: none;
+}
+.vp:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.vp video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+.vp.is-resting {
+  cursor: none;
+}
+
+/* Before it plays, and when it ends: its still under a light shade, and one big button */
+.vp-start {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  border: 0;
+  background:
+    radial-gradient(35% 50% at 50% 50%, rgb(0 0 0 / 0.35), transparent),
+    rgb(0 0 0 / 0.25);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.vp-start:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+.vp-start-icon {
+  display: grid;
+  place-items: center;
+  width: clamp(3.5rem, 9vw, 5rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  box-shadow: 0 0 0 0.6rem color-mix(in srgb, var(--accent) 18%, transparent);
+  transition: transform 0.3s var(--ease);
+}
+.vp-nudge {
+  margin-left: 0.15em; /* the triangle's weight sits left of its box: nudge it to look centred */
+}
+.vp-start:hover .vp-start-icon {
+  transform: scale(1.06);
+}
+.vp-start-text {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.5rem 1rem 0.55rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 0.9rem;
+  background: rgb(12 12 14 / 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-weight: 500;
+  text-align: center;
+}
+.vp-start-text .label {
+  color: rgb(255 255 255 / 0.75);
+}
+
+/* While it waits for more of the video */
+.vp-wait {
+  position: absolute;
+  inset: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: auto;
+  border: 3px solid rgb(255 255 255 / 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: vp-turn 0.8s linear infinite;
+  pointer-events: none;
+}
+@keyframes vp-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* The bar: the seek bar over a row of buttons, on a shade at the bottom; it fades while it plays untouched */
+.vp-bar {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  gap: 0.1rem;
+  padding: 1.25rem 0.6rem 0.4rem;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.4) 60%, transparent);
+  transition: opacity 0.25s var(--ease);
+}
+.vp.is-resting .vp-bar {
+  opacity: 0;
+  pointer-events: none;
+}
+.vp.is-resting .vp-bar:has(:focus-visible) {
+  opacity: 1;
+  pointer-events: auto;
+}
+.vp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+.vp-gap {
+  flex: 1;
+}
+.vp-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.45rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: 600 0.78rem/1 var(--font-mono);
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+.vp-btn svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+.vp-btn:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+.vp-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.vp-speed {
+  min-width: 3.1rem; /* "1.25×" and "1×" the same width, so the buttons beside it stay put */
+}
+.vp-time {
+  padding: 0 0.35rem;
+  color: rgb(255 255 255 / 0.85);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The seek bar: played in the accent, loaded in a lighter grey, the rest faint. Its knob shows on hover
+   or focus. Chrome's and Firefox's parts each in rules of their own: one browser drops a rule that names
+   the other's. */
+.vp-seek {
+  --track: 4px;
+  display: block;
+  width: 100%;
+  height: 1.1rem;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.vp-seek:hover,
+.vp-seek:focus-visible {
+  --track: 6px;
+}
+.vp-seek:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.vp-seek:disabled {
+  cursor: default;
+}
+.vp-seek::-webkit-slider-runnable-track {
+  height: var(--track);
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--played),
+    rgb(255 255 255 / 0.5) var(--played) var(--loaded),
+    rgb(255 255 255 / 0.22) var(--loaded)
+  );
+}
+.vp-seek::-moz-range-track {
+  height: var(--track);
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--played),
+    rgb(255 255 255 / 0.5) var(--played) var(--loaded),
+    rgb(255 255 255 / 0.22) var(--loaded)
+  );
+}
+.vp-seek::-webkit-slider-thumb {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-top: calc((var(--track) - 0.9rem) / 2);
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent);
+  transform: scale(0);
+  transition: transform 0.15s var(--ease);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.vp-seek::-moz-range-thumb {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent);
+  transform: scale(0);
+  transition: transform 0.15s var(--ease);
+}
+.vp-seek:hover::-webkit-slider-thumb,
+.vp-seek:active::-webkit-slider-thumb,
+.vp-seek:focus-visible::-webkit-slider-thumb {
+  transform: scale(1);
+}
+.vp-seek:hover::-moz-range-thumb,
+.vp-seek:active::-moz-range-thumb,
+.vp-seek:focus-visible::-moz-range-thumb {
+  transform: scale(1);
+}
+
+/* When it can't play: why, and the video on its own */
+.vp-failed {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgb(0 0 0 / 0.78);
+  text-align: center;
+}
+.vp-failed a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+}
+.vp-failed a:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.vp-failed a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-bar,
+  .vp-btn,
+  .vp-start-icon {
+    transition: none;
+  }
+  .vp-start:hover .vp-start-icon {
+    transform: none;
+  }
+  .vp-wait {
+    animation-duration: 2.4s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vp-seek::-webkit-slider-thumb {
+    transition: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vp-seek::-moz-range-thumb {
+    transition: none;
+  }
+}

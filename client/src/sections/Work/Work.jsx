@@ -4,6 +4,7 @@ import SectionHead from "../../components/SectionHead";
 import LiveSignal from "../../components/LiveSignal";
 import ContributionGraph from "../../components/ContributionGraph/ContributionGraph";
 import SiteActivity from "../../components/SiteActivity/SiteActivity";
+import VideoPlayer from "../../components/VideoPlayer/VideoPlayer";
 import { Reveal, useInView } from "../../lib/reveal";
 import { useApi } from "../../lib/api";
 import { webUrl } from "../../lib/webUrl";
@@ -14,7 +15,8 @@ import "./Work.css";
 const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 const prettyRepo = (name) => name.replace(/[-_]+/g, " ");
 
-/** Video is only mounted once the card nears the viewport, so demos cost nothing on first load. */
+/** Video is only mounted once the card nears the viewport, so demos cost nothing on first load. It plays
+ * in the site's own player (components/VideoPlayer): its still and length first, then its controls. */
 const ProjectMedia = ({ project }) => {
   const ref = useRef(null);
   const inView = useInView(ref);
@@ -46,14 +48,12 @@ const ProjectMedia = ({ project }) => {
         {project.image ? (
           <img src={project.image} alt={`${project.title} screenshot`} loading="lazy" decoding="async" />
         ) : inView ? (
-          <video
+          <VideoPlayer
             key={videos[active].src}
             src={videos[active].src}
             poster={videos[active].poster}
-            controls
-            playsInline
-            preload="metadata"
-            aria-label={`${project.title} demo: ${videos[active].label}`}
+            label={`${project.title} demo: ${videos[active].label}`}
+            title={videos.length > 1 ? `Watch: ${videos[active].label}` : "Watch the demo"}
           />
         ) : null}
       </div>
