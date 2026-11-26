@@ -41,6 +41,19 @@ describe("the Work section", () => {
     expect(JSON.stringify(coach)).not.toContain("drive.google.com"); // the site plays its own copy
   });
 
+  it("shows how much work went into the English coach: its commits and pull requests, counted from git", () => {
+    const { commits, pullRequests, updated } = PROJECTS.find((p) => p.repo === "english-coach").counts;
+    expect(Number.isInteger(commits) && commits > 0).toBe(true);
+    expect(Number.isInteger(pullRequests) && pullRequests > 0).toBe(true);
+    expect(updated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    render(<Work />);
+    const panel = screen.getAllByRole("tabpanel", { hidden: true }).find((p) => p.id === "ppanel-english-coach");
+    const stats = panel.querySelector(".project-stats");
+    expect(stats).toHaveTextContent(`${commits} commits`);
+    expect(stats).toHaveTextContent(`${pullRequests} pull requests`);
+    expect(stats).toHaveTextContent(/Updated [A-Z][a-z]{2} \d{4}/);
+  });
+
   describe("the demo videos", () => {
     const Observer = globalThis.IntersectionObserver;
     afterEach(() => {

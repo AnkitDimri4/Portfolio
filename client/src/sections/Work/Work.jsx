@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FiArrowUpRight, FiGitCommit, FiGithub, FiPlay, FiStar } from "react-icons/fi";
+import { FiArrowUpRight, FiGitCommit, FiGitPullRequest, FiGithub, FiPlay, FiStar } from "react-icons/fi";
 import SectionHead from "../../components/SectionHead";
 import LiveSignal from "../../components/LiveSignal";
 import ContributionGraph from "../../components/ContributionGraph/ContributionGraph";
@@ -145,6 +145,18 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
                 <FiStar aria-hidden="true" /> {repo.stars}
               </span>
               <span>Updated {monthYear(repo.pushedAt)}</span>
+            </p>
+          )}
+          {/* A project with no repository of its own (the English coach): its counts, from git */}
+          {!repo && project.counts && (
+            <p className="project-stats label">
+              <span>
+                <FiGitCommit aria-hidden="true" /> {project.counts.commits} commits
+              </span>
+              <span>
+                <FiGitPullRequest aria-hidden="true" /> {project.counts.pullRequests} pull requests
+              </span>
+              <span>Updated {monthYear(project.counts.updated)}</span>
             </p>
           )}
         </div>

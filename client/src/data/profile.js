@@ -4,6 +4,7 @@ import { FiAward, FiCompass, FiCpu, FiLayers, FiMail, FiUser } from "react-icons
 
 import { EXPERIENCE, duration, monthsAt, period, showType, tenure } from "./resume";
 import COACH_DEMO from "../assets/video/english-coach-demo.mp4";
+import COACH_COUNTS from "./coachHistory.json";
 
 export const PROFILE = {
   name: "Ankit Dimri",
@@ -85,6 +86,8 @@ export const PROJECTS = [
     // the site (assets/video: 5.5 MB, H.264, its index first so it starts at once), and plays in the card
     // like the others, over a still of the coach's page (taken against the mock API: made-up numbers).
     // "Demo video" under the words plays it there too. The resume's PDF still links the Drive copy.
+    // `counts`: its commits and merged pull requests, counted from git by scripts/coach-history.js (GitHub
+    // has no numbers of its own for it: it's in this repository, among the site's).
     repo: "english-coach",
     title: "AI English Coach",
     short: "English Coach",
@@ -94,6 +97,7 @@ export const PROJECTS = [
     tech: ["Node.js", "llama.cpp", "Qwen3-4B", "Groq", "gpt-oss-120b", "Whisper", "LanguageTool", "React", "Metal", "CUDA"],
     videos: [{ src: COACH_DEMO, label: "Demo", poster: poster("english-coach") }],
     links: [{ label: "Demo video", play: true }],
+    counts: COACH_COUNTS,
   },
   {
     repo: "RN-WALLET",
