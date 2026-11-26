@@ -3,6 +3,7 @@ import { SiGithub, SiLeetcode, SiLinkedin } from "../components/brandIcons";
 import { FiAward, FiCompass, FiCpu, FiLayers, FiMail, FiUser } from "react-icons/fi";
 
 import { EXPERIENCE, duration, monthsAt, period, showType, tenure } from "./resume";
+import COACH_DEMO from "../assets/video/english-coach-demo.mp4";
 
 export const PROFILE = {
   name: "Ankit Dimri",
@@ -80,9 +81,10 @@ export const PROJECTS = [
     github: "https://github.com/AnkitDimri4/Portfolio",
   },
   {
-    // Its code is private and its page is for me alone, so no Source or Live: the demo video is on
-    // Google Drive, where it can't play in the page, so the box opens it instead (`demo`), with a still
-    // of the coach's page behind its play button (taken against the mock API: made-up numbers).
+    // Its code is private and its page is for me alone, so no Source or Live. Its narrated demo is kept with
+    // the site (assets/video: 5.5 MB, H.264, its index first so it starts at once), and plays in the card
+    // like the others, over a still of the coach's page (taken against the mock API: made-up numbers).
+    // "Demo video" under the words plays it there too. The resume's PDF still links the Drive copy.
     repo: "english-coach",
     title: "AI English Coach",
     short: "English Coach",
@@ -90,8 +92,8 @@ export const PROJECTS = [
     summary:
       "A private coach for my written and spoken English. Type corrects each sentence and says why, Talk checks every line of a spoken conversation, and My progress drills the mistakes I make most. It runs free on my Mac on open models (Qwen3-4B through llama.cpp, checked by LanguageTool), or online on gpt-oss-120b and Whisper through Groq. On a 61-sentence test, Qwen3-4B scores 0.98 F0.5 at 4.2 s a sentence, and gpt-oss-120b 0.94 at 0.9 s.",
     tech: ["Node.js", "llama.cpp", "Qwen3-4B", "Groq", "gpt-oss-120b", "Whisper", "LanguageTool", "React", "Metal", "CUDA"],
-    demo: { href: "https://drive.google.com/file/d/10MZJRrcRF5zHe988B0g7wJ0bffHyZ8-N/view", length: "2 min", poster: poster("english-coach") },
-    links: [{ label: "Demo video", href: "https://drive.google.com/file/d/10MZJRrcRF5zHe988B0g7wJ0bffHyZ8-N/view" }],
+    videos: [{ src: COACH_DEMO, label: "Demo", poster: poster("english-coach") }],
+    links: [{ label: "Demo video", play: true }],
   },
   {
     repo: "RN-WALLET",

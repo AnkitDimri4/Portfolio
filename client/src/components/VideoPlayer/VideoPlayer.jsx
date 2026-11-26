@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FiArrowUpRight, FiMaximize, FiMinimize, FiPause, FiPlay, FiRotateCcw, FiVolume2, FiVolumeX } from "react-icons/fi";
 import "./VideoPlayer.css";
 
@@ -27,9 +27,10 @@ let playingNow = null;
  * Then a bar: play and pause, the time, a seek bar that shows what's loaded, the speed, the sound and
  * full screen, fading while it plays untouched. Once it has the focus, Space or K plays and pauses, the
  * arrows move 5 seconds, M mutes and F goes full screen. It starts loading when a pointer comes over it,
- * so a press plays at once, and it pauses when it leaves the window or another video starts.
+ * so a press plays at once, and it pauses when it leaves the window or another video starts. A button
+ * outside it can start it too, through its ref: `start()` brings it into view and plays.
  */
-const VideoPlayer = ({ src, poster, label, title = "Watch the demo" }) => {
+const VideoPlayer = forwardRef(({ src, poster, label, title = "Watch the demo" }, ref) => {
   const box = useRef(null);
   const video = useRef(null);
   const timer = useRef({ id: 0 }); // the controls' fade while it plays
@@ -100,6 +101,16 @@ const VideoPlayer = ({ src, poster, label, title = "Watch the demo" }) => {
     if (playingNow && playingNow !== v) playingNow.pause();
     v.play()?.catch?.(() => {}); // paused before it started, or the browser said no: nothing to show
   };
+
+  // For a button outside it ("Demo video" under a project's words): into view, then play
+  useImperativeHandle(ref, () => ({
+    start() {
+      const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      box.current?.scrollIntoView?.({ behavior: still ? "auto" : "smooth", block: "nearest" });
+      play();
+      box.current?.focus({ preventScroll: true });
+    },
+  }));
 
   const toggle = () => {
     if (playing) video.current?.pause();
@@ -305,6 +316,8 @@ const VideoPlayer = ({ src, poster, label, title = "Watch the demo" }) => {
       )}
     </div>
   );
-};
+});
+
+VideoPlayer.displayName = "VideoPlayer";
 
 export default VideoPlayer;

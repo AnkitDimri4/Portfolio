@@ -28,19 +28,17 @@ describe("the Work section", () => {
     expect(screen.getByText("4 projects · pick one")).toBeInTheDocument();
   });
 
-  it("opens the English coach's demo on Google Drive, as it can't play in the page", () => {
-    render(<Work />);
-    const panel = screen.getAllByRole("tabpanel", { hidden: true }).find((p) => p.id === "ppanel-english-coach");
-    const demo = within(panel).getByRole("link", { name: /Watch the demo/ });
-    expect(demo).toHaveAttribute("href", expect.stringMatching(/^https:\/\/drive\.google\.com\/file\/d\//));
-    expect(demo).toHaveAttribute("target", "_blank");
-    expect(demo).toHaveAttribute("rel", "noreferrer");
-    expect(panel.querySelector("video")).toBeNull();
-    // A still of the coach's page behind the play button: only a picture, as the link already says what it does
-    const still = demo.querySelector("img");
-    expect(still.getAttribute("src")).toMatch(/assets\/img\/projects\/english-coach\.webp/);
-    expect(still).toHaveAttribute("alt", "");
-    expect(demo).toHaveAccessibleName("Watch the demo 2 min · opens Google Drive");
+  it("plays the English coach's narrated demo in its card, from the site itself, over a still of its page", () => {
+    const coach = PROJECTS.find((p) => p.repo === "english-coach");
+    expect(coach.videos).toEqual([
+      {
+        src: expect.stringMatching(/assets\/video\/english-coach-demo\.mp4$/),
+        label: "Demo",
+        poster: expect.stringMatching(/assets\/img\/projects\/english-coach\.webp$/),
+      },
+    ]);
+    expect(coach.links).toEqual([{ label: "Demo video", play: true }]);
+    expect(JSON.stringify(coach)).not.toContain("drive.google.com"); // the site plays its own copy
   });
 
   describe("the demo videos", () => {
@@ -72,12 +70,38 @@ describe("the Work section", () => {
       };
       vi.resetModules();
       const { default: FreshWork } = await import("./Work");
-      const { container } = render(<FreshWork />);
+      render(<FreshWork />);
       const wallet = PROJECTS.find((p) => p.title === "RN-Wallet");
-      const media = container.querySelector("video").closest(".project-media");
+      const media = rowOf("RN-Wallet").querySelector(".project-media");
       expect(media.querySelector("video")).toHaveAttribute("poster", wallet.videos[0].poster);
       fireEvent.click(within(media).getByRole("tab", { name: /Transactions/ }));
       expect(media.querySelector("video")).toHaveAttribute("poster", wallet.videos[1].poster);
+    });
+
+    it("plays the English coach's demo from its Demo video button too", async () => {
+      globalThis.IntersectionObserver = class {
+        constructor(callback) {
+          this.callback = callback;
+        }
+        observe(target) {
+          this.callback([{ isIntersecting: true, target }]);
+        }
+        unobserve() {}
+        disconnect() {}
+      };
+      vi.resetModules();
+      const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function play() {
+        this.dispatchEvent(new Event("play"));
+        return Promise.resolve();
+      });
+      const { default: FreshWork } = await import("./Work");
+      const { container } = render(<FreshWork />);
+      const panel = container.querySelector("#ppanel-english-coach");
+      expect(panel.querySelector("video").getAttribute("src")).toMatch(/english-coach-demo\.mp4$/);
+      fireEvent.click(within(panel).getByRole("button", { name: "Demo video" }));
+      expect(play).toHaveBeenCalledTimes(1);
+      expect(within(panel).getByRole("button", { name: "Pause" })).toBeInTheDocument();
+      play.mockRestore();
     });
   });
 });

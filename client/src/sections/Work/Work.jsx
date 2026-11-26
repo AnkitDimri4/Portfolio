@@ -16,31 +16,13 @@ const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "s
 const prettyRepo = (name) => name.replace(/[-_]+/g, " ");
 
 /** Video is only mounted once the card nears the viewport, so demos cost nothing on first load. It plays
- * in the site's own player (components/VideoPlayer): its still and length first, then its controls. */
-const ProjectMedia = ({ project }) => {
+ * in the site's own player (components/VideoPlayer): its still and length first, then its controls.
+ * `player` is the row's handle on it, for its "Demo video" button. */
+const ProjectMedia = ({ project, player }) => {
   const ref = useRef(null);
   const inView = useInView(ref);
   const [active, setActive] = useState(0);
   const videos = project.videos || [];
-
-  // A demo hosted elsewhere (Google Drive) can't play in the page: the box is a link that opens it, over
-  // a still of the project when there is one. The still says nothing the link doesn't, so its alt is empty.
-  if (project.demo) {
-    const still = project.demo.poster;
-    return (
-      <div className="project-media">
-        <a className={`project-screen project-screen--demo${still ? " has-poster" : ""}`} href={project.demo.href} target="_blank" rel="noreferrer">
-          {still && <img src={still} alt="" loading="lazy" decoding="async" />}
-          <span className="project-play" aria-hidden="true">
-            <FiPlay />
-          </span>
-          <span className="project-play-text">
-            Watch the demo <span className="label">{project.demo.length} · opens Google Drive</span>
-          </span>
-        </a>
-      </div>
-    );
-  }
 
   return (
     <div className="project-media" ref={ref}>
@@ -49,6 +31,7 @@ const ProjectMedia = ({ project }) => {
           <img src={project.image} alt={`${project.title} screenshot`} loading="lazy" decoding="async" />
         ) : inView ? (
           <VideoPlayer
+            ref={player}
             key={videos[active].src}
             src={videos[active].src}
             poster={videos[active].poster}
@@ -72,6 +55,13 @@ const ProjectMedia = ({ project }) => {
 
 // Rows alternate their media left and right, unless told not to (`flip`).
 const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
+  const player = useRef(null);
+  // A link marked `play` ("Demo video") plays the video in this card, brought into view first: on a phone
+  // it's above the words. Not loaded yet (the card hasn't neared the window): brought into view, to press.
+  const playDemo = (e) => {
+    if (player.current) player.current.start();
+    else e.currentTarget.closest("article")?.querySelector(".project-media")?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+  };
   // The first seven chips show; "+N" opens the rest, and "Show less" folds them back.
   const [allTech, setAllTech] = useState(false);
   const extra = project.tech.length - 7;
@@ -92,7 +82,7 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
             </div>
           </div>
         ) : (
-          <ProjectMedia project={project} />
+          <ProjectMedia project={project} player={player} />
         )}
       </Reveal>
       <Reveal className="project-info" delay={1}>
@@ -123,11 +113,17 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
           )}
         </ul>
         <div className="project-foot">
-          {project.links?.map((l) => (
-            <a key={l.href} className="btn btn-sm" href={l.href} target="_blank" rel="noreferrer">
-              {l.label} <FiArrowUpRight size={15} />
-            </a>
-          ))}
+          {project.links?.map((l) =>
+            l.play ? (
+              <button key={l.label} type="button" className="btn btn-sm" onClick={playDemo}>
+                <FiPlay size={15} aria-hidden="true" /> {l.label}
+              </button>
+            ) : (
+              <a key={l.href} className="btn btn-sm" href={l.href} target="_blank" rel="noreferrer">
+                {l.label} <FiArrowUpRight size={15} />
+              </a>
+            )
+          )}
           {project.github && (
             <a className="btn btn-sm" href={project.github} target="_blank" rel="noreferrer">
               <FiGithub size={15} /> Source <FiArrowUpRight size={15} />
