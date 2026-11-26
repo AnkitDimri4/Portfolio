@@ -32,7 +32,7 @@
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   width: 100%;
   padding: 1rem;
   border: 0;
@@ -47,16 +47,17 @@
   outline: 2px solid var(--accent);
   outline-offset: -4px;
 }
+/* About a twelfth of the box's width: 56 px on a laptop, 44 px on a phone (still a thumb's size) */
 .vp-start-icon {
   display: grid;
   place-items: center;
-  width: clamp(3.5rem, 9vw, 5rem);
+  width: clamp(2.75rem, 5vw, 3.5rem);
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--accent);
   color: #000;
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  box-shadow: 0 0 0 0.6rem color-mix(in srgb, var(--accent) 18%, transparent);
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  box-shadow: 0 0 0 0.4rem color-mix(in srgb, var(--accent) 18%, transparent);
   transition: transform 0.3s var(--ease);
 }
 .vp-nudge {
@@ -65,20 +66,23 @@
 .vp-start:hover .vp-start-icon {
   transform: scale(1.06);
 }
+/* Its words in proportion with the button: a little smaller on a phone */
 .vp-start-text {
   display: grid;
-  gap: 0.2rem;
-  padding: 0.5rem 1rem 0.55rem;
+  gap: 0.15rem;
+  padding: 0.4rem 0.85rem 0.45rem;
   border: 1px solid rgb(255 255 255 / 0.14);
-  border-radius: 0.9rem;
+  border-radius: 0.75rem;
   background: rgb(12 12 14 / 0.72);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+  font-size: clamp(0.82rem, 1.5vw, 0.95rem);
   font-weight: 500;
   text-align: center;
 }
 .vp-start-text .label {
   color: rgb(255 255 255 / 0.75);
+  font-size: max(0.68rem, 0.8em);
 }
 
 /* While it waits for more of the video */
