@@ -169,9 +169,9 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1, shown = true
 // project below in the same row style as the work above. Phones and tablets keep the plain list.
 // Every panel stays laid out in one place, the unpicked ones unseen, so the panel is as tall as the
 // tallest project and nothing below moves when another is picked.
-// Over a tab (or on it from the keyboard), a glass circle sits behind its words. Picked, one motion:
-//   - the circle, tinted glass, grows from the tab over the tabs and the panel, the project going
-//     frosting over and fading under it;
+// Over a tab (or on it from the keyboard), a soft card sits behind its words. Picked, one motion:
+//   - a circle of tinted glass grows out of the tab's card over the tabs and the panel, the project
+//     going frosting over and fading under it;
 //   - the project's name lifts off the tab and flies to where its title goes, growing to its size;
 //   - the new project rises in over the glass before the circle has finished, and the glass melts away.
 // The flying name stays in its title's place until the end, then the title takes over in the same frame,
@@ -226,7 +226,7 @@ const ProjectTabs = ({ projects, offset, byName }) => {
     const x = w.left + w.width / 2 - box.left;
     const y = w.top + w.height / 2 - box.top - top;
     const far = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - top - y));
-    const r = parseFloat(getComputedStyle(words, "::before").width) / 2 || 72; // the glass circle's own size
+    const r = parseFloat(getComputedStyle(words, "::before").height) / 2 || w.height / 2 || 48; // starts as tall as the card
     // The flying words: the tab's name, drawn at the title's size and shrunk onto the tab, turning into
     // the title on the way
     const from = name.getBoundingClientRect();
@@ -313,7 +313,7 @@ const ProjectTabs = ({ projects, offset, byName }) => {
   };
 
   return (
-    <div className={`ptabs${wipe ? " is-changing" : ""}`} ref={self} style={wipe ? { "--rise-at": `${RISE_AT}ms` } : undefined}>
+    <div className="ptabs" ref={self} style={wipe ? { "--rise-at": `${RISE_AT}ms` } : undefined}>
       <div className="ptabs-head">
         <h3 className="ptabs-title">My own projects</h3>
         <p className="ptabs-hint label">{projects.length} projects · pick one</p>
