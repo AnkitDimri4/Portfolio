@@ -51,6 +51,16 @@
   --accent-2-ink: #3ee6c6;
   --on-accent: #0a0a0c;
   --glow: rgba(255, 107, 53, 0.16);
+  /* The buttons: the main action an orange gradient with a soft glow (.btn-primary); the quieter ones the
+     glass look (.btn-glass), a dark orange tint with an orange edge and words. The tint is solid, the page's
+     black with 14% of the orange, so the words stay clear over whatever passes behind (the builder's white
+     page under its corner button) */
+  --btn-fill: linear-gradient(135deg, #ff9152 0%, #ff6b35 50%, #f2541b 100%);
+  --btn-glow: 0 10px 28px -12px rgba(255, 107, 53, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --glass-fill: color-mix(in srgb, var(--accent) 14%, var(--bg));
+  --glass-line: rgba(255, 107, 53, 0.5);
+  --glass-ink: var(--accent-ink);
+  --glass-glow: 0 0 #0000;
   --field-ink: 242, 239, 232;
   --field-hot: 255, 107, 53;
   --grain-opacity: 0.06;
@@ -74,6 +84,13 @@
   --accent-2-ink: #0a6a5c;
   --on-accent: #ffffff;
   --glow: rgba(207, 74, 18, 0.12);
+  --btn-fill: linear-gradient(135deg, #cf4a12 0%, #b8400e 55%, #a3360a 100%);
+  --btn-glow: 0 10px 24px -12px rgba(207, 74, 18, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  /* No glass by day: those buttons wear the gradient too */
+  --glass-fill: var(--btn-fill);
+  --glass-line: transparent;
+  --glass-ink: var(--on-accent);
+  --glass-glow: var(--btn-glow);
   --field-ink: 20, 19, 16;
   --field-hot: 207, 74, 18;
   --grain-opacity: 0.05;
@@ -319,11 +336,23 @@ button {
   transform: translate(2px, -2px);
 }
 
+/* A view's main action (Hire me, Send, Book, Sign in, Save): the orange gradient, with a soft glow */
 .btn-primary {
-  --btn-bg: var(--accent);
+  --btn-bg: var(--btn-fill);
   --btn-fg: var(--on-accent);
-  border-color: var(--accent);
+  border-color: transparent;
+  background-origin: border-box; /* the gradient runs under the clear border too, with no seam at its edge */
+  box-shadow: var(--btn-glow);
   font-weight: 600;
+}
+/* With .btn-primary, the quieter ones: buttons in a header or a corner, in a notice or an error, and those
+   repeated down a list. In dark, the glass look, so they don't compete with the main action; by day, the
+   same gradient */
+.btn-glass {
+  --btn-bg: var(--glass-fill);
+  --btn-fg: var(--glass-ink);
+  border-color: var(--glass-line);
+  box-shadow: var(--glass-glow);
 }
 
 .btn-sm {

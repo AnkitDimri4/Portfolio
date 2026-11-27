@@ -29,7 +29,7 @@ export default class PartFailed extends Component {
       <div className={`part-failed${floating ? " is-floating" : ""}`}>
         <p role="alert">{what} The connection may have dropped, or the site has changed since this page opened.</p>
         <div className="part-failed-actions">
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => reloadAt(hash)} autoFocus={floating}>
+          <button type="button" className="btn btn-primary btn-glass btn-sm" onClick={() => reloadAt(hash)} autoFocus={floating}>
             Load the page again
           </button>
           {onClose && (

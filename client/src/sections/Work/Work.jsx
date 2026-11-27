@@ -136,7 +136,7 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1, shown = true
           )}
           {/* The repo's own site, unless a link above already goes there (the CRM's "Live demo") */}
           {webUrl(repo?.homepage) && !project.links?.some((l) => sameUrl(l.href, repo.homepage)) && (
-            <a className="btn btn-sm btn-primary" href={webUrl(repo.homepage)} target="_blank" rel="noreferrer">
+            <a className="btn btn-sm btn-primary btn-glass" href={webUrl(repo.homepage)} target="_blank" rel="noreferrer">
               Live <FiArrowUpRight size={15} />
             </a>
           )}

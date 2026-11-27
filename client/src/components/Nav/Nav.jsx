@@ -109,7 +109,7 @@ const Nav = () => {
               <LuBrainCircuit size={18} />
             </a>
             <ThemeToggle />
-            <a className="btn btn-primary btn-sm nav-cta" href="#contact">
+            <a className="btn btn-primary btn-glass btn-sm nav-cta" href="#contact">
               Let's talk <FiArrowUpRight size={16} />
             </a>
             <button className="menu-btn" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen((o) => !o)}>
