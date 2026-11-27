@@ -36,8 +36,15 @@ describe("the About section's live stats", () => {
     expect(stats.querySelector(".skeleton")).toBeNull();
     expect(stats).toHaveTextContent("2,640"); // 1,341 personal + 1,299 at FileSure
     expect(stats).toHaveTextContent("692");
-    expect(stats).toHaveTextContent("92.7%");
-    expect(stats).toHaveTextContent("#102,432");
+    // What I did with it, not LeetCode's acceptance rate or rank (the API still sends them)
+    expect(stats).toHaveTextContent("3.8MCompanies' search rebuilt");
+    expect(stats).toHaveTextContent("80+App updates shipped");
+    expect(stats).not.toHaveTextContent("92.7%");
+    expect(stats).not.toHaveTextContent("#102,432");
+    // The years are building and teaching, and the mentoring says it was part-time
+    expect(stats).toHaveTextContent("Years building & teaching");
+    expect(stats).toHaveTextContent("Tutedude (part-time)");
+    expect(stats).not.toHaveTextContent("Years of experience");
   });
 
   it("are pre-rendered, and hydrate without a mismatch; the clock's part comes once the page runs", async () => {
@@ -71,6 +78,6 @@ describe("the About section's live stats", () => {
   it("without a snapshot, wait for the API as before", async () => {
     const About = await fresh({});
     render(<About />);
-    expect(document.querySelectorAll(".stats .skeleton")).toHaveLength(4);
+    expect(document.querySelectorAll(".stats .skeleton")).toHaveLength(2); // GitHub's and LeetCode's
   });
 });

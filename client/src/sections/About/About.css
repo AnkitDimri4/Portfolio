@@ -289,3 +289,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Phones: GitHub, LinkedIn and LeetCode are the hero's icons and in Contact's list, with their handles,
+   so their cards here go (about 280 px) */
+@media (max-width: 640px) {
+  .about-links {
+    display: none;
+  }
+}
+
+/* A stat's one line of where it comes from (About.jsx), in the legend's small letters */
+.stat-note {
+  margin-top: 0.75rem;
+  font-size: var(--text-small);
+  letter-spacing: 0.08em;
+}

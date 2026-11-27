@@ -220,6 +220,28 @@
   margin-top: 2rem;
   animation: hero-fade 1s var(--ease-out) 0.55s backwards;
 }
+/* The resume: a quiet link beside the one button, so Hire me stands alone */
+.hero-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 0.5rem;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--text) 30%, transparent);
+  text-underline-offset: 0.3em;
+  transition: color 0.2s var(--ease), text-decoration-color 0.2s var(--ease);
+}
+.hero-resume:hover {
+  color: var(--accent-ink);
+  text-decoration-color: currentColor;
+}
+.hero-resume:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .hero-socials {
   display: inline-flex;
   gap: 0.5rem;
@@ -347,6 +369,10 @@
 }
 
 @media (max-width: 640px) {
+  /* Phones: the code card is decoration, nearly a screen of it; the words and the button come first */
+  .hero-aside {
+    display: none;
+  }
   .hero-name {
     font-size: clamp(2.8rem, 16vw, 4.5rem);
   }

@@ -2,7 +2,7 @@
 import { SiGithub, SiLeetcode, SiLinkedin } from "../components/brandIcons";
 import { FiAward, FiCompass, FiCpu, FiLayers, FiMail, FiUser } from "react-icons/fi";
 
-import { EXPERIENCE, duration, monthsAt, period, showType, tenure } from "./resume";
+import { EXPERIENCE, PROJECTS as RESUME_PROJECTS, duration, monthsAt, period, showType, tenure } from "./resume";
 import COACH_DEMO from "../assets/video/english-coach-demo.mp4";
 import COACH_COUNTS from "./coachHistory.json";
 
@@ -79,6 +79,8 @@ export const PROJECTS = [
     summary:
       "The site you're on. Pre-rendered React with a hand-built design system, on a Node/Express API with Neon PostgreSQL. It has a one-page resume builder (five templates, an ATS check, the PDF by email, and Google sign-in with drafts on any device), cached live GitHub & LeetCode stats, and Google Meet calls booked straight into Google Calendar.",
     tech: ["React", "Vite", "Node.js", "Express", "PostgreSQL", "Google Calendar API", "Gmail API", "Puppeteer", "Resend", "Canvas"],
+    // The resume builder, by its words above: the hero keeps one button, so it's tried from here
+    links: RESUME_BUILDER.enabled ? [{ label: "Resume builder", href: RESUME_BUILDER.href }] : [],
     github: "https://github.com/AnkitDimri4/Portfolio",
   },
   {
@@ -98,6 +100,22 @@ export const PROJECTS = [
     videos: [{ src: COACH_DEMO, label: "Demo", poster: poster("english-coach") }],
     links: [{ label: "Demo video", play: true }],
     counts: COACH_COUNTS,
+  },
+  {
+    // The resume's AI agent, in its own words there (resume-data.js). No demo video or screenshot of it
+    // here yet: its picture is a diagram of how it works (assets/img/projects/hcp-crm.webp, drawn in the
+    // site's look and marked "Diagram"), until a real one replaces it.
+    repo: "ai-first-hcp-interaction-crm",
+    title: "AI-first HCP CRM",
+    short: "HCP CRM",
+    kind: "AI agent · LangGraph",
+    summary:
+      "Field reps log doctor visits in plain English, and an AI agent fills in the CRM. A LangGraph agent on Groq calls five tools (log, edit, follow-up, materials, history) and pulls eight fields into PostgreSQL through SQLAlchemy; an edit changes only the fields it names. FastAPI behind a React and Redux Toolkit app.",
+    tech: ["LangGraph", "FastAPI", "Groq", "PostgreSQL", "SQLAlchemy", "React", "Redux Toolkit"],
+    image: poster("hcp-crm"),
+    imageAlt: "Diagram of the AI-first HCP CRM: a rep's one-line note goes to a LangGraph agent with five tools, which fills eight fields of the CRM record",
+    links: [{ label: "Live demo", href: "https://ai-first-hcp-interaction-crm.vercel.app/" }],
+    github: "https://github.com/AnkitDimri4/ai-first-hcp-interaction-crm",
   },
   {
     repo: "RN-WALLET",
@@ -138,8 +156,26 @@ export const PROJECTS = [
   },
 ];
 
-// Repos shown first in "More on GitHub" (others fill in by most recent push).
-export const PINNED_REPOS = ["Machine_Learning_Notes_and_Projects", "DataScience_Project", "LeetCode2024-25DCC"];
+// "More on GitHub": these repos, in this order, and only these: work that shows how I build, not notes,
+// LeetCode practice or the profile's README (those are a click away, under All repositories). The newest
+// pushes used to fill the rest, which put take-home assignments and the README there.
+export const PINNED_REPOS = [
+  "DataScience_Project",
+  "binance-futures-testnet-bot",
+  "xml-journal-article-converter",
+  "fullstack-task-manager",
+  "zorvyn-finance-dashboard",
+  "elementum-figma-to-react",
+];
+
+// A pinned repo's card in the resume's words, where its own name undersells it: DataScience_Project is the
+// resume's "Neural network from scratch" (its GitHub link says so).
+export const REPO_CARDS = Object.fromEntries(
+  RESUME_PROJECTS.flatMap((p) => {
+    const name = p.links?.find((l) => l.label === "GitHub")?.href.split("/").pop();
+    return name && PINNED_REPOS.includes(name) ? [[name, { title: p.title, description: p.summary }]] : [];
+  })
+);
 
 // Work entries come from resume.js, so the timeline and the resume PDF never disagree.
 // GitHub work the live count can't see: contributions on employers' accounts, in private repos.
@@ -152,8 +188,9 @@ export const WORK_CONTRIBUTIONS = EXPERIENCE.filter((job) => job.github).map((jo
 export const allContributions = (publicCommits) =>
   publicCommits == null ? null : WORK_CONTRIBUTIONS.reduce((sum, w) => sum + w.count, publicCommits);
 
-// Years of experience: every month at an employer counted once, rounded down to a half year
-// (44 months → 3.5), with each employer's share, oldest first.
+// Years building and teaching: every month at an employer counted once, rounded down to a half year
+// (44 months → 3.5), with each employer's share, oldest first, marked part-time where it was (the
+// mentoring), so the number reads as what it is.
 const MONTHS_WORKED = new Set(EXPERIENCE.flatMap(monthsAt)).size;
 export const EXPERIENCE_YEARS = {
   years: Math.floor((MONTHS_WORKED / 12) * 2) / 2,
@@ -161,6 +198,7 @@ export const EXPERIENCE_YEARS = {
     org: job.short ?? job.org,
     months: monthsAt(job).length,
     text: duration(monthsAt(job).length),
+    partTime: job.roles.every((r) => r.type === "Part-time"),
   })).reverse(),
 };
 

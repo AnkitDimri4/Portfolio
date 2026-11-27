@@ -68,3 +68,21 @@ test("every tool has a logo, and every logo is a tool's", () => {
   expect(Object.keys(ICONS).sort()).toEqual([...TOOLS].sort());
   for (const [name, Icon] of Object.entries(ICONS)) expect(typeof Icon, name).toBe("function");
 });
+
+test("on a phone, where its groups are a row to swipe, the row takes the keyboard's focus; elsewhere it's a plain grid", () => {
+  const media = window.matchMedia;
+  try {
+    window.matchMedia = (query) => ({ matches: query === "(max-width: 640px)", media: query, addEventListener() {}, removeEventListener() {} });
+    const { container, unmount } = render(<Stack />);
+    const row = container.querySelector(".stack-grid");
+    expect(row).toHaveAttribute("tabindex", "0");
+    expect(row).toHaveAttribute("role", "region");
+    expect(row).toHaveAccessibleName("My stack, by group: swipe for more");
+    unmount();
+  } finally {
+    window.matchMedia = media;
+  }
+  const { container } = render(<Stack />);
+  expect(container.querySelector(".stack-grid")).not.toHaveAttribute("tabindex");
+  expect(renderToString(<Stack />)).not.toContain("tabindex"); // pre-rendered: a plain grid, as the browser's first render
+});

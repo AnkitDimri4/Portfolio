@@ -23,9 +23,38 @@ describe("the Work section", () => {
   it("keeps this site out of my own projects, which are numbered after it", () => {
     render(<Work />);
     const tabs = within(screen.getByRole("tablist", { name: "My own projects" })).getAllByRole("tab");
-    expect(tabs.map((t) => t.querySelector(".ptab-name").textContent)).toEqual(["English Coach", "RN-Wallet", "Todo", "QuickCart"]);
-    expect(tabs.map((t) => t.querySelector(".ptab-num").textContent)).toEqual(["03", "04", "05", "06"]);
-    expect(screen.getByText("4 projects · pick one")).toBeInTheDocument();
+    expect(tabs.map((t) => t.querySelector(".ptab-name").textContent)).toEqual(["English Coach", "HCP CRM", "RN-Wallet", "Todo", "QuickCart"]);
+    expect(tabs.map((t) => t.querySelector(".ptab-num").textContent)).toEqual(["03", "04", "05", "06", "07"]);
+    expect(screen.getByText("5 projects · pick one")).toBeInTheDocument();
+  });
+
+  it("shows the AI CRM agent with its diagram (said to be one), its live demo once, and its source", () => {
+    render(<Work />);
+    const crm = screen.getAllByRole("heading", { level: 3, name: "AI-first HCP CRM" })[0].closest("article");
+    expect(within(crm).getByRole("img", { name: /^Diagram of the AI-first HCP CRM/ })).toBeInTheDocument();
+    expect(within(crm).getAllByRole("link", { name: /Live demo/ })).toHaveLength(1);
+    expect(within(crm).getByRole("link", { name: /Live demo/ })).toHaveAttribute("href", "https://ai-first-hcp-interaction-crm.vercel.app/");
+    expect(within(crm).getByRole("link", { name: /Source/ })).toHaveAttribute("href", "https://github.com/AnkitDimri4/ai-first-hcp-interaction-crm");
+  });
+
+  it("shows only the picked repos under More on GitHub, in their order, the neural network in the resume's words", async () => {
+    // As GitHub lists them, newest push first: the README, an assignment, practice and notes among them
+    const repo = (name, description = `${name}.`) => ({ name, description, url: `https://github.com/AnkitDimri4/${name}`, homepage: null, language: "Python", stars: 1, forks: 0, pushedAt: "2026-11-01T00:00:00Z", commits: 3 });
+    const names = ["AnkitDimri4", "mini-laundry-order-management-qdc", "elementum-figma-to-react", "binance-futures-testnet-bot", "LeetCode2024-25DCC", "Machine_Learning_Notes_and_Projects", "DataScience_Project"];
+    vi.resetModules();
+    const api = await import("../../lib/api");
+    api.setSnapshot({ "/api/v1/portfolio/github": { status: "success", repos: names.map((n) => repo(n)) } });
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {}))); // no live answer: the snapshot stays
+    try {
+      const { default: Fresh } = await import("./Work");
+      render(<Fresh />);
+      const more = document.querySelector(".more");
+      expect([...more.querySelectorAll(".repo-name")].map((h) => h.textContent)).toEqual(["Neural network from scratch", "binance futures testnet bot", "elementum figma to react"]);
+      expect(more).toHaveTextContent("30–5–3 NumPy network trained with backpropagation");
+      expect(more).not.toHaveTextContent(/LeetCode|Notes|laundry|AnkitDimri4/);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("plays the English coach's narrated demo in its card, from the site itself, over a still of its page", () => {

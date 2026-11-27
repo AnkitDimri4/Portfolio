@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { FiArrowDown, FiArrowUpRight, FiCalendar, FiClock, FiEdit3, FiFileText, FiMapPin } from "react-icons/fi";
+import { FiArrowDown, FiArrowUpRight, FiClock, FiFileText, FiMapPin } from "react-icons/fi";
 import NeuralField from "../../components/NeuralField";
 import LocalTime from "../../components/LocalTime";
 import ScrambleText from "../../components/ScrambleText";
 import CodeCard from "../../components/CodeCard/CodeCard";
 import HireMe, { FORM_ID, plainClick } from "../../components/HireMe/HireMe";
-import { PROFILE, RESUME_BUILDER } from "../../data/profile";
-import { bookingEnabled, bookingProps } from "../../lib/booking";
+import { PROFILE } from "../../data/profile";
 import "./Hero.css";
 
 // "A D" as 8-bit ASCII — shown when hovering the name
@@ -79,23 +78,15 @@ const Hero = () => {
               25,000+ developers.
             </p>
 
+            {/* One button: Hire me (its card has every way to reach me, a call included). The resume is a
+                quiet link beside it; the resume builder is with this site's project and in the menu. */}
             <div className="hero-cta">
               <a className="btn btn-primary" href={`#${FORM_ID}`} aria-haspopup="dialog" onClick={hire}>
                 Hire me <FiArrowUpRight size={18} />
               </a>
-              <a className="btn" href={PROFILE.resume} target="_blank" rel="noreferrer">
-                Resume <FiFileText size={17} />
+              <a className="hero-resume" href={PROFILE.resume} target="_blank" rel="noreferrer">
+                <FiFileText size={17} aria-hidden="true" /> Resume
               </a>
-              {RESUME_BUILDER.enabled && (
-                <a className="btn" href={RESUME_BUILDER.href}>
-                  Build your resume <FiEdit3 size={16} />
-                </a>
-              )}
-              {bookingEnabled && (
-                <button className="btn" type="button" {...bookingProps}>
-                  Schedule a call <FiCalendar size={17} />
-                </button>
-              )}
               <span className="hero-socials">
                 {PROFILE.socials.map(({ label, href, icon: Icon }) => (
                   <a key={label} className="icon-btn" href={href} target="_blank" rel="noreferrer" aria-label={label} title={label}>

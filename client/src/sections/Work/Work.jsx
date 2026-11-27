@@ -8,12 +8,14 @@ import VideoPlayer from "../../components/VideoPlayer/VideoPlayer";
 import { Reveal, useInView } from "../../lib/reveal";
 import { useApi } from "../../lib/api";
 import { webUrl } from "../../lib/webUrl";
-import { PINNED_REPOS, PROFILE, PROJECTS } from "../../data/profile";
+import { PINNED_REPOS, PROFILE, PROJECTS, REPO_CARDS } from "../../data/profile";
 import "./Work.css";
 
 // In India's time wherever it runs, so the pre-rendered page and the browser show the same month
 const monthYear = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 const prettyRepo = (name) => name.replace(/[-_]+/g, " ");
+// The same address, give or take a slash at the end
+const sameUrl = (a, b) => Boolean(a && b) && a.replace(/\/+$/, "") === b.replace(/\/+$/, "");
 
 /** Video is only mounted once the card nears the viewport, so demos cost nothing on first load. It plays
  * in the site's own player (components/VideoPlayer): its still and length first, then its controls.
@@ -28,7 +30,7 @@ const ProjectMedia = ({ project, player, shown = true }) => {
     <div className="project-media" ref={ref}>
       <div className="project-screen">
         {project.image ? (
-          <img src={project.image} alt={`${project.title} screenshot`} loading="lazy" decoding="async" />
+          <img src={project.image} alt={project.imageAlt ?? `${project.title} screenshot`} loading="lazy" decoding="async" />
         ) : inView ? (
           <VideoPlayer
             ref={player}
@@ -129,7 +131,8 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1, shown = true
               <FiGithub size={15} /> Source <FiArrowUpRight size={15} />
             </a>
           )}
-          {webUrl(repo?.homepage) && (
+          {/* The repo's own site, unless a link above already goes there (the CRM's "Live demo") */}
+          {webUrl(repo?.homepage) && !project.links?.some((l) => sameUrl(l.href, repo.homepage)) && (
             <a className="btn btn-sm btn-primary" href={webUrl(repo.homepage)} target="_blank" rel="noreferrer">
               Live <FiArrowUpRight size={15} />
             </a>
@@ -195,9 +198,9 @@ const ProjectTabs = ({ projects, offset, byName }) => {
   const running = useRef([]);
   const near = useInView(self);
 
-  // Each project's first still, fetched once the tabs come near, so a picked project's picture is
-  // already there when it comes in (its video loads only once it's picked)
-  const stills = projects.map((p) => p.videos?.[0]?.poster).filter(Boolean).join(" ");
+  // Each project's first still (or its picture), fetched once the tabs come near, so a picked project's
+  // picture is already there when it comes in (its video loads only once it's picked)
+  const stills = projects.map((p) => p.videos?.[0]?.poster ?? p.image).filter(Boolean).join(" ");
   useEffect(() => {
     if (!near) return;
     for (const src of stills.split(" ")) if (src) new Image().src = src;
@@ -398,8 +401,8 @@ const RepoCard = ({ repo, i }) => (
       <span>{repo.language || "Repository"}</span>
       <FiArrowUpRight aria-hidden="true" />
     </div>
-    <h4 className="repo-name">{prettyRepo(repo.name)}</h4>
-    <p className="repo-desc">{repo.description || "No description yet."}</p>
+    <h4 className="repo-name">{REPO_CARDS[repo.name]?.title ?? prettyRepo(repo.name)}</h4>
+    <p className="repo-desc">{REPO_CARDS[repo.name]?.description ?? (repo.description || "No description yet.")}</p>
     <p className="repo-foot label">
       <span>
         <FiStar aria-hidden="true" /> {repo.stars}
@@ -419,15 +422,11 @@ const Work = () => {
   const { data, error } = useApi("/api/v1/portfolio/github");
   const repos = data?.repos || [];
   const byName = Object.fromEntries(repos.map((r) => [r.name, r]));
-  const featured = new Set(PROJECTS.map((p) => p.repo));
   // First, full rows: my work (FileSure), then this site with its activity. The rest are "My own projects".
   const top = PROJECTS.filter((p) => p.work || p.activity);
   const own = PROJECTS.filter((p) => !p.work && !p.activity);
   const offset = top.length;
-  const more = [
-    ...PINNED_REPOS.map((n) => byName[n]).filter(Boolean),
-    ...repos.filter((r) => !featured.has(r.name) && !PINNED_REPOS.includes(r.name)),
-  ].slice(0, 6);
+  const more = PINNED_REPOS.map((n) => byName[n]).filter(Boolean).slice(0, 6); // only these, in this order (profile.js)
 
   return (
     <section className="section work" id="work" aria-labelledby="work-title">
@@ -451,11 +450,20 @@ const Work = () => {
           ))}
         </div>
 
-        {/* Phones and tablets: my own projects as rows, as before. Laptops and up: tabs, in one place. */}
-        <div className="projects projects--list">
-          {own.map((p, j) => (
-            <ProjectRow key={p.repo} project={p} index={offset + j} repo={byName[p.repo]} />
-          ))}
+        {/* Phones and tablets: my own projects as rows under their own heading; on phones a row to swipe,
+            one card tall. Laptops and up: tabs, in one place. */}
+        <div className="projects-own">
+          <div className="projects-own-head">
+            <h3 className="ptabs-title">My own projects</h3>
+            <p className="ptabs-hint label">
+              {own.length} projects<span className="swipe-hint"> · swipe</span>
+            </p>
+          </div>
+          <div className="projects projects--list">
+            {own.map((p, j) => (
+              <ProjectRow key={p.repo} project={p} index={offset + j} repo={byName[p.repo]} />
+            ))}
+          </div>
         </div>
         <ProjectTabs projects={own} offset={offset} byName={byName} />
 

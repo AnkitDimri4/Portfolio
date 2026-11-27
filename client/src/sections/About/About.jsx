@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiArrowUpRight, FiCode, FiGitCommit, FiTarget, FiTrendingUp, FiUsers } from "react-icons/fi";
+import { FiArrowUpRight, FiCode, FiGitCommit, FiSearch, FiSmartphone, FiUsers } from "react-icons/fi";
 import { SiLeetcode } from "../../components/brandIcons";
 import SectionHead from "../../components/SectionHead";
 import CountUp from "../../components/CountUp";
@@ -171,15 +171,21 @@ const About = () => {
                   />
                 )}
               </Stat>
-              <Stat icon={FiTarget} label="Acceptance rate" loading={lcLoading} value={lcData ? Number(lcData.acceptanceRate) : null} decimals={1} suffix="%" />
-              <Stat icon={FiTrendingUp} label="LeetCode global rank" loading={lcLoading} value={lcData?.ranking} prefix="#" />
-              <Stat icon={FiCode} label="Years of experience" value={EXPERIENCE_YEARS.years} decimals={EXPERIENCE_YEARS.years % 1 ? 1 : 0} suffix="+">
+              {/* What I did with it, from the resume's own lines: not LeetCode's rank or acceptance rate */}
+              <Stat icon={FiSearch} label="Companies' search rebuilt" value={3.8} decimals={1} suffix="M">
+                <p className="stat-note label">FileSure · 60 s timeouts to seconds, in 6 days</p>
+              </Stat>
+              <Stat icon={FiSmartphone} label="App updates shipped" value={80} suffix="+">
+                <p className="stat-note label">FileSure&apos;s iOS &amp; Android apps, built from scratch</p>
+              </Stat>
+              {/* Building and teaching, not "experience": the mentoring was part-time, and it says so */}
+              <Stat icon={FiCode} label="Years building & teaching" value={EXPERIENCE_YEARS.years} decimals={EXPERIENCE_YEARS.years % 1 ? 1 : 0} suffix="+">
                 <Split
                   label="By employer"
                   parts={EXPERIENCE_YEARS.employers.map((e, i, all) => ({
                     key: e.org,
                     value: e.months,
-                    text: `${e.text} ${e.org}`,
+                    text: `${e.text} ${e.org}${e.partTime ? " (part-time)" : ""}`,
                     className: i === all.length - 1 ? "split-newer" : "split-older",
                   }))}
                 />

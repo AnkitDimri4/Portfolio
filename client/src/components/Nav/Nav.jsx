@@ -1,7 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { FiArrowUpRight, FiLogIn, FiMoon, FiSun, FiUserCheck } from "react-icons/fi";
+import { FiArrowUpRight, FiEdit3, FiLogIn, FiMoon, FiSun, FiUserCheck } from "react-icons/fi";
 import { LuBrainCircuit } from "react-icons/lu";
-import { NAV, PROFILE } from "../../data/profile";
+import { NAV, PROFILE, RESUME_BUILDER } from "../../data/profile";
 import { useTheme } from "../../lib/theme";
 import "./Nav.css";
 
@@ -150,7 +150,17 @@ const Nav = () => {
             <span className="mm-label">Brain map</span>
             <FiArrowUpRight className="mm-arrow" aria-hidden="true" />
           </a>
-          <a href={account.href} style={{ "--i": NAV.length + 1 }}>
+          {/* The resume builder: no longer a button in the hero, so it's here on phones */}
+          {RESUME_BUILDER.enabled && (
+            <a href={RESUME_BUILDER.href} style={{ "--i": NAV.length + 1 }}>
+              <span className="mm-icon" aria-hidden="true">
+                <FiEdit3 />
+              </span>
+              <span className="mm-label">Resume builder</span>
+              <FiArrowUpRight className="mm-arrow" aria-hidden="true" />
+            </a>
+          )}
+          <a href={account.href} style={{ "--i": NAV.length + 2 }}>
             <span className="mm-icon" aria-hidden="true">
               <account.Icon />
             </span>

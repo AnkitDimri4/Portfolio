@@ -2,16 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { FiCheckCircle, FiGitBranch, FiGitCommit } from "react-icons/fi";
 import { SiNodedotjs, SiPython, SiReact, SiTypescript } from "../brandIcons";
 import { useApi } from "../../lib/api";
-import { EXPERIENCE_YEARS, allContributions } from "../../data/profile";
+import { allContributions } from "../../data/profile";
 import { useIsomorphicLayoutEffect } from "../../lib/useIsomorphicLayoutEffect";
 import "./CodeCard.css";
 
-// What a recruiter scans for first: years, where, what I build, and that I'm available.
-// Lines stay under ~40 characters so phones show them whole. The years come from the job dates.
+// What a recruiter scans for first: since when I've built, where, what I build, and that I'm available.
+// Lines stay under ~40 characters so phones show them whole. "since 2021" is Journey's self-taught start
+// (profile.js): no "years of experience" here, as they'd read as full-time years, and some were part-time.
 const SOURCE = `const engineer = {
   name: "Ankit Dimri",
   role: "Software Engineer",
-  experience: "${EXPERIENCE_YEARS.years}+ years",
+  building: "since 2021",
   based: "Dehradun, India (IST)",
   remote: ["US", "Europe", "worldwide"],
   mobile: ["iOS", "Android"],

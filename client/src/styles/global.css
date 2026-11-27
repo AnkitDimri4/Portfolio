@@ -199,6 +199,12 @@ button {
   position: relative;
   padding-block: clamp(5rem, 11vw, 10rem);
 }
+/* Phones: less air between sections (about 40 px less on each side), so the page is shorter to scroll */
+@media (max-width: 640px) {
+  .section {
+    padding-block: 3.75rem;
+  }
+}
 
 .grid-12 {
   display: grid;

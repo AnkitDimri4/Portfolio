@@ -195,3 +195,10 @@
   font-size: var(--text-small);
   color: var(--faint-ink);
 }
+
+/* Phones: the four numbers and the day-by-day grid; the month-by-month bars go (about 300 px) */
+@media (max-width: 640px) {
+  .sa-graph + .sa-graph {
+    display: none;
+  }
+}

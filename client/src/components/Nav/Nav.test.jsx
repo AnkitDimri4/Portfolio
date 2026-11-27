@@ -18,7 +18,7 @@ const inMenu = (name) => {
 afterEach(() => localStorage.clear());
 
 describe("the nav's account icon", () => {
-  it("says Sign in, left of the brain map's icon, and opens the sign-in page; in the phone menu too, after the brain map", () => {
+  it("says Sign in, left of the brain map's icon, and opens the sign-in page; in the phone menu too, after the brain map and the resume builder", () => {
     render(<Nav />);
     const [first, second] = within(document.querySelector(".nav-actions")).getAllByRole("link");
     expect(first).toHaveAccessibleName("Sign in");
@@ -27,7 +27,11 @@ describe("the nav's account icon", () => {
     expect(second).toHaveAccessibleName("Brain map: my work, mapped");
     const entry = inMenu("Sign in");
     expect(entry).toHaveAttribute("href", "/resume-builder/account/");
-    expect(entry.previousElementSibling).toHaveTextContent("Brain map");
+    // The resume builder, no longer a button in the hero, is in the phone menu, before its sign-in
+    const builder = inMenu("Resume builder");
+    expect(builder).toHaveAttribute("href", "/resume-builder/");
+    expect(entry.previousElementSibling).toBe(builder);
+    expect(builder.previousElementSibling).toHaveTextContent("Brain map");
   });
 
   it("goes to My resumes once someone's signed in, and to the admin view for the site's owner", () => {

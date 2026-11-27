@@ -217,6 +217,14 @@
   .jitem {
     grid-template-columns: 1fr;
   }
+  /* A job's "Skills gained" chips: Stack, two sections on, has them all; on a phone they're a screen of chips */
+  .jitem-skills {
+    display: none;
+  }
+  /* A role's first part shows its name only; its points open with "Show N more", with the rest */
+  .jitem-points:has(+ .jitem-more:not([open])) .jitem-subpoints {
+    display: none;
+  }
   .jitem-side {
     display: flex;
     align-items: center;
