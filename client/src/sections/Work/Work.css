@@ -349,12 +349,12 @@ button.chip:hover {
   left: 50%;
   width: clamp(8.5rem, calc(100% + 2.5rem), 11.5rem);
   aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--text) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--text) 11%, transparent);
-  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.45);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text) 14%, transparent), 0 10px 30px -12px rgb(0 0 0 / 0.45);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  backdrop-filter: blur(16px) saturate(1.15);
   opacity: 0;
   scale: 0.6;
   translate: -50% -50%;
@@ -384,9 +384,10 @@ button.chip:hover {
   color: inherit;
   opacity: 0.85;
 }
-/* Picking a project (ProjectTabs): the circle, solid now, grows behind the tabs' words and over the
-   panel; the project's name flies to its title; then the project comes in over the circle, which fades.
-   The panels share one place, so the one going and the one coming can be there together. */
+/* Picking a project (ProjectTabs): the glass circle grows from the tab over the tabs and the panel,
+   behind the tabs' words, the project going frosting over under it; the name flies to its title; the
+   project coming rises in over the glass, which melts away. Every panel shares one place and stays laid
+   out, so the panel keeps the tallest project's height and nothing below moves. */
 .ptabs {
   position: relative;
 }
@@ -394,25 +395,31 @@ button.chip:hover {
   position: relative;
   z-index: 2;
 }
+/* The tab's glass circle hands over to the growing one at once (no fade), so there's only ever one */
 .ptabs.is-changing .ptab-text::before {
-  opacity: 0; /* the glass circle has become the solid one */
-}
-/* The picked tab's name leaves it as its flying copy takes over, and comes back once the project is in */
-.ptab-name {
-  transition: opacity 0.15s var(--ease);
-}
-.ptabs.is-growing .ptab[aria-selected="true"] .ptab-name {
   opacity: 0;
+  transition: none;
 }
-.ptabs-disc {
+.ptabs-glass {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 1;
+  overflow: clip;
   border-radius: var(--radius);
-  background: var(--bg-3);
   pointer-events: none;
+}
+/* The same tinted glass as the tab's circle, which it starts as. No backdrop blur here: on a circle this
+   big, scaled, Chrome's blur draws mirrored copies of nearby words into it; the project going blurs
+   itself instead (ProjectTabs). */
+.ptabs-glass-circle {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text) 14%, transparent);
+  will-change: transform, opacity;
 }
 .ptabs-flyer {
   position: absolute;
@@ -421,59 +428,66 @@ button.chip:hover {
   color: var(--text);
   font-family: var(--font-display);
   font-weight: 700;
-  opacity: 0;
   transform-origin: 0 0;
   pointer-events: none;
+  will-change: transform;
+}
+/* It starts as the tab's name and turns into the title (ProjectTabs): the title waits unseen */
+.ptabs-flyer-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+}
+.ptabs-flyer-title {
+  display: block;
+  opacity: 0;
 }
 .ptabs-panels {
   display: grid;
 }
-.ptabs-panels.is-wiping {
-  overflow: clip;
-}
 .ptabs-panel {
   grid-area: 1 / 1;
-  align-self: start;
   min-width: 0;
+}
+.ptabs-panel.is-off {
+  visibility: hidden;
 }
 .ptabs-panel[aria-hidden="true"] {
   pointer-events: none;
-}
-/* Laid out unseen while the circle grows, so its title's place and its height can be measured */
-.ptabs-panel.is-waiting {
-  visibility: hidden;
 }
 .ptabs-panel.is-arriving {
   position: relative;
   z-index: 2;
 }
-.ptabs-panel.is-waiting .reveal,
 .ptabs-panel.is-arriving .reveal {
   opacity: 1;
   transform: none;
   transition: none;
 }
-/* Its title is where the name landed; the rest rises in after it */
+/* The project coming rises in while the glass still grows. Its title waits under the flying name, which
+   lands on it, and the two swap in one frame as the change ends. */
 .ptabs-panel.is-arriving .project-media-wrap,
 .ptabs-panel.is-arriving .project-info > :not(.project-title) {
-  animation: ptabs-rise 0.5s var(--ease-out) both;
-}
-.ptabs-panel.is-arriving .project-media-wrap {
-  animation-delay: 60ms;
+  animation: ptabs-rise 0.52s var(--ease-out) both;
+  animation-delay: var(--rise-at);
 }
 .ptabs-panel.is-arriving .project-summary {
-  animation-delay: 90ms;
+  animation-delay: calc(var(--rise-at) + 40ms);
 }
 .ptabs-panel.is-arriving .chips {
-  animation-delay: 130ms;
+  animation-delay: calc(var(--rise-at) + 80ms);
 }
 .ptabs-panel.is-arriving .project-foot {
-  animation-delay: 170ms;
+  animation-delay: calc(var(--rise-at) + 120ms);
+}
+.ptabs-panel.is-arriving .project-title {
+  opacity: 0;
 }
 @keyframes ptabs-rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
 }
 @media (prefers-reduced-motion: reduce) {

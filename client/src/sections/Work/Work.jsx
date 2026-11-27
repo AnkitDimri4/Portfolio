@@ -18,9 +18,9 @@ const prettyRepo = (name) => name.replace(/[-_]+/g, " ");
 /** Video is only mounted once the card nears the viewport, so demos cost nothing on first load. It plays
  * in the site's own player (components/VideoPlayer): its still and length first, then its controls.
  * `player` is the row's handle on it, for its "Demo video" button. */
-const ProjectMedia = ({ project, player }) => {
+const ProjectMedia = ({ project, player, shown = true }) => {
   const ref = useRef(null);
-  const inView = useInView(ref);
+  const inView = useInView(ref) && shown;
   const [active, setActive] = useState(0);
   const videos = project.videos || [];
 
@@ -54,7 +54,7 @@ const ProjectMedia = ({ project, player }) => {
 };
 
 // Rows alternate their media left and right, unless told not to (`flip`).
-const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
+const ProjectRow = ({ project, index, repo, flip = index % 2 === 1, shown = true }) => {
   const player = useRef(null);
   // A link marked `play` ("Demo video") plays the video in this card, brought into view first: on a phone
   // it's above the words. Not loaded yet (the card hasn't neared the window): brought into view, to press.
@@ -82,7 +82,7 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
             </div>
           </div>
         ) : (
-          <ProjectMedia project={project} player={player} />
+          <ProjectMedia project={project} player={player} shown={shown} />
         )}
       </Reveal>
       <Reveal className="project-info" delay={1}>
@@ -167,32 +167,36 @@ const ProjectRow = ({ project, index, repo, flip = index % 2 === 1 }) => {
 
 // Laptops and up: my own projects in one place. A row of tabs, one per project, and the picked
 // project below in the same row style as the work above. Phones and tablets keep the plain list.
-// Picking one plays out in two steps:
-//   - grow: over a tab, a glass circle sits behind its words; picked, it turns solid and grows from the
-//     tab across the tabs and the panel, behind the tabs' words, while the project's name flies from
-//     the tab to where its title goes, growing to its size, and the panel's height eases to the new one;
-//   - arrive: the circle covers it all; the new project comes in over it, its title where the name
-//     landed and the rest rising after, and the circle fades away.
-// Asked for less motion, the panel simply changes.
-const GROW_MS = 650;
-const ARRIVE_MS = 650;
-const GROW_EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
-const ARRIVE_EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+// Every panel stays laid out in one place, the unpicked ones unseen, so the panel is as tall as the
+// tallest project and nothing below moves when another is picked.
+// Over a tab (or on it from the keyboard), a glass circle sits behind its words. Picked, one motion:
+//   - the circle, tinted glass, grows from the tab over the tabs and the panel, the project going
+//     frosting over and fading under it;
+//   - the project's name lifts off the tab and flies to where its title goes, growing to its size;
+//   - the new project rises in over the glass before the circle has finished, and the glass melts away.
+// The flying name stays in its title's place until the end, then the title takes over in the same frame,
+// so the title never blinks. Only transforms and opacity move, so the browser draws it smoothly. Asked
+// for less motion, the panel simply changes.
+const GROW_MS = 620; // the circle and the name
+const DISSOLVE = { delay: 80, duration: 420 }; // the project going
+const RISE_AT = 300; // the project coming starts to rise (ptabs-rise in Work.css)
+const MELT = { delay: 560, duration: 440 }; // the glass melting away; the change ends with it
+const GROW_EASE = "cubic-bezier(0.45, 0, 0.15, 1)";
+const SOFT_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const ProjectTabs = ({ projects, offset, byName }) => {
   const [active, setActive] = useState(0);
-  const [wipe, setWipe] = useState(null); // a change on its way: { from, to, phase, top, x, y, r, height }
+  const [wipe, setWipe] = useState(null); // a change on its way, measured at the pick
   const tabs = useRef([]);
   const panels = useRef([]);
   const self = useRef(null);
-  const area = useRef(null);
-  const disc = useRef(null);
+  const glass = useRef(null);
   const flyer = useRef(null);
   const running = useRef([]);
   const near = useInView(self);
 
   // Each project's first still, fetched once the tabs come near, so a picked project's picture is
-  // already there when it comes in, not a moment after (its video loads only when it shows)
+  // already there when it comes in (its video loads only once it's picked)
   const stills = projects.map((p) => p.videos?.[0]?.poster).filter(Boolean).join(" ");
   useEffect(() => {
     if (!near) return;
@@ -207,85 +211,95 @@ const ProjectTabs = ({ projects, offset, byName }) => {
     const root = self.current;
     const list = root?.querySelector(".ptabs-list");
     const words = tabs.current[j]?.querySelector(".ptab-text");
+    const name = tabs.current[j]?.querySelector(".ptab-name");
+    const title = panels.current[j]?.querySelector(".project-title");
     const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (still || !root || !list || !words || typeof root.animate !== "function") {
+    if (still || !root || !list || !words || !name || !title || typeof root.animate !== "function") {
       setWipe(null);
       setActive(j);
       return;
     }
+    // Everything is laid out already (the unpicked panels too), so every place is known now
     const box = root.getBoundingClientRect();
-    const t = words.getBoundingClientRect();
-    setWipe({
-      from: active,
-      to: j,
-      phase: "grow",
-      top: list.offsetTop, // the circle covers from the tabs down
-      x: t.left + t.width / 2 - box.left,
-      y: t.top + t.height / 2 - box.top - list.offsetTop,
-      r: parseFloat(getComputedStyle(words, "::before").width) / 2 || 72, // the glass circle's own size
-      height: area.current.offsetHeight,
-    });
+    const w = words.getBoundingClientRect();
+    const top = list.offsetTop; // the glass covers from the tabs down
+    const x = w.left + w.width / 2 - box.left;
+    const y = w.top + w.height / 2 - box.top - top;
+    const far = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - top - y));
+    const r = parseFloat(getComputedStyle(words, "::before").width) / 2 || 72; // the glass circle's own size
+    // The flying words: the tab's name, drawn at the title's size and shrunk onto the tab, turning into
+    // the title on the way
+    const from = name.getBoundingClientRect();
+    const to = title.getBoundingClientRect();
+    const look = getComputedStyle(title);
+    const nameLook = getComputedStyle(name);
+    const size = parseFloat(look.fontSize);
+    const k = parseFloat(nameLook.fontSize) / size || 0.5; // the name's size, as a share of the title's
+    const line = parseFloat(look.lineHeight) || size * 1.2 || 0;
+    const said = projects[j].short || projects[j].title;
+    // Where the name's words sit in the title ("English Coach" in "AI English Coach"), so they turn into
+    // themselves and only the rest fades in
+    let shift = 0;
+    const at = projects[j].title.indexOf(said);
+    if (at > 0 && title.firstChild?.nodeType === Node.TEXT_NODE) {
+      const before = document.createRange();
+      before.setStart(title.firstChild, 0);
+      before.setEnd(title.firstChild, at);
+      shift = before.getBoundingClientRect?.().width || 0;
+    }
+    const fly = {
+      name: said,
+      text: projects[j].title,
+      left: to.left - box.left,
+      top: to.top - box.top,
+      width: to.width,
+      font: { fontSize: look.fontSize, lineHeight: look.lineHeight, letterSpacing: look.letterSpacing },
+      nameFont: { left: shift, fontWeight: nameLook.fontWeight, letterSpacing: `${parseFloat(nameLook.letterSpacing) / k || 0}px` },
+      // On the tab's name, letter for letter: the two lines' middles meet, whatever their line heights
+      start: `translate(${from.left - to.left - k * shift}px, ${from.top - to.top + (from.height - k * line) / 2}px) scale(${k})`,
+    };
+    setWipe({ from: active, to: j, top, x, y, far, scale: r / (far || 1), fly });
     setActive(j);
   };
 
   useEffect(() => {
     if (!wipe) return;
-    const done = (run, next) => {
-      run.onfinish = () => {
-        if (!running.current.includes(run)) return; // a later pick has taken over
-        running.current = [];
-        setWipe(next);
-      };
+    const circle = glass.current;
+    const grow = { duration: GROW_MS, easing: GROW_EASE, fill: "both" };
+    const melt = circle.animate({ opacity: [1, 0] }, { ...MELT, easing: SOFT_EASE, fill: "both" });
+    const runs = [
+      circle.animate({ transform: [`scale(${wipe.scale})`, "scale(1)"] }, grow),
+      melt,
+      // The project going frosts over (blurs) as it fades under the glass
+      panels.current[wipe.from].animate(
+        { opacity: [1, 0], filter: ["blur(0px)", "blur(12px)"], transform: ["none", "scale(0.985)"] },
+        { ...DISSOLVE, easing: SOFT_EASE, fill: "both" }
+      ),
+      // The flying name starts on the tab's name, which fades under it as it lifts off, and comes back
+      // as the glass goes
+      tabs.current[wipe.to].querySelector(".ptab-name").animate(
+        [{ opacity: 1 }, { opacity: 0, offset: 0.05 }, { opacity: 0, offset: 0.8 }, { opacity: 1 }],
+        { duration: MELT.delay + MELT.duration }
+      ),
+      flyer.current.animate({ transform: [wipe.fly.start, "none"] }, grow),
+    ];
+    // Mid-flight, where it moves fastest, the name turns into the title: the title comes in before the
+    // name goes, so the words never dim
+    const [asName, asTitle] = flyer.current.children;
+    const turn = { duration: GROW_MS, fill: "both" };
+    runs.push(
+      asName.animate([{ opacity: 1 }, { opacity: 1, offset: 0.32 }, { opacity: 0, offset: 0.52 }, { opacity: 0 }], turn),
+      asTitle.animate([{ opacity: 0 }, { opacity: 0, offset: 0.22 }, { opacity: 1, offset: 0.4 }, { opacity: 1 }], turn)
+    );
+    running.current = runs;
+    melt.onfinish = () => {
+      if (running.current === runs) setWipe(null); // not if a later pick has taken over
     };
-    const cover = disc.current;
-    if (wipe.phase === "arrive") {
-      const fade = cover.animate({ opacity: [1, 0] }, { duration: ARRIVE_MS, easing: ARRIVE_EASE, fill: "forwards" });
-      running.current = [fade];
-      done(fade, null);
-      return;
-    }
-    const root = self.current;
-    const panel = panels.current[wipe.to];
-    const title = panel.querySelector(".project-title");
-    const name = tabs.current[wipe.to].querySelector(".ptab-name");
-    const timing = { duration: GROW_MS, easing: GROW_EASE };
-
-    // The circle: from the glass circle's size to the far corner of all it covers
-    const height = panel.offsetHeight;
-    const reach = area.current.offsetTop - wipe.top + Math.max(wipe.height, height);
-    const far = Math.hypot(Math.max(wipe.x, cover.offsetWidth - wipe.x), Math.max(wipe.y, reach - wipe.y));
-    const grow = cover.animate({ clipPath: [`circle(${wipe.r}px at ${wipe.x}px ${wipe.y}px)`, `circle(${far}px at ${wipe.x}px ${wipe.y}px)`] }, timing);
-    const ease = area.current.animate({ height: [`${wipe.height}px`, `${height}px`] }, timing);
-    running.current = [grow, ease];
-
-    // The name: set as the title, where the title is, then flown there from the tab (FLIP)
-    const fly = flyer.current;
-    if (title && name && fly) {
-      const r = root.getBoundingClientRect();
-      const to = title.getBoundingClientRect();
-      const from = name.getBoundingClientRect();
-      const look = getComputedStyle(title);
-      Object.assign(fly.style, {
-        left: `${to.left - r.left}px`,
-        top: `${to.top - r.top}px`,
-        width: `${to.width}px`,
-        fontSize: look.fontSize,
-        lineHeight: look.lineHeight,
-        letterSpacing: look.letterSpacing,
-      });
-      const scale = parseFloat(getComputedStyle(name).fontSize) / parseFloat(look.fontSize) || 0.5;
-      running.current.push(
-        fly.animate(
-          [
-            { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${scale})`, opacity: 0 },
-            { opacity: 1, offset: 0.2 },
-            { transform: "none", opacity: 1 },
-          ],
-          { ...timing, fill: "both" }
-        )
-      );
-    }
-    done(grow, { ...wipe, phase: "arrive" });
+    // Once the change is over (or the next has begun), nothing it did stays held: the project that went
+    // is whole again for when it's picked next
+    return () => {
+      for (const run of runs) run.cancel();
+    };
   }, [wipe]);
 
   // Arrow keys, Home and End move between the tabs (and focus the one they land on).
@@ -298,9 +312,8 @@ const ProjectTabs = ({ projects, offset, byName }) => {
     tabs.current[next]?.focus();
   };
 
-  const growing = wipe?.phase === "grow";
   return (
-    <div className={`ptabs${wipe ? " is-changing" : ""}${growing ? " is-growing" : ""}`} ref={self}>
+    <div className={`ptabs${wipe ? " is-changing" : ""}`} ref={self} style={wipe ? { "--rise-at": `${RISE_AT}ms` } : undefined}>
       <div className="ptabs-head">
         <h3 className="ptabs-title">My own projects</h3>
         <p className="ptabs-hint label">{projects.length} projects · pick one</p>
@@ -330,25 +343,33 @@ const ProjectTabs = ({ projects, offset, byName }) => {
         ))}
       </div>
       {wipe && (
-        <div
-          ref={disc}
-          className="ptabs-disc"
-          aria-hidden="true"
-          style={{ top: wipe.top, clipPath: growing ? `circle(${wipe.r}px at ${wipe.x}px ${wipe.y}px)` : undefined }}
-        />
+        <div className="ptabs-glass" aria-hidden="true" style={{ top: wipe.top }}>
+          <span
+            ref={glass}
+            className="ptabs-glass-circle"
+            style={{ left: wipe.x - wipe.far, top: wipe.y - wipe.far, width: wipe.far * 2, height: wipe.far * 2, transform: `scale(${wipe.scale})` }}
+          />
+        </div>
       )}
-      {growing && (
-        <p ref={flyer} className="ptabs-flyer" aria-hidden="true">
-          {projects[wipe.to].title}
+      {wipe && (
+        <p
+          ref={flyer}
+          className="ptabs-flyer"
+          aria-hidden="true"
+          style={{ left: wipe.fly.left, top: wipe.fly.top, width: wipe.fly.width, ...wipe.fly.font, transform: wipe.fly.start }}
+        >
+          <span className="ptabs-flyer-name" style={wipe.fly.nameFont}>
+            {wipe.fly.name}
+          </span>
+          <span className="ptabs-flyer-title">{wipe.fly.text}</span>
         </p>
       )}
-      {/* Every project stays in the page (for search engines); only the picked one shows. While the circle
-          grows, the one going stays drawn under it (hidden from screen readers) and the one coming is
-          laid out unseen, so its title's place and its height are known. */}
-      <div ref={area} className={`ptabs-panels${wipe ? " is-wiping" : ""}`}>
+      {/* Every project stays in the page (for search engines) and laid out; only the picked one shows.
+          During a change, the one going stays drawn under the glass, not read out, as it dissolves. */}
+      <div className="ptabs-panels">
         {projects.map((p, j) => {
-          const leaving = growing && wipe.from === j;
-          const coming = wipe?.to === j;
+          const leaving = wipe?.from === j;
+          const shown = active === j || leaving;
           return (
             <div
               key={p.repo}
@@ -358,11 +379,10 @@ const ProjectTabs = ({ projects, offset, byName }) => {
               id={`ppanel-${p.repo}`}
               role="tabpanel"
               aria-labelledby={`ptab-${p.repo}`}
-              aria-hidden={leaving || undefined}
-              className={`ptabs-panel${coming ? (growing ? " is-waiting" : " is-arriving") : ""}`}
-              hidden={active !== j && !leaving}
+              aria-hidden={active !== j || undefined}
+              className={`ptabs-panel${shown ? "" : " is-off"}${wipe?.to === j ? " is-arriving" : ""}`}
             >
-              <ProjectRow project={p} index={offset + j} repo={byName[p.repo]} flip={false} />
+              <ProjectRow project={p} index={offset + j} repo={byName[p.repo]} flip={false} shown={shown} />
             </div>
           );
         })}

@@ -64,8 +64,8 @@ describe("the Work section", () => {
     const pick = (name) => fireEvent.click(within(screen.getByRole("tablist", { name: "My own projects" })).getByRole("tab", { name }));
     const panel = (id) => screen.getAllByRole("tabpanel", { hidden: true }).find((p) => p.id === id);
 
-    it("grows a circle from the tab while the name flies to its title, then brings the project in as the circle fades", () => {
-      // jsdom draws nothing: the animations are recorded, and finished by hand
+    it("grows a glass circle from the tab, flies the name to its title (turning into it) and brings the project in, in one motion", () => {
+      // jsdom draws nothing: the animations are recorded, and the last finished by hand
       const runs = [];
       HTMLElement.prototype.animate = function animate(keyframes, timing) {
         const run = { el: this, keyframes, timing, onfinish: null, cancel: vi.fn(), finish: () => run.onfinish?.() };
@@ -73,31 +73,34 @@ describe("the Work section", () => {
         return run;
       };
       render(<Work />);
-      pick(/RN-Wallet/);
+      pick(/Todo/);
       const coach = panel("ppanel-english-coach");
-      const wallet = panel("ppanel-RN-WALLET");
+      const todo = panel("ppanel-TODO-RN");
 
-      // Growing: the project going still drawn under the circle, not read out; the one coming laid out unseen
-      expect(coach).not.toHaveAttribute("hidden");
+      // On its way: the project going still drawn (not read out) as it dissolves; the one coming in over the glass
+      expect(coach).not.toHaveClass("is-off");
       expect(coach).toHaveAttribute("aria-hidden", "true");
-      expect(wallet).not.toHaveAttribute("hidden");
-      expect(wallet).toHaveClass("is-waiting");
-      const disc = document.querySelector(".ptabs-disc");
-      const grow = runs.find((r) => r.el === disc);
-      expect(grow.keyframes.clipPath).toEqual([expect.stringMatching(/^circle\(/), expect.stringMatching(/^circle\(/)]);
-      expect(document.querySelector(".ptabs-flyer")).toHaveTextContent("RN-Wallet"); // the name, flying to its title
-      expect(runs.some((r) => r.keyframes.height)).toBe(true); // and the height easing to the new project's
+      expect(todo).toHaveClass("is-arriving");
+      expect(todo).not.toHaveAttribute("aria-hidden");
+      const circle = document.querySelector(".ptabs-glass-circle");
+      expect(runs.find((r) => r.el === circle && r.keyframes.transform).keyframes.transform).toEqual([expect.stringMatching(/^scale\(/), "scale(1)"]);
+      expect(runs.find((r) => r.el === coach).keyframes.opacity).toEqual([1, 0]);
+      // The tab's name flies to the title, turning into it on the way; the words only move, never fade out
+      const flyer = document.querySelector(".ptabs-flyer");
+      const [asName, asTitle] = flyer.children;
+      expect(asName).toHaveTextContent(/^Todo$/);
+      expect(asTitle).toHaveTextContent("Todo — Expo × Convex");
+      expect(runs.find((r) => r.el === flyer).keyframes).toEqual({ transform: [expect.stringMatching(/^translate\(/), "none"] });
+      expect(runs.some((r) => r.keyframes.height)).toBe(false); // nothing below moves: the panel keeps its height
 
-      // Arriving: the project going gone, the one coming over the circle, which fades
-      act(() => grow.finish());
-      expect(coach).toHaveAttribute("hidden");
-      expect(wallet).toHaveClass("is-arriving");
+      // Done when the glass has melted
+      act(() => runs.find((r) => r.el === circle && r.keyframes.opacity).finish());
+      expect(coach).toHaveClass("is-off");
+      expect(todo).not.toHaveClass("is-arriving");
+      expect(document.querySelector(".ptabs-glass")).toBeNull();
       expect(document.querySelector(".ptabs-flyer")).toBeNull();
-      const fade = runs.find((r) => r.el === disc && r.keyframes.opacity);
-      act(() => fade.finish());
-      expect(document.querySelector(".ptabs-disc")).toBeNull();
-      expect(wallet).not.toHaveClass("is-arriving");
-      expect(coach).not.toHaveAttribute("aria-hidden");
+      // Nothing stays held: the coach's fade is cleared, so it isn't empty when it's picked again
+      expect(runs.find((r) => r.el === coach).cancel).toHaveBeenCalled();
     });
 
     it("changes the panel at once when less motion is asked for", () => {
@@ -105,8 +108,8 @@ describe("the Work section", () => {
       HTMLElement.prototype.animate = vi.fn();
       render(<Work />);
       pick(/Todo/);
-      expect(panel("ppanel-english-coach")).toHaveAttribute("hidden");
-      expect(panel("ppanel-TODO-RN")).not.toHaveAttribute("hidden");
+      expect(panel("ppanel-english-coach")).toHaveClass("is-off");
+      expect(panel("ppanel-TODO-RN")).not.toHaveClass("is-off");
       expect(HTMLElement.prototype.animate).not.toHaveBeenCalled();
     });
   });
