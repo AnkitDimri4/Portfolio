@@ -37,6 +37,9 @@
     --card: #fbfaf6; --border: rgba(20, 18, 14, .12); --line-strong: rgba(20, 18, 14, .24);
     --title: #141310; --text: #58544b; --strong: #141310; --faint: #6b665c;
     --accent: #cf4a12; --on-accent: #ffffff; --accent-2: #0b8a76; color-scheme: light;
+    /* The map's lines and glows: a lighter orange, partly see-through where it lights up, so the map glows
+       softly; words, icons and buttons keep the accent */
+    --soft: #e0662f;
     /* The buttons as the site's (global.css): the main one an orange gradient with a soft glow; by day the
        quieter ones (Schedule a call, in the header) the same, in dark the glass look (a solid dark tint) */
     --btn-fill: linear-gradient(135deg, #cf4a12 0%, #b8400e 55%, #a3360a 100%); --btn-glow: 0 10px 24px -12px rgba(207, 74, 18, .55), inset 0 1px 0 rgba(255, 255, 255, .2);
@@ -47,6 +50,7 @@
     --card: #111114; --border: rgba(255, 255, 255, .1); --line-strong: rgba(255, 255, 255, .2);
     --title: #f2efe8; --text: #a3a097; --strong: #f2efe8; --faint: #84817a;
     --accent: #ff6b35; --on-accent: #0a0a0c; --accent-2: #3ee6c6; color-scheme: dark;
+    --soft: #ff8a5c;
     --btn-fill: linear-gradient(135deg, #ff9152 0%, #ff6b35 50%, #f2541b 100%); --btn-glow: 0 10px 28px -12px rgba(255, 107, 53, .7), inset 0 1px 0 rgba(255, 255, 255, .3);
     --glass-fill: color-mix(in srgb, var(--accent) 14%, var(--bg)); --glass-line: rgba(255, 107, 53, .5); --glass-ink: #ff8a5c; --glass-glow: 0 0 #0000;
   }
@@ -150,15 +154,15 @@
     background: radial-gradient(closest-side, var(--glow), transparent); pointer-events: none;
   }
   #wires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
-  #wires .base { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .42; transition: opacity .2s, stroke-width .2s; }
-  #wires .flow { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 3 15; animation: flow 1.6s linear infinite; }
-  #wires circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
-  #wires .on .base { opacity: 1; stroke-width: 3; }
+  #wires .base { fill: none; stroke: var(--soft); stroke-width: 2; opacity: .34; transition: opacity .2s, stroke-width .2s; }
+  #wires .flow { fill: none; stroke: var(--soft); stroke-width: 2; stroke-dasharray: 3 15; opacity: .85; animation: flow 1.6s linear infinite; }
+  #wires circle { fill: var(--bg); stroke: color-mix(in srgb, var(--soft) 70%, transparent); stroke-width: 2; }
+  #wires .on .base { opacity: .7; stroke-width: 2.5; }
   @keyframes flow { to { stroke-dashoffset: -36; } }
 
   .core {
     grid-column: 2; grid-row: 2 / span 3; align-self: center; justify-self: center; position: relative;
-    width: 228px; height: 228px; border-radius: 50%; border: 2px solid var(--accent); background: var(--bg);
+    width: 228px; height: 228px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--soft) 65%, transparent); background: var(--bg);
     display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
     box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 8%, transparent);
   }
@@ -171,7 +175,7 @@
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-card);
     transition: border-color .2s, transform .2s;
   }
-  .card.on { border-color: var(--accent); transform: translateY(-2px); }
+  .card.on { border-color: color-mix(in srgb, var(--soft) 45%, var(--border)); transform: translateY(-2px); }
   .card.l { grid-column: 1; justify-self: end; }
   .card.r { grid-column: 3; justify-self: start; }
   .card.t, .card.b { grid-column: 1 / -1; justify-self: center; }
@@ -309,11 +313,11 @@
   .focus-bar .esc { font-size: 13px; }
   .fmap { position: relative; display: grid; grid-template-columns: 1fr minmax(280px, 380px) 1fr; gap: 28px 64px; align-items: start; padding-top: 24px; }
   #fwires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
-  #fwires path { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .6; }
-  #fwires circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+  #fwires path { fill: none; stroke: var(--soft); stroke-width: 2; opacity: .5; }
+  #fwires circle { fill: var(--bg); stroke: color-mix(in srgb, var(--soft) 70%, transparent); stroke-width: 2; }
   .fcenter {
     grid-column: 2; align-self: center; justify-self: center; position: relative; z-index: 1;
-    border: 2px solid var(--accent); box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 2px solid color-mix(in srgb, var(--soft) 60%, var(--border)); box-shadow: 0 0 0 8px color-mix(in srgb, var(--soft) 6%, transparent);
   }
   .fcenter .more { display: none; }
   .fsub { position: relative; z-index: 1; max-width: 340px; padding: 12px 16px 14px; }
@@ -336,7 +340,7 @@
   .bsub.out-left .skills-toggle span { transform: rotate(90deg); }
   .card ul.skills {
     display: grid; justify-items: start; gap: 6px; margin: 8px 0 0 7px; padding-left: 14px;
-    border-left: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-left: 2px solid color-mix(in srgb, var(--soft) 40%, transparent);
   }
   .card ul.skills li {
     padding: 2px 9px; font-size: 11.5px; line-height: 1.5; color: var(--title);
@@ -344,15 +348,15 @@
   }
   .card ul.skills li::before {
     left: -15px; top: calc(50% - 1px); width: 13px; height: 2px; border-radius: 0; opacity: 1;
-    background: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--soft) 40%, transparent);
   }
   .bskill {
     position: absolute; z-index: 2; padding: 4px 11px; border-radius: 999px; white-space: nowrap;
-    border: 1px solid var(--accent); background: var(--card); color: var(--title); font-size: 12.5px; font-weight: 500;
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--soft) 55%, var(--border)); background: var(--card); color: var(--title); font-size: 12.5px; font-weight: 500;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--soft) 6%, transparent);
     animation: pop .4s cubic-bezier(.2, .7, .1, 1) both; animation-delay: calc(var(--i, 0) * 45ms);
   }
-  .fsub.skills-open { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .fsub.skills-open { border-color: color-mix(in srgb, var(--soft) 45%, var(--border)); }
   .fsub li { font-size: 13px; }
 
   /* Branch (wide screens): the sub-cards open beside the card; the map slides to fit them */
@@ -361,11 +365,11 @@
   .map > .card, .map > .core { transition: opacity .3s, border-color .2s, transform .2s; }
   .map.branching > .card:not(.open):not(.bsub), .map.branching > .core { opacity: .3; }
   .map.branching #wires g:not(.on) { opacity: .25; }
-  .map .card.open { z-index: 2; border-color: var(--accent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 10%, transparent); }
+  .map .card.open { z-index: 2; border-color: color-mix(in srgb, var(--soft) 55%, var(--border)); box-shadow: 0 0 0 6px color-mix(in srgb, var(--soft) 7%, transparent); }
   .bsub { position: absolute; width: 270px; max-width: none; z-index: 2; }
   #bwires { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; z-index: 1; animation: fade .5s .1s both; }
-  #bwires path { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .75; }
-  #bwires circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+  #bwires path { fill: none; stroke: var(--soft); stroke-width: 2; opacity: .6; }
+  #bwires circle { fill: var(--bg); stroke: color-mix(in srgb, var(--soft) 70%, transparent); stroke-width: 2; }
   .fsub .links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 13px; font-weight: 600; }
   .fsub .links a { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); text-decoration: none; }
   .fsub .links a svg { width: 14px; height: 14px; flex: none; }
@@ -405,12 +409,12 @@
   :root, :root[data-theme="light"] {
     --ease: cubic-bezier(.2, .7, .1, 1); --hi: rgba(255, 255, 255, .7);
     --lift: 0 1px 2px rgba(20, 18, 14, .05), 0 10px 28px -14px rgba(20, 18, 14, .2);
-    --halo: color-mix(in srgb, var(--accent) 45%, transparent);
+    --halo: color-mix(in srgb, var(--soft) 30%, transparent);
   }
   :root[data-theme="dark"] {
     --hi: rgba(255, 255, 255, .045);
     --lift: inset 0 1px 0 rgba(255, 255, 255, .04), 0 14px 36px -18px rgba(0, 0, 0, .8);
-    --halo: color-mix(in srgb, var(--accent) 55%, transparent);
+    --halo: color-mix(in srgb, var(--soft) 32%, transparent);
   }
   body::after {
     content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
@@ -426,8 +430,9 @@
     animation: bm-rise .7s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms);
   }
   .map > .card:hover, .map > .card.on {
-    translate: 0 -3px; transform: none; border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
-    box-shadow: var(--lift), 0 0 0 1px var(--halo), 0 20px 44px -20px var(--halo);
+    translate: 0 -3px; transform: none; border-color: color-mix(in srgb, var(--soft) 45%, var(--border));
+    box-shadow: var(--lift), inset 0 0 0 999px color-mix(in srgb, var(--soft) 5%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--soft) 30%, transparent), 0 20px 44px -22px var(--halo);
   }
   @keyframes bm-rise { from { opacity: 0; translate: 0 14px; } }
   .card h2 svg {
@@ -437,20 +442,20 @@
   }
   .card li::before { width: 5px; height: 5px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
   .core {
-    background: radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--accent) 14%, var(--bg)), var(--bg) 72%);
-    box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 7%, transparent), 0 0 0 24px color-mix(in srgb, var(--accent) 4%, transparent),
-      0 0 60px -8px color-mix(in srgb, var(--accent) 26%, transparent);
+    background: radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--soft) 11%, var(--bg)), var(--bg) 72%);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--soft) 6%, transparent), 0 0 0 24px color-mix(in srgb, var(--soft) 3%, transparent),
+      0 0 60px -8px color-mix(in srgb, var(--soft) 18%, transparent);
   }
   .core::after {
     content: ""; position: absolute; inset: -2px; border-radius: 50%; pointer-events: none;
-    background: conic-gradient(from 0deg, transparent 0 72%, var(--accent) 88%, transparent);
+    background: conic-gradient(from 0deg, transparent 0 72%, color-mix(in srgb, var(--soft) 85%, transparent) 88%, transparent);
     -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
     mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
     animation: bm-spin 7s linear infinite;
   }
   @keyframes bm-spin { to { rotate: 360deg; } }
   #wires .base { stroke-linecap: round; }
-  #wires .flow { stroke-linecap: round; stroke-dasharray: 2 16; filter: drop-shadow(0 0 3px var(--accent)); }
+  #wires .flow { stroke-linecap: round; stroke-dasharray: 2 16; filter: drop-shadow(0 0 3px var(--halo)); }
   #wires .on .base { filter: drop-shadow(0 0 4px var(--halo)); }
   .map::before { width: 860px; height: 640px; animation: bm-breathe 6s ease-in-out infinite; }
   @keyframes bm-breathe { 50% { opacity: .6; } }
