@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
  *  - click-and-drag scrolling with momentum for mouse users (touch keeps native swipe)
  *  - a click that ends a drag doesn't open the card underneath
  *  - drives a custom progress thumb and returns the current position (1-based)
+ * Not from a control inside a card (a video's seek bar, a field): that one keeps the mouse.
  */
+const OWN_MOUSE = "input, textarea, select, video";
 const useRail = (railRef, thumbRef, total) => {
   const [current, setCurrent] = useState(1);
 
@@ -20,15 +22,16 @@ const useRail = (railRef, thumbRef, total) => {
       frame = 0;
       const max = rail.scrollWidth - rail.clientWidth;
       const p = max > 0 ? rail.scrollLeft / max : 0;
-      const w = Math.min(1, rail.clientWidth / rail.scrollWidth);
+      // Not laid out yet (or hidden): no widths to divide by, so the whole line and the first card
+      const w = rail.scrollWidth > 0 ? Math.min(1, rail.clientWidth / rail.scrollWidth) : 1;
       if (thumb) {
         thumb.style.width = `${w * 100}%`;
         thumb.style.transform = `translateX(${(p * (1 - w) * 100) / w}%)`;
       }
       const card = rail.firstElementChild;
       const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
-      const step = card ? card.offsetWidth + gap : 1;
-      setCurrent(p > 0.995 ? total : Math.min(total, Math.round(rail.scrollLeft / step) + 1));
+      const step = card ? card.offsetWidth + gap : 0;
+      setCurrent(p > 0.995 ? total : step > 0 ? Math.min(total, Math.round(rail.scrollLeft / step) + 1) : 1);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -40,7 +43,7 @@ const useRail = (railRef, thumbRef, total) => {
     // ---- drag with momentum (mouse only) ----
     let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, lastT = 0, v = 0, glide = 0;
     const onDown = (e) => {
-      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      if (e.pointerType !== "mouse" || e.button !== 0 || e.target.closest?.(OWN_MOUSE)) return;
       cancelAnimationFrame(glide);
       down = true;
       moved = false;
@@ -79,8 +82,10 @@ const useRail = (railRef, thumbRef, total) => {
     // Mouse presses shouldn't focus the card (focus would scroll the page to it and select text);
     // clicks still fire, and keyboard focus is unaffected.
     const onMouseDown = (e) => {
-      if (e.button === 0) e.preventDefault();
+      if (e.button === 0 && !e.target.closest?.(OWN_MOUSE)) e.preventDefault();
     };
+    // A link's or a picture's own drag (the browser's "drag it out of the page") would fight the rail's
+    const onDragStart = (e) => e.preventDefault();
     const onClickCapture = (e) => {
       if (moved) {
         e.preventDefault();
@@ -95,6 +100,7 @@ const useRail = (railRef, thumbRef, total) => {
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     rail.addEventListener("click", onClickCapture, true);
+    rail.addEventListener("dragstart", onDragStart);
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(glide);
@@ -105,6 +111,7 @@ const useRail = (railRef, thumbRef, total) => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       rail.removeEventListener("click", onClickCapture, true);
+      rail.removeEventListener("dragstart", onDragStart);
     };
   }, [railRef, thumbRef, total]);
 

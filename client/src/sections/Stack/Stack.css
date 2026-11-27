@@ -124,9 +124,31 @@
   .stack-grid::-webkit-scrollbar {
     display: none;
   }
+  /* A mouse drags it (lib/useRail.js), as Certificates' rail: no snapping while it moves */
+  .stack-grid {
+    cursor: grab;
+  }
+  .stack-grid.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
   /* It takes the keyboard's focus here (StackGrid.jsx): its outline inside its edge, as the scroll clips it */
   .stack-grid:focus-visible {
     outline-offset: -2px;
+  }
+  /* Denser chips, so two share a line and the tallest group (Mobile) doesn't leave the others half empty */
+  .stack-card {
+    gap: 1.1rem;
+    padding: 1.2rem 1.1rem;
+  }
+  .stack-items {
+    gap: 0.4rem;
+  }
+  .stack-items li {
+    gap: 0.45rem;
+    padding: 0.42rem 0.7rem;
+    font-size: 0.84rem;
   }
   .stack-card,
   .stack-card:last-child {

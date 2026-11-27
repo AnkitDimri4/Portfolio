@@ -3,7 +3,8 @@ import { FiArrowLeft, FiArrowRight, FiMaximize2, FiX } from "react-icons/fi";
 import SectionHead from "../../components/SectionHead";
 import { Reveal } from "../../lib/reveal";
 import { CERTIFICATES } from "../../data/profile";
-import useRail from "./useRail";
+import useRail from "../../lib/useRail";
+import RailFoot from "../../components/RailFoot/RailFoot";
 import "./Certificates.css";
 
 const Lightbox = ({ index, onClose, onStep }) => {
@@ -56,7 +57,6 @@ const Lightbox = ({ index, onClose, onStep }) => {
   );
 };
 
-const pad = (n) => String(n).padStart(2, "0");
 
 const Certificates = () => {
   const rail = useRef(null);
@@ -118,15 +118,7 @@ const Certificates = () => {
         ))}
       </div>
 
-      <div className="wrap certs-foot" aria-hidden="true">
-        <span className="certs-track">
-          <span className="certs-thumb" ref={thumb} />
-        </span>
-        <span className="label certs-count">
-          <b>{pad(current)}</b> / {pad(CERTIFICATES.length)}
-        </span>
-        <span className="label certs-hint">Drag or swipe</span>
-      </div>
+      <RailFoot className="wrap" thumb={thumb} current={current} total={CERTIFICATES.length} hint="Drag or swipe" />
 
       <Lightbox index={open} onClose={() => setOpen(null)} onStep={step} />
     </section>

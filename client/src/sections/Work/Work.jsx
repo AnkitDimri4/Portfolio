@@ -6,6 +6,9 @@ import ContributionGraph from "../../components/ContributionGraph/ContributionGr
 import SiteActivity from "../../components/SiteActivity/SiteActivity";
 import VideoPlayer from "../../components/VideoPlayer/VideoPlayer";
 import { Reveal, useInView } from "../../lib/reveal";
+import usePhone from "../../lib/usePhone";
+import useRail from "../../lib/useRail";
+import RailFoot from "../../components/RailFoot/RailFoot";
 import { useApi } from "../../lib/api";
 import { webUrl } from "../../lib/webUrl";
 import { PINNED_REPOS, PROFILE, PROJECTS, REPO_CARDS } from "../../data/profile";
@@ -427,6 +430,17 @@ const Work = () => {
   const own = PROJECTS.filter((p) => !p.work && !p.activity);
   const offset = top.length;
   const more = PINNED_REPOS.map((n) => byName[n]).filter(Boolean).slice(0, 6); // only these, in this order (profile.js)
+  const repoCount = data ? more.length : 6; // six placeholders while they load
+  // On phones, my own projects and these repos are rows to swipe (Work.css), as Certificates' are: a mouse
+  // can drag them too, and a line and count under each say where you are (lib/useRail.js, RailFoot).
+  const phone = usePhone();
+  const none = useRef(null); // laptops and tablets: lists and grids, nothing to drag
+  const ownRow = useRef(null);
+  const ownThumb = useRef(null);
+  const ownAt = useRail(phone ? ownRow : none, ownThumb, own.length);
+  const repoRow = useRef(null);
+  const repoThumb = useRef(null);
+  const repoAt = useRail(phone ? repoRow : none, repoThumb, repoCount);
 
   return (
     <section className="section work" id="work" aria-labelledby="work-title">
@@ -459,11 +473,12 @@ const Work = () => {
               {own.length} projects<span className="swipe-hint"> · swipe</span>
             </p>
           </div>
-          <div className="projects projects--list">
+          <div ref={ownRow} className="projects projects--list">
             {own.map((p, j) => (
               <ProjectRow key={p.repo} project={p} index={offset + j} repo={byName[p.repo]} />
             ))}
           </div>
+          <RailFoot phone thumb={ownThumb} current={ownAt} total={own.length} />
         </div>
         <ProjectTabs projects={own} offset={offset} byName={byName} />
 
@@ -486,11 +501,14 @@ const Work = () => {
               .
             </p>
           ) : (
-            <div className="repos">
-              {data
-                ? more.map((r, i) => <RepoCard key={r.name} repo={r} i={i} />)
-                : Array.from({ length: 6 }, (_, i) => <div className="repo repo-skeleton skeleton" key={i} />)}
-            </div>
+            <>
+              <div ref={repoRow} className="repos">
+                {data
+                  ? more.map((r, i) => <RepoCard key={r.name} repo={r} i={i} />)
+                  : Array.from({ length: repoCount }, (_, i) => <div className="repo repo-skeleton skeleton" key={i} />)}
+              </div>
+              {repoCount > 1 && <RailFoot phone thumb={repoThumb} current={repoAt} total={repoCount} />}
+            </>
           )}
         </div>
       </div>

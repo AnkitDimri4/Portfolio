@@ -1,0 +1,43 @@
+/* Under a row of cards to drag or swipe (RailFoot.jsx): the progress line and the count */
+.rail-foot {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+@media (min-width: 641px) {
+  .rail-foot--phone {
+    display: none; /* the row is a grid there */
+  }
+}
+.rail-track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+  transition: height 0.3s var(--ease);
+}
+.rail-thumb {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  border-radius: inherit;
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: transform 0.25s var(--ease-out), width 0.3s var(--ease);
+  will-change: transform;
+}
+.rail-count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.rail-count b {
+  color: var(--text);
+  font-weight: 500;
+}
+.rail-hint {
+  flex: none;
+  color: var(--muted);
+}

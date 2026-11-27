@@ -78,6 +78,11 @@ test("on a phone, where its groups are a row to swipe, the row takes the keyboar
     expect(row).toHaveAttribute("tabindex", "0");
     expect(row).toHaveAttribute("role", "region");
     expect(row).toHaveAccessibleName("My stack, by group: swipe for more");
+    // Under it, as under Certificates: where you are in the row (RailFoot), for the eye only
+    const foot = container.querySelector(".rail-foot");
+    expect(foot).toHaveClass("rail-foot--phone");
+    expect(foot).toHaveAttribute("aria-hidden", "true");
+    expect(foot).toHaveTextContent(`01 / ${String(STACK.length).padStart(2, "0")}`);
     unmount();
   } finally {
     window.matchMedia = media;

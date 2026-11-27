@@ -313,6 +313,17 @@ button.chip:hover {
   .repos > * {
     scroll-snap-align: start;
   }
+  /* A mouse drags them (lib/useRail.js), as Certificates' rail: no snapping while they move */
+  .projects--list,
+  .repos {
+    cursor: grab;
+  }
+  .projects--list.is-dragging,
+  .repos.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
   /* A project is a card here, so where one ends and the next begins is plain */
   .projects--list > .project {
     align-content: start;

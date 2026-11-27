@@ -35,46 +35,9 @@
   pointer-events: none;
 }
 
-/* ---------- Custom progress line + counter ---------- */
-.certs-foot {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: 0.5rem;
-}
-.certs-track {
-  position: relative;
-  flex: 1;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--line);
-  overflow: hidden;
-  transition: height 0.3s var(--ease);
-}
-.certs:hover .certs-track {
+/* ---------- The progress line + counter: RailFoot (components/RailFoot), shared with Stack ---------- */
+.certs:hover .rail-track {
   height: 4px;
-}
-.certs-thumb {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 30%;
-  border-radius: inherit;
-  background: var(--accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
-  transition: transform 0.25s var(--ease-out), width 0.3s var(--ease);
-  will-change: transform;
-}
-.certs-count {
-  flex: none;
-  font-variant-numeric: tabular-nums;
-}
-.certs-count b {
-  color: var(--text);
-  font-weight: 500;
-}
-.certs-hint {
-  flex: none;
-  color: var(--muted);
 }
 .certs-rail:focus-visible {
   outline-offset: -2px;
@@ -188,7 +151,7 @@
 
 @media (max-width: 640px) {
   .certs-nav,
-  .certs-hint {
+  .certs .rail-hint {
     display: none;
   }
   .certs-rail {
