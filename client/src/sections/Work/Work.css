@@ -309,9 +309,6 @@ button.chip:hover {
   gap: 1rem;
 }
 .ptab {
-  display: grid;
-  align-content: start;
-  gap: 0.4rem;
   padding: 1rem 0 0;
   border: 0;
   border-top: 2px solid var(--line);
@@ -335,6 +332,40 @@ button.chip:hover {
   outline-offset: 6px;
   border-radius: 4px;
 }
+.ptab-text {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+/* Over a tab, or on it from the keyboard: a glass circle behind its words. Picked, it's where the
+   panel's circle starts (ProjectTabs). */
+.ptab-text::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: clamp(8.5rem, calc(100% + 2.5rem), 11.5rem);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--text) 20%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text) 11%, transparent);
+  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.45);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  scale: 0.6;
+  translate: -50% -50%;
+  transition: opacity 0.3s var(--ease), scale 0.45s var(--ease);
+  pointer-events: none;
+}
+.ptab:hover .ptab-text::before,
+.ptab:focus-visible .ptab-text::before {
+  opacity: 1;
+  scale: 1;
+}
 .ptab-num {
   font-size: var(--text-small);
   color: var(--faint-ink);
@@ -353,17 +384,100 @@ button.chip:hover {
   color: inherit;
   opacity: 0.85;
 }
-.ptabs-panel {
-  animation: ptabs-open 0.5s var(--ease-out) both;
+/* Picking a project (ProjectTabs): the circle, solid now, grows behind the tabs' words and over the
+   panel; the project's name flies to its title; then the project comes in over the circle, which fades.
+   The panels share one place, so the one going and the one coming can be there together. */
+.ptabs {
+  position: relative;
 }
-@keyframes ptabs-open {
+.ptabs-list {
+  position: relative;
+  z-index: 2;
+}
+.ptabs.is-changing .ptab-text::before {
+  opacity: 0; /* the glass circle has become the solid one */
+}
+/* The picked tab's name leaves it as its flying copy takes over, and comes back once the project is in */
+.ptab-name {
+  transition: opacity 0.15s var(--ease);
+}
+.ptabs.is-growing .ptab[aria-selected="true"] .ptab-name {
+  opacity: 0;
+}
+.ptabs-disc {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+  background: var(--bg-3);
+  pointer-events: none;
+}
+.ptabs-flyer {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  opacity: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.ptabs-panels {
+  display: grid;
+}
+.ptabs-panels.is-wiping {
+  overflow: clip;
+}
+.ptabs-panel {
+  grid-area: 1 / 1;
+  align-self: start;
+  min-width: 0;
+}
+.ptabs-panel[aria-hidden="true"] {
+  pointer-events: none;
+}
+/* Laid out unseen while the circle grows, so its title's place and its height can be measured */
+.ptabs-panel.is-waiting {
+  visibility: hidden;
+}
+.ptabs-panel.is-arriving {
+  position: relative;
+  z-index: 2;
+}
+.ptabs-panel.is-waiting .reveal,
+.ptabs-panel.is-arriving .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+/* Its title is where the name landed; the rest rises in after it */
+.ptabs-panel.is-arriving .project-media-wrap,
+.ptabs-panel.is-arriving .project-info > :not(.project-title) {
+  animation: ptabs-rise 0.5s var(--ease-out) both;
+}
+.ptabs-panel.is-arriving .project-media-wrap {
+  animation-delay: 60ms;
+}
+.ptabs-panel.is-arriving .project-summary {
+  animation-delay: 90ms;
+}
+.ptabs-panel.is-arriving .chips {
+  animation-delay: 130ms;
+}
+.ptabs-panel.is-arriving .project-foot {
+  animation-delay: 170ms;
+}
+@keyframes ptabs-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ptabs-panel {
-    animation: none;
+  .ptab-text::before {
+    transition: none;
   }
 }

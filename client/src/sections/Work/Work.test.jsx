@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PROJECTS } from "../../data/profile";
 import Work from "./Work";
@@ -52,6 +52,63 @@ describe("the Work section", () => {
     expect(stats).toHaveTextContent(`${commits} commits`);
     expect(stats).toHaveTextContent(`${pullRequests} pull requests`);
     expect(stats).toHaveTextContent(/Updated [A-Z][a-z]{2} \d{4}/);
+  });
+
+  describe("picking another of my own projects", () => {
+    const animate = HTMLElement.prototype.animate;
+    const media = window.matchMedia;
+    afterEach(() => {
+      HTMLElement.prototype.animate = animate;
+      window.matchMedia = media;
+    });
+    const pick = (name) => fireEvent.click(within(screen.getByRole("tablist", { name: "My own projects" })).getByRole("tab", { name }));
+    const panel = (id) => screen.getAllByRole("tabpanel", { hidden: true }).find((p) => p.id === id);
+
+    it("grows a circle from the tab while the name flies to its title, then brings the project in as the circle fades", () => {
+      // jsdom draws nothing: the animations are recorded, and finished by hand
+      const runs = [];
+      HTMLElement.prototype.animate = function animate(keyframes, timing) {
+        const run = { el: this, keyframes, timing, onfinish: null, cancel: vi.fn(), finish: () => run.onfinish?.() };
+        runs.push(run);
+        return run;
+      };
+      render(<Work />);
+      pick(/RN-Wallet/);
+      const coach = panel("ppanel-english-coach");
+      const wallet = panel("ppanel-RN-WALLET");
+
+      // Growing: the project going still drawn under the circle, not read out; the one coming laid out unseen
+      expect(coach).not.toHaveAttribute("hidden");
+      expect(coach).toHaveAttribute("aria-hidden", "true");
+      expect(wallet).not.toHaveAttribute("hidden");
+      expect(wallet).toHaveClass("is-waiting");
+      const disc = document.querySelector(".ptabs-disc");
+      const grow = runs.find((r) => r.el === disc);
+      expect(grow.keyframes.clipPath).toEqual([expect.stringMatching(/^circle\(/), expect.stringMatching(/^circle\(/)]);
+      expect(document.querySelector(".ptabs-flyer")).toHaveTextContent("RN-Wallet"); // the name, flying to its title
+      expect(runs.some((r) => r.keyframes.height)).toBe(true); // and the height easing to the new project's
+
+      // Arriving: the project going gone, the one coming over the circle, which fades
+      act(() => grow.finish());
+      expect(coach).toHaveAttribute("hidden");
+      expect(wallet).toHaveClass("is-arriving");
+      expect(document.querySelector(".ptabs-flyer")).toBeNull();
+      const fade = runs.find((r) => r.el === disc && r.keyframes.opacity);
+      act(() => fade.finish());
+      expect(document.querySelector(".ptabs-disc")).toBeNull();
+      expect(wallet).not.toHaveClass("is-arriving");
+      expect(coach).not.toHaveAttribute("aria-hidden");
+    });
+
+    it("changes the panel at once when less motion is asked for", () => {
+      window.matchMedia = (query) => ({ matches: query.includes("reduce"), media: query, addEventListener() {}, removeEventListener() {} });
+      HTMLElement.prototype.animate = vi.fn();
+      render(<Work />);
+      pick(/Todo/);
+      expect(panel("ppanel-english-coach")).toHaveAttribute("hidden");
+      expect(panel("ppanel-TODO-RN")).not.toHaveAttribute("hidden");
+      expect(HTMLElement.prototype.animate).not.toHaveBeenCalled();
+    });
   });
 
   describe("the demo videos", () => {
